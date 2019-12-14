@@ -17,4 +17,7 @@ https://rguigoures.github.io/word2vec_pytorch/
 
 https://medium.com/towardsdatascience/word2vec-negative-sampling-made-easy-7a1a647e07a4 
 
-http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/
+https://aegis4048.github.io/optimize_computational_efficiency_of_skip-gram_with_negative_sampling#neg_drawn
+
+# Softmax vs sigmoid
+https://dejanbatanjac.github.io/2019/07/04/softmax-vs-sigmoid.html

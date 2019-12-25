@@ -1,0 +1,108 @@
+---
+title: "Commentaires sur les travaux d'Alain et Romain"
+author: "Kim Antunez"
+automaticcontents: true
+output:
+    pdf_document:
+        toc: true
+        toc_depth: 2
+        number_sections: true
+        fig_width: 7
+        fig_height: 6
+        fig_caption: true
+        highlight: default
+        template: default.tex
+        keep_tex: yes
+themeoptions: "coding=utf8,language=english"
+classoption: 'french'
+fontsize: 11pt
+geometry: margin=1in
+lang: "french"
+documentclass: "article"
+linkcolor: "#FF0000"
+urlcolor: "#FF0000"
+citecolor: "#FF0000"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                        fig.path = "img/markdown-",
+                      cache = FALSE)
+options(enable_print_style = FALSE)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+library(reticulate)
+```
+
+# Créer un rapport automatique
+
+## Rendu de Rmarkdown avec du code python
+
+Exemple à partir des premières lignes du code d'Alain. 
+
+```{python}
+import os
+import string
+import re
+import math
+from math import sqrt
+import numpy as np
+import random
+import time
+random.seed(1)
+
+
+os.chdir('C:/Users/Kim Antunez/Documents/Projets_autres')
+print(string.punctuation + "'’")
+def mise_en_forme_phrase (phrase):
+    phrase = phrase.lower()
+    # On elève la ponctuation mais ça peut se discuter (garder les @ et #?)
+    phrase = re.sub('( @[^ ]*)|(^@[^ ]*)',"nickname", phrase) #Remplace @... par nickname
+    #supprime toutes les ponctuations par défaut + les apostrophes bizarres
+    phrase = phrase.translate(str.maketrans('', '', string.punctuation + "'’"))
+    # On enlève les passages à la ligne
+    phrase = re.sub('\\n', ' ', phrase)
+    # On enlève les espaces multiples et les espaces à la fin des phrases
+    phrase = re.sub(' +', ' ', phrase)
+    phrase = re.sub(' +$', '', phrase)
+    return(phrase.split())
+#f = open('data/sample_3.txt')
+#raw = f.read()
+#print(type(raw))
+with open('data/sample_3.txt', encoding="utf-8") as myfile:
+    phrases = [mise_en_forme_phrase(next(myfile)) for x in range(10000)]
+print(phrases[0:1])
+#raw = ''.join([''.join(phrase) for phrase in phrases])
+```
+
+# Commentaires des codes d'A&R
+
+## Alain
+
+### autograd est depreciated
+
+L'option suivante semble depreciated :
+
+```{python, eval=FALSE}
+input = autograd.Variable(input, requires_grad=True)
+#UserWarning: torch.autograd.variable(...) is deprecated, use torch.tensor(...) instead
+#UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or  sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor)
+```
+
+J'ai remplacé par ça et le warning a disparu : 
+
+```{python, eval=FALSE}
+input = Variable(torch.Tensor(input), requires_grad=True) #KIM
+```
+
+Faire la même chose avec "output"
+
+###
+
+      
+
+## Romain
+
+## Croisement des deux codes
+

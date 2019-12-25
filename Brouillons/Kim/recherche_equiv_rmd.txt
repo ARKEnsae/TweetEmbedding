@@ -1,0 +1,4 @@
+http://mpastell.com/pweave/
+https://medium.com/quantecon-blog/introducing-jupinx-60ba9fc12f4f
+https://github.com/dunovank/jupyter-themes
+https://towardsdatascience.com/bringing-the-best-out-of-jupyter-notebooks-for-data-science-f0871519ca29

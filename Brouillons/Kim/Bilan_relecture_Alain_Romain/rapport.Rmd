@@ -96,13 +96,68 @@ J'ai remplacé par ça et le warning a disparu :
 input = Variable(torch.Tensor(input), requires_grad=True) #KIM
 ```
 
+Ou sûrement mieux en une étape : cf. ce qu'a fait Romain : 
+
+```{python, eval=FALSE}
+W1 = Variable(torch.randn(embedding_dims, voc_size).float(), requires_grad=True)
+```
+
 Faire la même chose avec "output"
-
-###
-
-      
 
 ## Romain
 
+RAS à première vue. 
+
 ## Croisement des deux codes
+
+### W2, faut-il la transposer ? 
+
+Pour W2 ou output vous avez la même chose à une transposée près : choisir ce qui est le mieux entre les deux pour cohérence avec explication du modèle
+
+
+### Etape de création des couples contexte / target
+
+Différence d'approche pour la création des couples contexte target. Alors qu'Alain définit les couples dans une fonctions à part, Romain le fait à l'intérieur de l'algorithme de mise à jour de W1 et W2. Intuitivement je dirais que les 2 approches sont équivalentes. 
+
+### Deux approches différentes pour le produit matriciel
+ 
+ Alain le fait en une étape mais avec une fonction plus etoffée de création des targets contexte (creer_echantillon)
+```{python, eval=FALSE}
+data = torch.matmul(input[focus,], torch.t(output))
+```
+
+Romain décompose comme cela
+```{python, eval=FALSE}
+x = Variable(get_input_layer(focus)).float()
+y = Variable(torch.from_numpy(np.array([context])).long())
+z1 = torch.matmul(W1, x)
+z2 = torch.matmul(W2, z1)
+```
+Idem je sais pas ce qui est mieux. 
+
+
+### Une fonction de loss en une ligne ou deux ? 
+Déjà évoqué alors que Romain utilise cela
+```{python, eval=FALSE}
+log_softmax = F.log_softmax(z2, dim=0)
+loss = F.nll_loss(log_softmax.view(1,-1), y)
+```
+Alain le fait en une étape 
+```{python, eval=FALSE}
+loss = F.cross_entropy(data.view(1,-1), torch.tensor([context]))
+```
+
+
+# TODO-LIST pour février
+
+* Kim : comprendre le modèle suite à cours particulier d'Alain et Romain puis replonger simplement dans la décomposition des étapes du modèle (multiplication des matrices, descente de gradients)
+
+* Tous : faire UN modèle unique commun à tous. Pour cela créer des fonctions avec des options du type "negative_sampling = TRUE / FALSE" pour éviter la multiplication des fichiers. Voir intégrer le modèle dans un "package" pour ensuite avoir un fichier ou on le fait tourner sur les données tests et un fichier ou on le fait tourner sur les vrais tweets. De même créer des fonctions pour "évaluer" les sorties du modèle (fonctions ACP, ACP_interactive, TSNE, TSNE_interactive)
+
+* Tous : une fois ces fonctions créées, estimer les étapes qui durent longtemps (avec des fonctionnalités python) et les optimiser si possible...
+
+* Tous : faire tourner modèle + évaluation sur l'ensemble des tweets à notre dispo et voir combien de temps ça met
+
+* Tous : implémenter l'évaluation avec nearest neighbor et human judgment agreement. 
+
 

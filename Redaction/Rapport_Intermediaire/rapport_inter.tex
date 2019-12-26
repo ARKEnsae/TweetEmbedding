@@ -1,0 +1,159 @@
+\documentclass[11pt,french,french]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{}
+\else
+  \usepackage[shorthands=off,french]{babel}
+\fi
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={},
+            colorlinks=true,
+            citecolor=\#FF0000,
+            urlcolor=\#FF0000,
+            linkcolor=\#FF0000,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+
+  \title{Analyse statistique et empirique des modèles\\
+de Word Embedding sur Twitter}
+    \author{Kim Antunez, Romain Lesauvage, Alain Quartier-la-Tente\\
+~\\
+sous l'encadrement de Benjamin Muller (doctorant à l'Inria)}
+    \date{}
+  
+
+\begin{document}
+
+\maketitle
+
+
+\hypertarget{contexte}{%
+\section{Contexte}\label{contexte}}
+
+Grâce à l'évolution des méthodes d'apprentissage profond (\emph{Deep
+Learning}), l'appréhension du langage naturel est aujourd'hui devenu une
+discipline à part entière (``\emph{Natural Language Processing}). Ce
+succès s'explique en partie grâce à l'émergence de techniques non
+supervisée d'apprentissage de représentation de structures
+linguistiques. Les méthodes de \emph{word embedding} (« plongement
+lexical » en français) permettent de représenter chaque mot d'un
+dictionnaire par un vecteur de nombres réels afin que les mots qui
+apparaissant dans des contextes similaires possèdent des vecteurs
+correspondants qui sont relativement proches. Les modèles
+\textbf{word2vec}, développés par une équipe de recherche chez Google
+sous la direction de Tomas Mikolov, sont parmi les plus célèbres.
+
+\hypertarget{objectif-du-projet}{%
+\section{Objectif du projet}\label{objectif-du-projet}}
+
+Dans ce projet de statistiques appliquées, nous étudierons dans un
+premier temps en détail et implémenterons le modèle \emph{word2vec}.
+Puis, dans un second temps, nous mettrons ce modèle en application sur
+une base de plusieurs dizaines de millions de tweets (2014-2017).
+
+\hypertarget{travail-effectuuxe9}{%
+\section{Travail effectué}\label{travail-effectuuxe9}}
+
+\hypertarget{compruxe9hension-du-moduxe8le}{%
+\subsection{Compréhension du
+modèle}\label{compruxe9hension-du-moduxe8le}}
+
+Nous avons débuté le projet en nous imprégnant du champ des méthodes de
+NLP et même de Deep-learning qui nous était jusqu'alors inconnu. Pour
+cela nous avons lu les articles présentés dans la bibliographies ainsi
+que d'autres articles de blogs, en particulier concernant
+l'implémentation sur python
+
+\hypertarget{impluxe9mentation-du-moduxe8le}{%
+\subsection{Implémentation du
+modèle}\label{impluxe9mentation-du-moduxe8le}}
+
+Nous avons tous les trois implémenté le modèle individuellement sur
+python en utilisant la librairie Pytorch et avons testé
+
+\hypertarget{evaluation-du-moduxe8le-impluxe9mentuxe9}{%
+\subsection{Evaluation du modèle
+implémenté}\label{evaluation-du-moduxe8le-impluxe9mentuxe9}}
+
+Malgré leurs utilisations presque généralisées, très peu de travaux
+théoriques expliquent ce qui est réellement capturé par ces
+représentations de mots. C'est pourquoi l'évaluation de l'efficacité de
+ce modèle ne peut se faire qu'à l'aide de méthodes empiriques.
+
+Nous avons commencé à évaluer qualitativement le modèle en l'entraînant
+sur des données fictives.
+
+évaluation quali
+
+\hypertarget{perspectives}{%
+\section{Perspectives}\label{perspectives}}
+
+\hypertarget{impluxe9mentation-et-uxe9valuation}{%
+\subsection{implémentation et
+évaluation}\label{impluxe9mentation-et-uxe9valuation}}
+
+\begin{itemize}
+\item
+  mise en commun des codes des 3 membres du groupes et implémentation
+  d'un modèle ``propre''
+\item
+  faire tourner le modèle sur les vraies données et si besoin tenter
+  d'optimiser son implémentation en repérant les parties du codes qui
+  mettent du temps à tourner.
+\item
+  nearest neighbor , human judgment agreement
+\end{itemize}
+
+\hypertarget{analyse}{%
+\subsection{analyse}\label{analyse}}
+
+Tout le travail d'analyse à partir de la base de données exhaustive des
+tweets reste à effectuer. Les possibilités d'applications sont
+nombreuses mais nous devrions a priori nous orienter sur une comparaison
+entre l'évolution du solde d'opinion des ménages et l'évolution de
+``l'humeur'' des tweets (données trimestrielles de 2014 à 2017)
+
+\end{document}

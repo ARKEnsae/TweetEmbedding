@@ -179,10 +179,137 @@ d'A\&R}\label{commentaires-des-codes-dar}}
 \hypertarget{alain}{%
 \subsection{Alain}\label{alain}}
 
+\hypertarget{autograd-est-depreciated}{%
+\subsubsection{autograd est
+depreciated}\label{autograd-est-depreciated}}
+
+L'option suivante semble depreciated :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\BuiltInTok{input} \OperatorTok{=}\NormalTok{ autograd.Variable(}\BuiltInTok{input}\NormalTok{, requires_grad}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\CommentTok{#UserWarning: torch.autograd.variable(...) is deprecated, use torch.tensor(...) instead}
+\CommentTok{#UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or  sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor)}
+\end{Highlighting}
+\end{Shaded}
+
+J'ai remplacé par ça et le warning a disparu :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\BuiltInTok{input} \OperatorTok{=}\NormalTok{ Variable(torch.Tensor(}\BuiltInTok{input}\NormalTok{), requires_grad}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{#KIM}
+\end{Highlighting}
+\end{Shaded}
+
+Ou sûrement mieux en une étape : cf.~ce qu'a fait Romain :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{W1 }\OperatorTok{=}\NormalTok{ Variable(torch.randn(embedding_dims, voc_size).}\BuiltInTok{float}\NormalTok{(), requires_grad}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Faire la même chose avec ``output''
+
 \hypertarget{romain}{%
 \subsection{Romain}\label{romain}}
 
+RAS à première vue.
+
 \hypertarget{croisement-des-deux-codes}{%
 \subsection{Croisement des deux codes}\label{croisement-des-deux-codes}}
+
+\hypertarget{w2-faut-il-la-transposer}{%
+\subsubsection{W2, faut-il la transposer
+?}\label{w2-faut-il-la-transposer}}
+
+Pour W2 ou output vous avez la même chose à une transposée près :
+choisir ce qui est le mieux entre les deux pour cohérence avec
+explication du modèle
+
+\hypertarget{etape-de-cruxe9ation-des-couples-contexte-target}{%
+\subsubsection{Etape de création des couples contexte /
+target}\label{etape-de-cruxe9ation-des-couples-contexte-target}}
+
+Différence d'approche pour la création des couples contexte target.
+Alors qu'Alain définit les couples dans une fonctions à part, Romain le
+fait à l'intérieur de l'algorithme de mise à jour de W1 et W2.
+Intuitivement je dirais que les 2 approches sont équivalentes.
+
+\hypertarget{deux-approches-diffuxe9rentes-pour-le-produit-matriciel}{%
+\subsubsection{Deux approches différentes pour le produit
+matriciel}\label{deux-approches-diffuxe9rentes-pour-le-produit-matriciel}}
+
+Alain le fait en une étape mais avec une fonction plus etoffée de
+création des targets contexte (creer\_echantillon)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OperatorTok{=}\NormalTok{ torch.matmul(}\BuiltInTok{input}\NormalTok{[focus,], torch.t(output))}
+\end{Highlighting}
+\end{Shaded}
+
+Romain décompose comme cela
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x }\OperatorTok{=}\NormalTok{ Variable(get_input_layer(focus)).}\BuiltInTok{float}\NormalTok{()}
+\NormalTok{y }\OperatorTok{=}\NormalTok{ Variable(torch.from_numpy(np.array([context])).}\BuiltInTok{long}\NormalTok{())}
+\NormalTok{z1 }\OperatorTok{=}\NormalTok{ torch.matmul(W1, x)}
+\NormalTok{z2 }\OperatorTok{=}\NormalTok{ torch.matmul(W2, z1)}
+\end{Highlighting}
+\end{Shaded}
+
+Idem je sais pas ce qui est mieux.
+
+\hypertarget{une-fonction-de-loss-en-une-ligne-ou-deux}{%
+\subsubsection{Une fonction de loss en une ligne ou deux
+?}\label{une-fonction-de-loss-en-une-ligne-ou-deux}}
+
+Déjà évoqué alors que Romain utilise cela
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{log_softmax }\OperatorTok{=}\NormalTok{ F.log_softmax(z2, dim}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
+\NormalTok{loss }\OperatorTok{=}\NormalTok{ F.nll_loss(log_softmax.view(}\DecValTok{1}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{), y)}
+\end{Highlighting}
+\end{Shaded}
+
+Alain le fait en une étape
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{loss }\OperatorTok{=}\NormalTok{ F.cross_entropy(data.view(}\DecValTok{1}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{), torch.tensor([context]))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{todo-list-pour-fuxe9vrier}{%
+\section{TODO-LIST pour février}\label{todo-list-pour-fuxe9vrier}}
+
+\begin{itemize}
+\item
+  Kim : comprendre le modèle suite à cours particulier d'Alain et Romain
+  puis replonger simplement dans la décomposition des étapes du modèle
+  (multiplication des matrices, descente de gradients)
+\item
+  Tous : faire UN modèle unique commun à tous. Pour cela créer des
+  fonctions avec des options du type ``negative\_sampling = TRUE /
+  FALSE'' pour éviter la multiplication des fichiers. Voir intégrer le
+  modèle dans un ``package'' pour ensuite avoir un fichier ou on le fait
+  tourner sur les données tests et un fichier ou on le fait tourner sur
+  les vrais tweets. De même créer des fonctions pour ``évaluer'' les
+  sorties du modèle (fonctions ACP, ACP\_interactive, TSNE,
+  TSNE\_interactive)
+\item
+  Tous : une fois ces fonctions créées, estimer les étapes qui durent
+  longtemps (avec des fonctionnalités python) et les optimiser si
+  possible\ldots{}
+\item
+  Tous : faire tourner modèle + évaluation sur l'ensemble des tweets à
+  notre dispo et voir combien de temps ça met
+\item
+  Tous : implémenter l'évaluation avec nearest neighbor et human
+  judgment agreement.
+\end{itemize}
 
 \end{document}

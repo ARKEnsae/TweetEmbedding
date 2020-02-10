@@ -20,15 +20,13 @@ output:
 themeoptions: "coding=utf8,language=english"
 classoption: 'french'
 fontsize: 11pt
-geometry: margin=1in
+geometry: margin=0.95in
 lang: "french"
 documentclass: "article"
 header-includes:
 - \usepackage{caption}
 - \usepackage{graphicx}
 - \usepackage{natbib}
-
-
 
 ---
 
@@ -61,7 +59,7 @@ Nous entraînons le modèle grâce à un algorithme qui peut se résumer à ces 
  
 - Nous partons de deux matrices de poids : une en entrée et une en sortie. La taille de ces matrices est fixée par le nombre de mots différents (vocabulaire) présents dans le corpus (lignes) et la dimension souhaitée des vecteurs en sortie (colonnes). 
 
-- L'algorithme parcourt ensuite chaque phrase du corpus. Pour chaque phrase, un mot appelé *focus* est sélectionné au hasard. Puis, on associe à chaque mot focus un mot *contexte* tiré lui aussi au hasard dans une fenêtre autour du mot focus choisi. 
+- L'algorithme parcourt ensuite chaque phrase du corpus (une phrase correspondant à un tweet). Pour chaque phrase, un mot appelé *focus* est sélectionné au hasard. Puis, on associe à chaque mot focus un mot *contexte* tiré lui aussi au hasard dans une fenêtre autour du mot focus choisi^[Par exemple, dans la phrase « Le chat de la voisine est roux », si le mot focus est « voisine » et que la fenêtre est de 2, le mot contexte sera tiré au hasard parmi les mots « de », « la », « est » et « roux ».]. 
 
 - Nous sélectionnons ensuite la ligne de la matrice en entrée correspondant au mot focus. En multipliant matriciellement cette ligne avec la matrice de sortie, nous obtenons un score (produit scalaire) qui mesure pour chaque mot du vocabulaire la probabilité d'appartenir au contexte du mot focus. Ce score est ensuite transformé en probabilité d'appartenance grâce à la fonction *softmax*. Nous mettons ensuite à jour la fonction de perte (*loss*) qui dépend de ce score. 
 
@@ -132,7 +130,7 @@ Notre objectif final est d'effectuer un travail d'analyse autour de la comparais
 \caption{Évaluation du modèle sur données fictives}\label{fig:figure_evaluation}
 \end{figure}
 
-Quelle que soit la problématique choisie à terme, nous tenterons de calculer des indicateurs synthétiques à l'aide de techniques d'analyse de sentiments. Nous devons également garder en tête les différentes limites des données à notre disposition : leur faible profondeur temporelle rendant complexe la prévision de données trimestrielles ou encore leur thématique se rapprochant certainement davantage des questions d'opinions des ménages plutôt que des informations liées aux entreprises. 
+Quelle que soit la problématique choisie à terme, nous tenterons de calculer des indicateurs synthétiques à l'aide de techniques d'analyse de sentiments. Nous devons également garder en tête les différentes limites des données à notre disposition : leur faible profondeur temporelle rendant complexe la prévision de données trimestrielles ou encore leur thématique se rapprochant certainement davantage des questions d'opinions des ménages plutôt que des informations liées aux entreprises qui sont habituellement utilisées dans les prévisions macroéconomiques. 
 
 
 

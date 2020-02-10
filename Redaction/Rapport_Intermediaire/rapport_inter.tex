@@ -23,7 +23,7 @@
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.95in]{geometry}
 \ifxetex
   \usepackage{polyglossia}
   \setmainlanguage{}
@@ -170,10 +170,14 @@ ces quelques étapes :
   différents (vocabulaire) présents dans le corpus (lignes) et la
   dimension souhaitée des vecteurs en sortie (colonnes).
 \item
-  L'algorithme parcourt ensuite chaque phrase du corpus. Pour chaque
-  phrase, un mot appelé \emph{focus} est sélectionné au hasard. Puis, on
-  associe à chaque mot focus un mot \emph{contexte} tiré lui aussi au
-  hasard dans une fenêtre autour du mot focus choisi.
+  L'algorithme parcourt ensuite chaque phrase du corpus (une phrase
+  correspondant à un tweet). Pour chaque phrase, un mot appelé
+  \emph{focus} est sélectionné au hasard. Puis, on associe à chaque mot
+  focus un mot \emph{contexte} tiré lui aussi au hasard dans une fenêtre
+  autour du mot focus choisi\footnote{Par exemple, dans la phrase « Le
+    chat de la voisine est roux », si le mot focus est « voisine » et
+    que la fenêtre est de 2, le mot contexte sera tiré au hasard parmi
+    les mots « de », « la », « est » et « roux ».}.
 \item
   Nous sélectionnons ensuite la ligne de la matrice en entrée
   correspondant au mot focus. En multipliant matriciellement cette ligne
@@ -344,7 +348,8 @@ limites des données à notre disposition : leur faible profondeur
 temporelle rendant complexe la prévision de données trimestrielles ou
 encore leur thématique se rapprochant certainement davantage des
 questions d'opinions des ménages plutôt que des informations liées aux
-entreprises.
+entreprises qui sont habituellement utilisées dans les prévisions
+macroéconomiques.
 
 \nocite{*}
 

@@ -4,7 +4,6 @@ title: |
     | de Word Embedding sur Twitter
 author: |
     | Kim Antunez, Romain Lesauvage, Alain Quartier-la-Tente
-    |
     | sous l'encadrement de Benjamin Muller (Inria)
 automaticcontents: true
 output:
@@ -24,6 +23,13 @@ fontsize: 11pt
 geometry: margin=1in
 lang: "french"
 documentclass: "article"
+header-includes:
+- \usepackage{caption}
+- \usepackage{graphicx}
+- \usepackage{natbib}
+
+
+
 ---
 
 ```{r setup, include=FALSE}
@@ -39,79 +45,102 @@ library(reticulate)
 
 # Contexte
 
-Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenu une discipline à part entière (*Natural Language Processing*). Ce succès s'explique en partie grâce à l'émergence de techniques non supervisée d'apprentissage de représentation de structures linguistiques. Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissant dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches. Les modèles **word2vec**, développés par une équipe de recherche chez Google sous la direction de Tomas Mikolov, sont parmi les plus célèbres et sont ceux sur lesquels se concentreront notre projet. 
+Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenu une discipline à part entière (*Natural Language Processing*). Ce succès s'explique en partie grâce à l'émergence de techniques non supervisée d'apprentissage de représentation de structures linguistiques. Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissant dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches. Les modèles **word2vec**, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet. 
 
 # Objectif du projet 
 
-Dans ce projet de statistiques appliquées, nous étudierons dans un premier temps en détail et implémenterons le modèle *word2vec* avec l'architecture Skip-Gram. Danns un second temps, l'objectif est de mettre en application ce modèle sur une base de données créée à partir de plusieurs millions de tweets écrits en France sur la période 2013-2017 et de mettre en oeuvre à partir de cela des techniques d'analyse de sentiments, afin d'arriver à comparer nos résultats avec certains indicateurs de l'Insee par exemple sur l'opinion des ménages.
+Dans ce projet de statistiques appliquées, nous étudierons dans un premier temps en détail et implémenterons le modèle *word2vec*. Dans un second temps, nous appliquerons ce modèle sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017. Pour ce faire, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages.
 
-# Travail effectué  
+# Travail effectué jusqu'alors 
 
-## Compréhension du modèle
+## Appropriation du modèle
 
-Nous avons débuté le projet en nous imprégnant du champ des méthodes de NLP et même de Deep-learning qui nous était jusqu'alors inconnu. Pour cela nous avons lu les articles présentés dans la bibliographies ainsi que d'autres articles de blogs, en particulier concernant l'implémentation sur python de ces modèles. Nous avons consacré une grande partie de notre temps dans la compréhension du modèle.
+Pour débuter ce projet, nous nous sommes documentés sur les méthodes de NLP et de Deep-learning en lisant la bibliographie ainsi que des articles de blogs, en particulier concernant l'implémentation sur Python du modèle. Ces différentes lectures nous ont permis de bien comprendre les différentes étapes de l'algorithme dont l'objectif est, pour rappel, de représenter les mots d'un corpus sous la forme d'un vecteur de nombre réels. Différentes architectures du modèle word2vec existent ; nous nous intéresserons ici à l'approche appelée *Skip-gram*. À l'inverse de l'approche *Continuous bags of words*, le principe de *Skip-gram* est de prédire, pour chaque mot du vocabulaire, sa probabilité d'être proche d'un mot appelé *focus*.
 
+Nous entraînons le modèle grâce à un algorithme qui peut se résumer à ces quelques étapes : 
+ 
+- Nous partons de deux matrices de poids : une en entrée et une en sortie. La taille de ces matrices est fixée par le nombre de mots différents (vocabulaire) présents dans le corpus (lignes) et la dimension souhaitée des vecteurs en sortie (colonnes). 
 
-Afin de représenter les mots d’un corpus sous forme d’un vecteur, nous entraînons un réseau factiCe, consistant à prévoir le lien entre des mots *focus* et leur contexte, et de récupérer les poids issus de cet entraînement. Ce sont ces poids qui seront utilisés comme représentation vectorielle des mots. Différentes architectures sont possibles avec le modèle, nous nous intéresserons ici à l'approche \textit{Skip-gram}. Le principe est de partir d'un mot dit focus dans une phrase est de prédire, pour chaque mot du vocabulaire, la probabilité d'être dans le contexte de ce mot focus.
+- L'algorithme parcourt ensuite chaque phrase du corpus. Pour chaque phrase, un mot appelé *focus* est sélectionné au hasard. Puis, on associe à chaque mot focus un mot *contexte* tiré lui aussi au hasard dans une fenêtre autour du mot focus choisi. 
 
+- Nous sélectionnons ensuite la ligne de la matrice en entrée correspondant au mot focus. En multipliant matriciellement cette ligne avec la matrice de sortie, nous obtenons un score (produit scalaire) qui mesure pour chaque mot du vocabulaire la probabilité d'appartenir au contexte du mot focus. Ce score est ensuite transformé en probabilité d'appartenance grâce à la fonction *softmax*. Nous mettons ensuite à jour la fonction de perte (*loss*) qui dépend de ce score. 
 
+- Les matrices d'entrée et de sortie sont mises à jour successivement par descente de gradient $\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta L(\theta^{(t)})$ avec $\theta$ la matrice (entrée ou sortie), $L(\theta)$ la fonction de perte et $\eta$ le taux d'apprentissage (constante).
 
-Nous pouvons résumer l'algorithme en quelques étapes :
-\begin{itemize}
-\item Nous partons de deux matrices de poids : une en entrée et une en sortie. La taille de ces matrices est fixée par le nombre de mots de notre vocabulaire et la dimension des vecteurs que nous désirons en sortie. 
-\item L'agorithme parcourt ensuite chaque phrase du corpus de texte. Pour chaque phrase, un mot focus est sélectionné au hasard. Pour ce mot focus, un mot est alors tiré dans le contexte, c'est-à-dire que l'on selectionne un mot dans une fenêtre autour de notre mot focus. Ce couple sera alors l'objet de notre étude : on sélectionne la ligne de la matrice de poids en entrée correspondant à notre mot en entrée puis calculons un score pour les mots du vocabulaire grâce à la matrice en sortie. Ce score mesure le fait d'être dans le conxte et est transformé en probabilité, nous avons testé deux approches, via une fonction softmax et une fonction sigmoid. La fonction de coût est alors mise à jour en regardant la probabilité du mot contexte sur lequel on travaille, puis les matrices de poids sont mises à jour par descente de gradient.
-\item L'opération est répétée un certain nombre de fois fixé au préalable, on parle de nombre d'\textit{epochs}.
-\end{itemize}
-En sortie, on a ainsi à disposition deux matrices de poids utilisée pour former nos vecteurs. Nous avons décidé d'utiliser la moyenne de ces deux matrices pour créer nos vecteurs finaux.
+- Ces étapes sont répétées pour l'ensemble des couples [focus, contexte]. Puis, l'ensemble de l'opération est répétée un certain nombre d'*epochs* fixé au préalable .
 
+Au fur et à mesure de l'apprentissage, les deux matrices d'entrée et sortie sont actualisées, et de plus en plus pertinentes. À la fin de l'algorithme, nous faisons la moyenne de ces matrices. C'est cette moyenne qui représentera les vecteurs finaux de représentation des mots du corpus.  
 
 ## Implémentation du modèle
 
-Après la compréhension du modèle et afin de nous approprier au maximum ces nouvelles méthodes, nous avons décidé d'implémenter tous les trois individuellement le modèle sur Python en utilisant la librairie Pytorch avant de mettre en commun nos codes. De cette manière, nous avons pu chacun approfondir les points qui nous semblaient les plus flous et arriver à une mouture de modèle qui compile.
+Après s'être approprié le fonctionnement du modèle **word2vec**, nous avons tous les trois implémenté individuellement le modèle sur Python en utilisant la librairie Pytorch. Ce travail individuel a permis à chacun d'approfondir la compréhension du modèle et d'obtenir une version actuelle conforme aux recommandations de l'article de Mikolov.
 
-L'implémentation du modèle s'est déroulée en deux étapes. En effet, nous avons commencé par implémenter une version plus simple du *word2vec* en utilisant une fonction *softmax*. Cela induit de calculer à chaque fois des informations sur tous les mots de notre corpus et donc, algorithmiquement, cette solution n'est pas viable sur les corpus trops gros. Les résultats étaient concluants sur de petites bases donc donc nous sommes passés à une version plus élaborée du modèle et plus optimisée. En effet, il n'est pas nécessaire de mettre à jour à chaque étape de l'algorithme toutes les lignes des matrices de poids, on peut seulement s'intéresser au mot contexte sur lequel on travail. Cependant, en faisant ça on sur-estime l'effet de ce mot, il faut donc également s'intéresser à des mots qui ne sont pas dans le contexte, qu'on appelle *negative sampling* pour lesquels on va chercher à minimiser l'impact dans notre fonction de coût. En partant de la version simplifiée du modèle que nous avons implémenté et en intégrant ces *negative samplings* dans notre fonction de coût, nous avons réussi à implémenter une version quasi-définitive du modèle qui est conforme au papier de Mikolov.
+En première étape, nous avons implémenté une version simplifiée du modèle *word2vec* en utilisant la fonction *softmax* décrite plus haut. Cette méthode est gourmande computationnellement puisqu'elle nécessite d'actualiser à chaque étape l'intégralité des matrices.
 
-## Evaluation du modèle implémenté
+C'est pourquoi nous avons en seconde étape implémenté une version plus élaborée du modèle grâce à la méthode du *negative sampling*. Cette méthode est d'une part moins coûteuse en temps de calcul puisqu'elle permet d'actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte sur lequel on travaille). Elle permet d'autre part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu'elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus, mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de *loss*.  
+ 
+## Évaluation du modèle implémenté
 
+Malgré leurs utilisations presque généralisées, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. C'est pourquoi l'évaluation de l'efficacité de ce modèle ne peut se faire qu'à l'aide de méthodes empiriques. 
 
-Malgré leurs utilisations presque généralisées, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. C'est pourquoi l'évaluation de l'efficacité de ce modèle ne peut se faire qu'à l'aide de méthodes empiriques. Nous avons donc réfléchi aux différentes manières qui s'offraient à nous pour mesurer l'efficacité de notre modèle ainsi implémenté. Avant de s'attaquer à notre jeu de données complet, nous avons effectué une évaluation sur des données fictives.
+Avant de s'attaquer à notre jeu de données complet, nous avons effectué une première évaluation sur un corpus fictif. Ce corpus est composé de dix couples ([grand, petit]), associés à dix mots contexte différents ([taille, géant, ...]). Nous avons ensuite formé un corpus fictif de 10 000 phrases en tirant aléatoirement, pour chaque phrase, un mot d'un couple, cinq mots du contexte et trois mots bruits. 
 
-L'idée est de se dire que si l'on crée un corpus fictif, basé sur dix couples, pour lesquel on maîtrise entièrement le contexte, alors, en construisant des phrases à partir de cela et de mots bruits, nous devrions avoir en sortie des résultats concluants. Nous avons donc créé un corpus à partir de ces règles : nous nous sommes fixés dix couples, pour lequels on a associé dix mots contextes différents et nous avons formé 10 000 phrases de test en tirant aléatoirement, pour chaque phrase, un mot d'un couple, cinq mots du contexte et trois mots bruits. En mélangeant les mots tirés, nous avons ainsi obtenu un corpus fictif sur lequel nous avons pu travailler.
+Nous avons retenu à ce stade trois méthodes pour évaluer les vecteurs obtenus en sortie du modèle : 
 
-Nous avons retenu principalement trois méthodes d'évaluations pour étudier les vecteurs obtenus en sortie du modèle :
-\begin{itemize}
- \item La \textit{similarité cosinus}, qui consiste à calculer le cosinus de l'angle entre deux vecteurs de dimension $n$ et d'utiliser cette mesure comme similarité, ainsi un cosinus de 1 indiquera deux vecteurs identiques, -1 deux vecteurs opposés et 0 deux vecteurs indépendants.
- \item L'\textit{ACP} qui consiste à projeter nos vecteurs sur des axes, appelés composantes principales, en maximisant la variance résiduelle du projeté. 
- \item L'algorithme \textit{T-SNE}, ou \textit{t-distributed Stochastic Neighbor Embedding}, qui permis de compléter et même d'améliorer l'ACP pour les grandes dimensions. Il s'agit d'un algorithme stochastique qui permet l'apparition de clusters de points proches.
-\end{itemize}
+- La *similarité cosinus*, qui consiste à calculer le cosinus de l'angle entre deux vecteurs. Le cosinus vaudra alors 1 pour deux vecteurs identiques, -1 pour deux vecteurs opposés et 0 pour deux vecteurs indépendants.
 
+- Une *analyse en composantes principales* (*ACP*) qui consiste à projeter les vecteurs de mots sur un plus faible nombre d'axes afin de rendre l'information moins redondante et plus visuelle. 
 
-Nous avons donc mis en oeuvre ces trois techniques sur notre corpus fictif et les résultats ont été très concluants. Nous avons bien vu grâce à la similarité cosinus que les vecteurs de nos couples étaient très proches. L'ACP et l'algorithme t-SNE ont aussi permis de repérer les couples et les mots contextes différents.
+- L'algorithme *T-SNE*, ou *t-distributed Stochastic Neighbor Embedding*, une autre technique de réduction de dimension, plus efficace que l'ACP dans le cas d'un nombre important de données. L'algorithme se fonde cette fois-ci sur une interprétation probabiliste des proximités et est non-linéaire. 
 
-![ACP réalisée sur le corpus de données fictives](acp_fictif.png){width=50%}
+Nous avons donc mis en oeuvre ces trois techniques sur notre corpus fictif. Les résultats semblent concluants : la similarité cosinus montre bien une forte corrélation entre les mots focus et contexte du corpus initial et l'ACP et l'algorithme t-SNE permettent également de montrer graphiquement cette proximité (cf. figure \ref{fig:figure_evaluation}).
 
-![t-SNE réalisée sur le corpus de données fictives](TSNE_fictif.png){width=50%}
+\footnotesize
+```{python, eval=FALSE}
+mot_plus_proche("grand", n = 50)
+#[('énorme', 0.9914256427481623),
+# ('taille', 0.9905528713008166),
+# […]
+# ('vanille', 0.06068283530950071),
+# ('salissures', 0.0539210063101789)]
 
-![Mots les plus proches de "grand" dans le corpus de données fictives](cos_fictif.png){width=50%}
-
+```
+\normalsize
 
 # Perspectives 
 
 ## Implémentation et évaluation
 
-Maintenant que nous avons évalué notre modèle sur les données fictives, il nous reste encore quelques étapes à réaliser afin d'avoir un modèle "propre".
+Nous travaillons actuellement à la mise en commun de nos implémentations individuelles du modèle afin d'aboutir à une version finalisée du modèle. Nous devrons ensuite faire tourner notre modèle sur les tweets mis à notre disposition. Cette étape sera également l'occasion d'optimiser les étapes chronophages du code si nécessaire.
 
-Tout d'abord, nous devons finir la mise en commun de nos trois codes afin de ne garder qu'une seule version du modèle que nous devrons ensuite faire tourner sur les données réelles qui sont à notre disposition. Nous allons procéder par étapes, d'abord en faisant tourner le modèle sur 100 000 tweets, puis 1 000 000, puis sur l'ensemble de la base. Une fois que le modèle aura tourné sur l'ensemble des tweets, nous pourrons récupérer nos vecteurs mais nous devrons aussi procéder à l'évaluation du modèle.
-
-En plus de mettre en oeuvre les mêmes techniques que sur le corpus fictif, nous pensons également nous baser sur des résultats issus du *Human Judgment Agreement*. Il s'agit d'une expérience qui a été réalisées auprès de volontaires et qui a permis de mesurer une similarité entre des couples de mots du point de vue humain. L'idée serait alors de comparer les résultats obtenus par cette expériences et les réulstats obtenus par notre modèle.
+Les vecteurs ainsi obtenus à l'issue de l'algorithme nous permettront ensuite de procéder à l'évaluation du modèle sur données réelles. Pour ce faire, en plus d'utiliser les données d'évaluation décrites ci-dessus, nous mobiliserons une base de donnée qui demande à des personnes d'indiquer si selon eux certains couples de mots sont proches ou éloignés (*Human Judgement Agreement*). Il faudra comparer cette similarité subjective aux résultats de notre modèle. Cette comparaison s'effectue grâce au calcul d'une *corrélation de Spearman*.
 
 ## Analyse
  
-Tout le travail d'analyse à partir de la base de données exhaustive des tweets reste à effectuer. Une fois que nous aurons nos vecteurs qui représenteront les mots du corpus, l'idée est de pouvoir les utiliser afin d'en tirer quelque chose. Puisque notre groupe est formé de trois administrateurs de l'Insee, nous voulons essayer d'orienter l'analyse vers la statistique publique. Nous avons donc contacté différentes personnes à l'Insee afin de réfléchir à des applications directes de notre travail. L'Insee a déjà publié il y a quelques temps un article qui permet de prévoir le PIB à partir d'articles du Monde grâce à des méthodes de NLP. Bien sûr, notre base de données étant différente, il ne sera pas possible de réaliser exactement la même étude. Cependant, nous avons en tête différentes pistes :
-\begin{itemize}
-\item Nous pouvons regarder si l’analyse des tweets permet de retrouver des résultats proches de ceux réalisées par les enquêtes Insee (Camme, l’enquête de conjoncture auprès des ménages) ou de toute autre enquête de la statistique publique (comme le Baromètre d’opinion de la DREES) et d’essayer de comprendre les différences. 
-\item Nous pouvons également faire des tests autour des questions de sondages électoraux/participations électorales à l’approche des municipales.
-\item Nous pouvons enfin nous intéresser au taux de chômage et essayer de le prévoir avec les tweets.
-\end{itemize}
+Notre objectif final est d'effectuer un travail d'analyse autour de la comparaison entre les données produites par la statistique publique et ce qu'il est possible d'obtenir grâce aux tweets. Différents échanges avec l'Insee nous amènent à nous diriger vers une de ces différentes problématiques : 
 
-A priori, notre idée est plutôt de rester sur la comparaison avec des enquêtes comme l'enquêtes Camme de l'Insee, mais nous gardons bien en tête les limites liées au fait même d'utiliser des tweets et sur la profondeur temporelle de nos données. En effet, beaucoup d'enquêtes sont trimestrielles et nous ne pourrions alors qu'avoir qu'un faible nombre de points à notre disposition.
+- Les tweets permettent-ils d'obtenir des indicateurs synthétiques d'opinion des ménage proches de ceux produits dans la statistique publique (comme l’enquête de conjoncture Camme auprès des ménages, Insee) ? 
+
+- Est-il possible de prévoir (géographiquement, temporellement) le taux de chômage à partir des tweets ? (\cite{Chomage})
+
+- L'utilisation des tweets peut-elle améliorer la prévision du PIB ? (\cite{Monde})
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{figures.png}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Évaluation du modèle sur données fictives}\label{fig:figure_evaluation}
+\end{figure}
+
+Quelle que soit la problématique choisie à terme, nous tenterons de calculer des indicateurs synthétiques à l'aide de techniques d'analyse de sentiments. Nous devons également garder en tête les différentes limites des données à notre disposition : leur faible profondeur temporelle rendant complexe la prévision de données trimestrielles ou encore leur thématique se rapprochant certainement davantage des questions d'opinions des ménages plutôt que des informations liées aux entreprises. 
+
+
+
+\nocite{*}
+\begin{thebibliography}{999}
+\bibitem[Bortoli, C., Combes, S., Renault, T. (2018)]{Monde} Bortoli, C., Combes, S., Renault, T. (2018). Nowcasting GDP Growth by Reading Newspapers. Economie et Statistique / Economics and Statistics, 505-506, 17–33. \url{https://doi.org/10.24187/ecostat.2018.505d.1964 }.
+\bibitem[Mikolov, T., et al. (2013)]{Mikolov}Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space \url{https://arxiv.org/pdf/1301.3781.pdf}.
+\bibitem[Srivastava, M., Nguyen, T. (2018)]{Chomage}Srivastava, M., Nguyen, T. (2018). “Nowcasting” County Unemployment Using Twitter Data. \url{https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1174/reports/2737035.pdf}.
+\end{thebibliography}
+
+

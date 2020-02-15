@@ -79,9 +79,9 @@ C'est pourquoi nous avons en seconde étape implémenté une version plus élabo
  
 ## Évaluation du modèle implémenté
 
-Malgré leurs utilisations presque généralisées, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. C'est pourquoi l'évaluation de l'efficacité de ce modèle ne peut se faire qu'à l'aide de méthodes empiriques. 
+Malgré l'utilisation généralisée des *word embedding*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes empiriques. 
 
-Avant de s'attaquer à notre jeu de données complet, nous avons effectué une première évaluation sur un corpus fictif. Ce corpus est composé de dix couples ([grand, petit]), associés à dix mots contexte différents ([taille, géant, ...]). Nous avons ensuite formé un corpus fictif de 10 000 phrases en tirant aléatoirement, pour chaque phrase, un mot d'un couple, cinq mots du contexte et trois mots bruits. 
+Avant de nous attaquer au jeu de données complet, nous avons évalué un premier corpus fictif. Nous avons associé dix couples (du type [voiture, camion]), à dix mots contexte différents ([véhicule, moto, ...]). Le corpus fictif est formé de 10 000 phrases composées chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots bruits, tous tirés aléatoirement. 
 
 Nous avons retenu à ce stade trois méthodes pour évaluer les vecteurs obtenus en sortie du modèle : 
 
@@ -109,15 +109,15 @@ mot_plus_proche("grand", n = 50)
 
 ## Implémentation et évaluation
 
-Nous travaillons actuellement à la mise en commun de nos implémentations individuelles du modèle afin d'aboutir à une version finalisée du modèle. Nous devrons ensuite faire tourner notre modèle sur les tweets mis à notre disposition. Cette étape sera également l'occasion d'optimiser les étapes chronophages du code si nécessaire.
+Nous travaillons actuellement à la mise en commun de nos implémentations individuelles afin d'aboutir à une version finalisée du modèle. Nous devrons ensuite faire tourner notre modèle sur les tweets mis à notre disposition. Cette étape sera également l'occasion d'optimiser les étapes chronophages du code si nécessaire.
 
-Les vecteurs ainsi obtenus à l'issue de l'algorithme nous permettront ensuite de procéder à l'évaluation du modèle sur données réelles. Pour ce faire, en plus d'utiliser les données d'évaluation décrites ci-dessus, nous mobiliserons une base de donnée qui demande à des personnes d'indiquer si selon eux certains couples de mots sont proches ou éloignés (*Human Judgement Agreement*). Il faudra comparer cette similarité subjective aux résultats de notre modèle. Cette comparaison s'effectue grâce au calcul d'une *corrélation de Spearman*.
+Les vecteurs obtenus à l'issue de l'algorithme nous permettront ensuite de procéder à l'évaluation du modèle sur données réelles. Pour ce faire, en plus d'utiliser les données d'évaluation décrites ci-dessus, nous mobiliserons une base de données qui demande à des personnes d'indiquer si selon eux certains couples de mots sont proches ou éloignés (*Human Judgement Agreement*). Il faudra comparer cette similarité subjective aux résultats de notre modèle. Cette comparaison s'effectue grâce au calcul d'une *corrélation de Spearman*.
 
 ## Analyse
  
-Notre objectif final est d'effectuer un travail d'analyse autour de la comparaison entre les données produites par la statistique publique et ce qu'il est possible d'obtenir grâce aux tweets. Différents échanges avec l'Insee nous amènent à nous diriger vers une de ces différentes problématiques : 
+Notre objectif final est de comparer des données produites par la statistique publique à ce qu'il est possible d'obtenir grâce aux tweets. Différents échanges avec l'Insee nous amènent à nous diriger vers une de ces différentes problématiques : 
 
-- Les tweets permettent-ils d'obtenir des indicateurs synthétiques d'opinion des ménage proches de ceux produits dans la statistique publique (comme l’enquête de conjoncture Camme auprès des ménages, Insee) ? 
+- Les tweets permettent-ils d'obtenir des indicateurs synthétiques d'opinion des ménages proches de ceux produits dans la statistique publique (comme l’enquête de conjoncture Camme auprès des ménages, Insee) ? 
 
 - Est-il possible de prévoir (géographiquement, temporellement) le taux de chômage à partir des tweets ? (\cite{Chomage})
 
@@ -130,7 +130,7 @@ Notre objectif final est d'effectuer un travail d'analyse autour de la comparais
 \caption{Évaluation du modèle sur données fictives}\label{fig:figure_evaluation}
 \end{figure}
 
-Quelle que soit la problématique choisie à terme, nous tenterons de calculer des indicateurs synthétiques à l'aide de techniques d'analyse de sentiments. Nous devons également garder en tête les différentes limites des données à notre disposition : leur faible profondeur temporelle rendant complexe la prévision de données trimestrielles ou encore leur thématique se rapprochant certainement davantage des questions d'opinions des ménages plutôt que des informations liées aux entreprises qui sont habituellement utilisées dans les prévisions macroéconomiques. 
+Quelle que soit la problématique choisie à terme, nous tenterons de calculer des indicateurs synthétiques à l'aide de techniques d'analyse de sentiments. Nous devons également garder en tête les différentes limites des données à notre disposition : leur faible profondeur temporelle rendant complexe la prévision de données trimestrielles ou encore leur thématique se rapprochant certainement davantage des questions d'opinions des ménages plutôt que des informations liées aux entreprises (habituellement utilisées dans les prévisions macroéconomiques). 
 
 
 

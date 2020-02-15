@@ -43,7 +43,7 @@ library(reticulate)
 
 # Contexte
 
-Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenu une discipline à part entière (*Natural Language Processing*). Ce succès s'explique en partie grâce à l'émergence de techniques non supervisée d'apprentissage de représentation de structures linguistiques. Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissant dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches. Les modèles **word2vec**, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet. 
+Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenu une discipline à part entière (*Natural Language Processing*). Ce succès s'explique en partie grâce à l'émergence de techniques non supervisées d'apprentissage de représentation de structures linguistiques. Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissant dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches. Les modèles **word2vec**, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet. 
 
 # Objectif du projet 
 
@@ -71,11 +71,11 @@ Au fur et à mesure de l'apprentissage, les deux matrices d'entrée et sortie so
 
 ## Implémentation du modèle
 
-Après s'être approprié le fonctionnement du modèle **word2vec**, nous avons tous les trois implémenté individuellement le modèle sur Python en utilisant la librairie Pytorch. Ce travail individuel a permis à chacun d'approfondir la compréhension du modèle et d'obtenir une version actuelle conforme aux recommandations de l'article de Mikolov.
+Après nous être appropriés le fonctionnement du modèle **word2vec**, nous avons tous les trois implémenté individuellement le modèle sur Python en utilisant la librairie Pytorch. Ce travail individuel a permis à chacun d'approfondir la compréhension du modèle et d'obtenir une version actuelle conforme aux recommandations de l'article de Mikolov.
 
 En première étape, nous avons implémenté une version simplifiée du modèle *word2vec* en utilisant la fonction *softmax* décrite plus haut. Cette méthode est gourmande computationnellement puisqu'elle nécessite d'actualiser à chaque étape l'intégralité des matrices.
 
-C'est pourquoi nous avons en seconde étape implémenté une version plus élaborée du modèle grâce à la méthode du *negative sampling*. Cette méthode est d'une part moins coûteuse en temps de calcul puisqu'elle permet d'actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte sur lequel on travaille). Elle permet d'autre part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu'elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus, mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de *loss*.  
+C'est pourquoi nous avons en seconde étape implémenté une version plus élaborée du modèle grâce à la méthode du *negative sampling*. Cette méthode est d'une part moins coûteuse en temps de calcul puisqu'elle permet d'actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les *negatives samples* sur lesquels on travaille). Elle permet d'autre part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu'elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus, mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de *loss*.  
  
 ## Évaluation du modèle implémenté
 

@@ -71,12 +71,12 @@ Au fur et à mesure de l'apprentissage, les deux matrices d'entrée et sortie so
 
 ## Implémentation du modèle
 
-Après nous être appropriés le fonctionnement du modèle **word2vec**, nous avons tous les trois implémenté individuellement le modèle sur Python en utilisant la librairie Pytorch. Ce travail individuel a permis à chacun d'approfondir la compréhension du modèle et d'obtenir une version actuelle conforme aux recommandations de l'article de Mikolov.
+Après nous être approprié le fonctionnement du modèle **word2vec**, nous avons tous les trois implémenté individuellement le modèle sur Python en utilisant la librairie Pytorch. Ce travail individuel a permis à chacun d'approfondir la compréhension du modèle et d'obtenir une version actuelle conforme aux recommandations de l'article de Mikolov.
 
 En première étape, nous avons implémenté une version simplifiée du modèle *word2vec* en utilisant la fonction *softmax* décrite plus haut. Cette méthode est gourmande computationnellement puisqu'elle nécessite d'actualiser à chaque étape l'intégralité des matrices.
 
-C'est pourquoi nous avons en seconde étape implémenté une version plus élaborée du modèle grâce à la méthode du *negative sampling*. Cette méthode est d'une part moins coûteuse en temps de calcul puisqu'elle permet d'actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les *negatives samples* sur lesquels on travaille). Elle permet d'autre part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu'elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus, mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de *loss*.  
- 
+C'est pourquoi nous avons en seconde étape implémenté une version plus élaborée du modèle grâce à la méthode du *negative sampling*. Cette méthode permet d'une part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu'elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus (*negatives samples*), mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de *loss*. Elle est d'autre part moins coûteuse en temps de calcul puisqu'elle permet d'actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les *negatives samples*).
+
 ## Évaluation du modèle implémenté
 
 Malgré l'utilisation généralisée des *word embedding*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes empiriques. 

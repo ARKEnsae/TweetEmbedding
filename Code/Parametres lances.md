@@ -6,4 +6,12 @@ sample = 0.001
 window = 2  
 K = 5  
 
-2. 
+Corr = 0.544
+
+2. dim = 20
+learning_rate = 0.01
+sample = 0.001
+window = 3
+K = 5
+
+Corr = 0.363

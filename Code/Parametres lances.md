@@ -14,7 +14,7 @@ sample = 0.001
 window = 3  
 K = 5  
 
-  **Corr = **
+  **Corr = 0.374**
   
 ## Alain
 1. dim = 50  

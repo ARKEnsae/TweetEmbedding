@@ -3,7 +3,7 @@
 1. dim = 20  
 learning_rate = 0.01  
 sample = 0.001  
-window = 2  
+*window = 2*
 K = 5  
 
   **Corr = 0.137**
@@ -11,7 +11,7 @@ K = 5
 2. dim = 20  
 learning_rate = 0.01  
 sample = 0.001  
-window = 3  
+*window = 3*  
 K = 5  
 
   **Corr = 0.374**
@@ -19,7 +19,7 @@ K = 5
 3. dim = 20  
 learning_rate = 0.01  
 sample = 0.001  
-window = 4  
+*window = 4*  
 K = 5  
 
   **Corr = 0.148**  

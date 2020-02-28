@@ -28,4 +28,41 @@ sample = 0.001
   
 ## 2. Variation du learning_rate, window fixé (=3)
 
+dim = 20  
+K = 5  
+sample = 0.001
 
+*window = 3*
+
+8. learning_rate = 0.005  
+
+  **Corr = ?**
+  
+  Évolution sur 10 epochs :   
+  
+9. learning_rate = 0.002  
+
+  **Corr = 0.676**
+  
+  Évolution sur 10 epochs : '0.187', '0.379', '0.434', '0.478', '0.544', '0.505', '0.533', '0.527', '0.654', '0.676'
+
+10. learning_rate = 0.003  
+
+  **Corr = 0.363**
+  
+  Évolution sur 10 epochs : '0.132', '0.115', '0.170', '0.137', '0.137', '-0.005', '0.110', '0.231', '0.363', '0.363'
+  
+ 11. learning_rate = 0.004  
+
+  **Corr = ?**
+  
+  Évolution sur 10 epochs :
+  
+   
+ 12. learning_rate = 0.005  
+
+  **Corr = ?**
+  
+  Évolution sur 10 epochs :
+  
+  

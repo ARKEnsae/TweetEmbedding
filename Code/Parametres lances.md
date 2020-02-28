@@ -54,9 +54,9 @@ sample = 0.001
   
  11. learning_rate = 0.004  
 
-  **Corr = ?**
+  **Corr = 0.038**
   
-  Évolution sur 10 epochs :
+  Évolution sur 10 epochs : '-0.044', '-0.071', '-0.132', '-0.071', '0.038', '0.088', '-0.104', '-0.099', '-0.044', '0.038'
   
    
  12. learning_rate = 0.005  

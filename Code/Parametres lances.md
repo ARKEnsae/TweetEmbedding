@@ -22,9 +22,9 @@ sample = 0.001
   
 3. window = 4  
 
-  **Corr = ?**
+  **Corr = -0.275**
   
-  Évolution sur 10 epochs : ?
+  Évolution sur 10 epochs : '-0.440', '-0.374', '-0.352', '-0.264', '-0.291', '-0.297', '-0.280', '-0.275', '-0.286', '-0.275'
   
 ## 2. Variation du learning_rate, window fixé (=3)
 

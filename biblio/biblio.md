@@ -21,3 +21,6 @@ https://aegis4048.github.io/optimize_computational_efficiency_of_skip-gram_with_
 
 # Softmax vs sigmoid
 https://dejanbatanjac.github.io/2019/07/04/softmax-vs-sigmoid.html (Alain)
+
+# Parallélisation python 
+https://joblib.readthedocs.io/en/latest/parallel.html (Alain)

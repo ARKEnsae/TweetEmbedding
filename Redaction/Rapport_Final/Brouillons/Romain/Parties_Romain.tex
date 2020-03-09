@@ -91,8 +91,8 @@ utiliser pour mesurer la proximité entre deux vecteurs, parmi elles :
 
 \begin{itemize}
 \item la distance euclidienne $ d(\vec{u},\vec{v}) = \left\| \vec{u} - \vec{v}  \right\|_2$ ;
-\item la distance de Manhattan $ d(\vec{u},\vec{v}) = |x_{\vec{u}} - x_{\vec{v}} | + |y_{\vec{u}} - y_{\vec{v}} |$;
-\item la similarité cosinus $ d(\vec{u}, \vec{v}) = \frac{\vec{u}.\vec{v}}{\left\| \vec{u} \right\|_2  \left\| \vec{v} \right\|_2 }$.
+\item la distance de Manhattan $ d(\vec{u},\vec{v}) = |x_{\vec{u}} - x_{\vec{v}} | + |y_{\vec{u}} - y_{\vec{v}} |$ ;
+\item la similarité cosinus $ d(\vec{u}, \vec{v}) = \frac{\vec{u}.\vec{v}}{\left\| \vec{u} \right\|_2  \left\| \vec{v} \right\|_2 }$ .
 \end{itemize}
 
 Chacune de ces distances possèdent des propriétés intéressantes mais
@@ -120,18 +120,50 @@ les mots qui semblent proches. Pour parer à cela, nous pouvons alors
 utiliser une analyse en composantes principales. L'objectif premier de
 cette analyse est d'arriver à projeter un nuage de points sur un espace
 de dimension inférieure, tout en étant le plus proche de la réalité.
-D'un point de vue plus mathématique, on peut également voir l'ACP comme
-l'approximation d'une matrice (n, p) par une matrice de même dimensions
-mais de rang q \textless{} p.
 
-La construction des axes de l'ACP est définie de manière séquentielle :
-on commence par déterminer le premier axe factoriel, sur lequel le nuage
-de points se déforme le moins possible, puis on cherche alors un
-deuxième axe orthogonal au premier tel que le nuage de points se déforme
-le moins possible après projection. On réitère cela jusqu'à obtention du
-nombre d'axes souhaités.
+Considérons le cas où nous disposons de \(n\) individus et de \(p\)
+variables. On note \(X = (x_{ij})\) la matrice de taille \((n,p)\) des
+données brutes, où \(x_{ij}\) représente la valeur de la \(j\)-ème
+variable pour le \(i\)-ème individu. On munit notre espace de la
+distance euclienne, on peut alors mesurer la distance entre deux
+individus \(x_i\) et \(x_{i'}\) en utilisant :
+\[d(x_i,x_{i'}) = \sum \limits_{j=1}^p (x_{ij} - x_{i'j})^2 \]
 
-\textbf{A CONTINUER AVEC FORMULES ETC.}
+On peut commencer par remarquer que si l'on centre et/ou réduit notre
+matrice de données, la distance en deux éléments restera inchangée mais
+que cela permet de donner le même poids à tous les individus. On notera
+dans la suite \(Y = (y_{ij})\) la matrice des données centrées et
+\(Z = (z_{ij})\) celle des données centrées et réduites.
+
+La dispersion du nuage de points se mesure grâce à l'inertie, que l'on
+définit comme
+\(I(X) = \frac{1}{n} \sum \limits_{i = 1}^n d^2(x_i,\bar{x})\). C'est
+une génération de la notion de variance dans le cadre multivarié et
+c'est cette quantité que l'ACP cherche à représenter au mieux sur les
+axes factoriels.
+
+Considérons désormais la métrique
+\(N = diag(\frac{1}{n},...,\frac{1}{n})\), on peut alors définir le
+produit scalaire \(<x,y> = x\,^t N y\). En notant \(x^j\) la vecteur
+pour la \(j\)-ème variable, on a \(var(x^j) = \left\| y^j \right\|^2\)
+et de même \(var(z^j) = \left\| z^j \right\|^2\).
+
+Pour trouver les axes de l'ACP, on va désormais procéder par projection
+orthogonale. Rappelons que les coordonnées de projection des \(n\)
+individus sur une droite de vecteur directeur \(v_\alpha\) est
+\(f^\alpha = Zv_\alpha\). Nous allons donc chercher un vecteur \(v_1\)
+vecteur directeur du premier axe tel que
+\[v_1 =\underset{ \left\| v  \right\| = 1}{\mathrm{argmin}} Var(Zv) =\underset{ \left\| v  \right\| = 1}{\mathrm{argmin}} v\,^t R v \]
+où \(R = \frac{1}{n} Z\,^t Z\) est la matrice des corrélations entre les
+p variables. On peut alors montrer que \(v_1\) est un vecteur propre
+associé à la première valeur propre \(\lambda_1\) de \(R\). Il reste à
+trouver \(v_2\) orthogonal à \(v_1\) tel quel l'intertie soit maximisée
+:
+\[v_2 =\underset{ \left\| v  \right\| = 1, v \perp v_1}{\mathrm{argmin}} Var(Zv) \]
+On obtient alors que \(v_2\) est un vecteur propre associé à la deuxième
+valeur propre \(\lambda_2\) de \(R\) et, en procédant de manière
+séquentielle, on obtient \(q < r\) axes orthogonaux sur lesquels on
+effectue notre projection, où \(r\) est le rang de la matrice \(Z\).
 
 \subsubsection{Algorithme t-distributed Stochastic Neighbor
 Embedding}\label{algorithme-t-distributed-stochastic-neighbor-embedding}

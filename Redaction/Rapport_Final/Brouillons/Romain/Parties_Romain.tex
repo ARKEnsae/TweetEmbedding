@@ -83,8 +83,8 @@ implémenté}\label{uxe9valuation-du-moduxe8le-impluxe9mentuxe9}
 Afin de pouvoir évaluer le modèle, nous devons fixer un certain nombre
 critères sur lesquels s'appuyer. L'un des enjeux principaux est de
 pouvoir estimer la proximité entre deux mots. En effet, le modèle doit
-capter grâce dans les vecteurs ces notions de proximité entre mots. Il
-faut donc se fixer une distance afin de mesurer ce phénomène.
+capter grâce aux vecteurs ces notions de proximité entre mots. Il faut
+donc se fixer une distance afin de mesurer ce phénomène.
 
 Il existe différents types de distances que nous pouvons classiquement
 utiliser pour mesurer la proximité entre deux vecteurs, parmi elles :
@@ -216,5 +216,23 @@ les résultats de l'algorithme t-SNE, qu'il faut cependant analyser avec
 précaution : il ne s'agît pas d'un algorithme linéaire équivalent à
 l'ACP, on ne peut donc pas interpréter directement des éléments tels que
 la taille des clusters obtenus ou leur distance relative.
+
+\section{Pourquoi on utilise la cosinus distance et pas la distance
+euclienne}\label{pourquoi-on-utilise-la-cosinus-distance-et-pas-la-distance-euclienne}
+
+\url{https://www.quora.com/Why-do-we-use-cosine-similarity-on-Word2Vec-instead-of-Euclidean-distance}
+Cosine distance + robuste ?
+
+Measuring Word Significance using Distributed Representations of Words :
+\url{https://arxiv.org/pdf/1508.02297v1.pdf}
+
+\begin{itemize}
+\item La magnitude/longueur du vecteur est liée à la fréquence d'apparition des mots donc attention à l'usage de la distance euclidienne.
+\item During training, words that appear in similar contexts are grouped together in the **same direction** by this unsupervised learning algorithm. 
+The distributed representation thus ultimately captures semantic similarities between words. 
+This has been impressively demonstrated by a series of experiments in the original word2vec papers, where semantic similarity was measured by the dot product between normalized vectors.
+\end{itemize}
+
+\url{https://arxiv.org/pdf/1512.00765.pdf}
 
 \end{document}

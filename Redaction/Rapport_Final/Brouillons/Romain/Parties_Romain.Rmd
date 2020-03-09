@@ -49,7 +49,7 @@ library(reticulate)
 
 Afin de pouvoir évaluer le modèle, nous devons fixer un certain nombre critères sur lesquels s'appuyer. 
 L'un des enjeux principaux est de pouvoir estimer la proximité entre deux mots. 
-En effet, le modèle doit capter grâce dans les vecteurs ces notions de proximité entre mots. 
+En effet, le modèle doit capter grâce aux vecteurs ces notions de proximité entre mots. 
 Il faut donc se fixer une distance afin de mesurer ce phénomène.
 
 Il existe différents types de distances que nous pouvons classiquement utiliser pour mesurer la proximité entre deux vecteurs, parmi elles :
@@ -120,3 +120,20 @@ $$KL(P,Q) = \sum_{i \neq j} { p_{ij} \log{\frac{p_{ij}}{q_{ij}}}}$$
 Avec $$p_{ij} = \frac{p_{i|j} + p_{j|i}}{2n}$$ où $n$ est le nombre de vecteurs.
 
 Ensuite, on minimise grâce à une descente de gradient. On obtient alors les résultats de l'algorithme t-SNE, qu'il faut cependant analyser avec précaution : il ne s’agît pas d’un algorithme linéaire équivalent à l'ACP, on ne peut donc pas interpréter directement des éléments tels que la taille des clusters obtenus ou leur distance relative.
+
+
+# Pourquoi on utilise la cosinus distance et pas la distance euclienne
+
+https://www.quora.com/Why-do-we-use-cosine-similarity-on-Word2Vec-instead-of-Euclidean-distance
+Cosine distance + robuste ?
+
+
+Measuring Word Significance using Distributed Representations of Words : https://arxiv.org/pdf/1508.02297v1.pdf
+\begin{itemize}
+\item La magnitude/longueur du vecteur est liée à la fréquence d'apparition des mots donc attention à l'usage de la distance euclidienne.
+\item During training, words that appear in similar contexts are grouped together in the **same direction** by this unsupervised learning algorithm. 
+The distributed representation thus ultimately captures semantic similarities between words. 
+This has been impressively demonstrated by a series of experiments in the original word2vec papers, where semantic similarity was measured by the dot product between normalized vectors.
+\end{itemize}
+
+https://arxiv.org/pdf/1512.00765.pdf

@@ -1,0 +1,3 @@
+cd "C:\Users\Kim Antunez\Documents\Projets_autres\StatApp\Code"
+jupyter nbconvert --to script MODELE_100K.ipynb
+jupyter nbconvert --to script *.ipynb

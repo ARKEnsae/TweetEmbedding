@@ -1,6 +1,8 @@
-# 1. 100 k tweets
+# 1. Modèle AKR
 
-## 1. Variation de la window, learning_rate fixé (=0.01)
+## 1. 100 k tweets
+
+### 1. Variation de la window, learning_rate fixé (=0.01)
 dim = 20  
 K = 5  
 sample = 0.001
@@ -84,7 +86,7 @@ Distance euclidienne :
 | Seed 15 |    -0.593 |    -0.637 |    -0.687 |    -0.676 |    -0.681 |    -0.626 |    -0.621 |    -0.604 |    -0.626 |     -0.654 |
 | Seed 20 |    -0.549 |    -0.549 |    -0.549 |    -0.56  |    -0.599 |    -0.599 |    -0.626 |    -0.588 |    -0.544 |     -0.533 |
 
-## 2. Variation du learning_rate, window fixé (=3)
+### 2. Variation du learning_rate, window fixé (=3)
 
 dim = 20  
 K = 5  
@@ -186,3 +188,205 @@ Distance euclidienne :
 | Seed 10 |    -0.203 |    -0.357 |    -0.385 |    -0.379 |    -0.401 |    -0.429 |    -0.429 |    -0.467 |    -0.44  |     -0.44  |
 | Seed 15 |    -0.621 |    -0.593 |    -0.626 |    -0.604 |    -0.593 |    -0.593 |    -0.56  |    -0.527 |    -0.5   |     -0.505 |
 | Seed 20 |    -0.549 |    -0.549 |    -0.599 |    -0.511 |    -0.5   |    -0.5   |    -0.5   |    -0.5   |    -0.505 |     -0.505 |
+
+
+# 2. Modèle Google
+
+## 1. 100 k tweets
+
+Evaluation de cette partie effectuée par *Kim*
+dim = 20  
+K = 5  
+sample = ?
+
+### 1. Epoch = 10
+
+Bilan 
+
+- simul 1 : window = 3, learning_rate = 0.01 (moy_cos = -0.45) (moy_eucl = -0.28)
+- simul 2 : window = 4, learning_rate = 0.01 (moy_cos = -0.34) (moy_eucl = -0.29)
+- simul 3 : window = 5, learning_rate = 0.01 (moy_cos = -0.45) (moy_eucl = -0.23)
+- simul 4 : window = 3, learning_rate = 0.02 (moy_cos = -0.11) (moy_eucl = -0.23)
+- simul 5 : window = 4, learning_rate = 0.02 (moy_cos = -0.22) (moy_eucl = -0.23)
+- simul 6: window = 5, learning_rate = 0.02 (moy_cos = -0.22) (moy_eucl = -0.19)
+
+Cosinus 
+![Cosinus](img/gensim_10epoch_cos.png)
+
+Euclidienne 
+![Euclidienne](img/gensim_10epoch_cos.png)
+
+1. window = 3  lr = 0.01
+
+numero_simulation = 1
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.511 |
+| Seed 5  |    -0.451 |
+| Seed 10 |    -0.511 |
+| Seed 15 |    -0.346 |
+| Seed 20 |    -0.456 |
+| Seed 25 |    -0.357 |
+
+Distance euclidienne :
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.319 |
+| Seed 5  |    -0.236 |
+| Seed 10 |    -0.28  |
+| Seed 15 |    -0.269 |
+| Seed 20 |    -0.319 |
+| Seed 25 |    -0.275 |
+
+2. window = 4  lr = 0.01
+
+numero_simulation = 2
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.165 |
+| Seed 5  |    -0.604 |
+| Seed 10 |    -0.242 |
+| Seed 15 |    -0.456 |
+| Seed 20 |    -0.258 |
+| Seed 25 |    -0.313 |
+
+Distance euclidienne :
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.313 |
+| Seed 5  |    -0.253 |
+| Seed 10 |    -0.264 |
+| Seed 15 |    -0.319 |
+| Seed 20 |    -0.335 |
+| Seed 25 |    -0.308 |
+
+3. window = 5  lr = 0.01
+
+numero_simulation = 3
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.423 |
+| Seed 5  |    -0.604 |
+| Seed 10 |    -0.473 |
+| Seed 15 |    -0.319 |
+| Seed 20 |    -0.451 |
+| Seed 25 |    -0.33  |
+
+Distance euclidienne :
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.302 |
+| Seed 5  |    -0.231 |
+| Seed 10 |    -0.187 |
+| Seed 15 |    -0.242 |
+| Seed 20 |    -0.209 |
+| Seed 25 |    -0.275 |
+
+### 2. Variation de la window, learning_rate fixé (=0.02)
+
+4. window = 3    lr = 0.02
+
+numero_simulation = 4
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.148 |
+| Seed 5  |    -0.17  |
+| Seed 10 |    -0.198 |
+| Seed 15 |    -0.093 |
+| Seed 20 |     0.033 |
+| Seed 25 |    -0.022 |
+
+Distance euclidienne :
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.148 |
+| Seed 5  |    -0.203 |
+| Seed 10 |    -0.203 |
+| Seed 15 |    -0.341 |
+| Seed 20 |    -0.264 |
+| Seed 25 |    -0.203 |
+
+
+5. window = 4    lr = 0.02
+
+numero_simulation = 5
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.181 |
+| Seed 5  |    -0.363 |
+| Seed 10 |    -0.28  |
+| Seed 15 |    -0.082 |
+| Seed 20 |    -0.203 |
+| Seed 25 |    -0.22  |
+
+Distance euclidienne :
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.324 |
+| Seed 5  |    -0.192 |
+| Seed 10 |    -0.126 |
+| Seed 15 |    -0.258 |
+| Seed 20 |    -0.297 |
+| Seed 25 |    -0.242 |
+ 
+6. window = 5    lr = 0.02
+
+numero_simulation = 6
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.242 |
+| Seed 5  |    -0.324 |
+| Seed 10 |    -0.082 |
+| Seed 15 |    -0.346 |
+| Seed 20 |    -0.121 |
+| Seed 25 |    -0.077 |
+
+Distance euclidienne :
+
+|         |   Epoch10 |
+|:--------|----------:|
+| Seed 1  |    -0.269 |
+| Seed 5  |    -0.258 |
+| Seed 10 |    -0.143 |
+| Seed 15 |    -0.11  |
+| Seed 20 |    -0.187 |
+| Seed 25 |    -0.22  |
+
+### 2. Epoch = 100
+
+TODO : copier coller les différents tableaux
+
+
+### 3. Bilan
+
+- simul 1 : epoch = 10, window = 3, learning_rate = 0.01 (moy_cos = -0.45) (moy_eucl = -0.28)
+- simul 2 : epoch = 10, window = 4, learning_rate = 0.01 (moy_cos = -0.34) (moy_eucl = -0.29)
+- simul 3 : epoch = 10, window = 5, learning_rate = 0.01 (moy_cos = -0.45) (moy_eucl = -0.23)
+- simul 4 : epoch = 10, window = 3, learning_rate = 0.02 (moy_cos = -0.11) (moy_eucl = -0.23)
+- simul 5 : epoch = 10, window = 4, learning_rate = 0.02 (moy_cos = -0.22) (moy_eucl = -0.23)
+- simul 6: epoch = 10, window = 5, learning_rate = 0.02 (moy_cos = -0.22) (moy_eucl = -0.19)
+
+- simul 7 : epoch = 100, window = 3, learning_rate = 0.01 (moy_cos = 0.29) (moy_eucl = -0.37)
+- simul 8 : epoch = 100, window = 4, learning_rate = 0.01 (moy_cos = 0.37) (moy_eucl = -0.36)
+- simul 9 : epoch = 100, window = 5, learning_rate = 0.01 (moy_cos = 0.26) (moy_eucl = -0.37)
+- simul 10 : epoch = 100, window = 3, learning_rate = 0.02 (moy_cos = 0.37) (moy_eucl = -0.39)
+- simul 11 : epoch = 100, window = 4, learning_rate = 0.02 (moy_cos = 0.48) (moy_eucl = -0.33)
+- simul 12: epoch = 100, window = 5, learning_rate = 0.02 (moy_cos = 0.44) (moy_eucl = -0.30)
+
+Cosinus 
+![Cosinus](img/gensim_cos.png)
+
+Euclidienne 
+![Euclidienne](img/gensim_eucl.png)
+

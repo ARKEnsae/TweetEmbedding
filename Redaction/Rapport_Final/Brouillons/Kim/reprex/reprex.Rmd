@@ -1,0 +1,13 @@
+---
+title: "titre"
+author: "antuki"
+output: pdf_document
+---
+
+```{r, warning=FALSE, echo=FALSE}
+library(reticulate)
+```
+
+```{python, echo=FALSE}
+import rpy2.robjects as rr
+```

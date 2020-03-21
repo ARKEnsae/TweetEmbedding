@@ -9,5 +9,10 @@ library(reticulate)
 ```
 
 ```{python, echo=FALSE}
-import rpy2.robjects as rr
+x = 0
+y = 10
+for ii in [1,2,3,4,5,6,7]:
+    x += 1
+     y -= 1
+x, y
 ```

@@ -243,7 +243,7 @@ vec_neg_sampling
 # # Extraction des echantillons
 # 
 
-# In[ ]:
+# In[20]:
 
 
 temps_par_window = []
@@ -251,7 +251,7 @@ K = 5
 epochs = 10
 
 start = time.time()
-for window in [4, 5]:
+for window in [5, 6]:
     random.seed(1)
     np.random.seed(1)
     print("window ", window)
@@ -272,6 +272,20 @@ for window in [4, 5]:
     print(round((end_window - start_window)/60, 2))
 end = time.time()
 print(round((end - start)/60, 2))
+
+
+# In[16]:
+
+
+with open("data/%s/window_%ibis/epoch_%i.file" %(nom_dossier, 3, 0), "rb") as f:
+    test_sample2 = pickle.load(f) 
+test_sample2
+
+
+# In[19]:
+
+
+test_sample 
 
 
 # In[36]:

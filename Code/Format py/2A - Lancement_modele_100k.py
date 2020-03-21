@@ -3,7 +3,7 @@
 
 # # Importation des données
 
-# In[2]:
+# In[1]:
 
 
 import os
@@ -36,16 +36,16 @@ import torch.autograd as autograd
 import pickle
 
 #os.chdir('C:/Users/torna/Documents/StatApp/StatApp')
-#os.chdir('/Users/alainquartierlatente/Desktop/Ensae/StatApp')
+os.chdir('/Users/alainquartierlatente/Desktop/Ensae/StatApp')
 #os.chdir('/home/aqlt/Documents/Ensae/StatApp')
-os.chdir('C:/Users/Kim Antunez/Documents/Projets_autres/StatApp')
+#os.chdir('C:/Users/Kim Antunez/Documents/Projets_autres/StatApp')
 nom_dossier = "100k"
 #nom_dossier = "ens" #ou
 
 
 # On ne garde ici que les 100 000 premiers tweets
 
-# In[3]:
+# In[2]:
 
 
 # Penser à changer selon taille
@@ -53,7 +53,7 @@ with open("data/%s/vocabulary.file" %nom_dossier, "rb") as f:
     taille_vocab = len(pickle.load(f))
 
 
-# In[4]:
+# In[3]:
 
 
 # Fonction pour mettre à jour le graphique en direct
@@ -70,7 +70,7 @@ def live_plot(data, figsize=(7,5), title=''):
 # # Lancement du modèle
 # Paramètres fixés : la dimension, le nombre de mots tirés dans le *negative sampling* et la proba utilisé, l'affichage du graphique
 
-# In[5]:
+# In[9]:
 
 
 if nom_dossier == "ens":
@@ -83,17 +83,15 @@ epoch = 10
 
 # Paramètres à modifier :
 
-# In[8]:
+# In[13]:
 
 
-#Kim
-learning_rate = 0.01
-window = 5
-numero_simulation = 4
-seeds = [1, 5, 10, 15, 20, 25]
+learning_rate = 0.02
+window = 4
+numero_simulation = 13
 
 
-# In[9]:
+# In[ ]:
 
 
 seed = 1

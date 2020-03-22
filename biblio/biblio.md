@@ -24,3 +24,13 @@ https://dejanbatanjac.github.io/2019/07/04/softmax-vs-sigmoid.html (Alain)
 
 # Parallélisation python 
 https://joblib.readthedocs.io/en/latest/parallel.html (Alain)
+
+# Window
+A paper by Levy & Goldberg, "Dependency-Based Word Embeddings", speaks a bit about the qualitative effect of window-size:
+
+https://levyomer.files.wordpress.com/2014/04/dependency-based-word-embeddings-acl-2014.pdf
+
+They find:
+
+Larger windows tend to capture more topic/domain information: what other words (of any type) are used in related discussions? Smaller windows tend to capture more about word itself: what other words are functionally similar? (Their own extension, the dependency-based embeddings, seems best at finding most-similar words, synonyms or obvious-alternatives that could drop-in as replacements of the origin word.)
+

@@ -365,6 +365,7 @@ def intervalles_confiance (resultats_hji, distance = "cos"):
 
 ################# Graphiques
 
+
 res_ens = tableau_corr_hji(learning_rate = [0.01,0.02],
                        window = [3,4,5], dim = 50, index="seed",
                        distance = "cos", epoch=[10,100])[0]
@@ -382,3 +383,15 @@ res_ens_dim20_50 = tableau_corr_hji(learning_rate = [0.01,0.02],
 res_ens_eucl = tableau_corr_hji(learning_rate = [0.01,0.02],
                        window = [3,4,5], dim = 50, index="seed",
                        distance = "eucl", epoch=[10,100])[0]
+
+res_lr = tableau_corr_hji(learning_rate = [0.005,0.01,0.02,0.03,0.04],
+                       window = [4], dim = [50], index="seed",
+                       distance = "cos", epoch=[100])[0]
+
+res_w = tableau_corr_hji(learning_rate = [0.02],
+                       window = [2,3,4,5,6,7], dim = [50], index="seed",
+                       distance = "cos", epoch=[100])[0]
+
+res_dim = tableau_corr_hji(learning_rate = [0.02],
+                       window = [4], dim = [20,50,100,300,500], index="seed",
+                       distance = "cos", epoch=[100])[0]

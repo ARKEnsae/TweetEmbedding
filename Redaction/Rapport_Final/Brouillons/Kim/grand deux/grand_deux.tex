@@ -1,0 +1,392 @@
+\documentclass[11pt,french,french]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=0.95in]{geometry}
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{}
+\else
+  \usepackage[shorthands=off,french]{babel}
+\fi
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+
+  \title{Analyse statistique et empirique des modèles\\
+de Word Embedding sur Twitter}
+    \author{Kim Antunez, Romain Lesauvage, Alain Quartier-la-Tente\\
+sous l'encadrement de Benjamin Muller (Inria)}
+    \date{}
+  
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{natbib}
+
+\begin{document}
+
+\maketitle
+
+
+\hypertarget{uxe9valuation-du-moduxe8le-impluxe9mentuxe9}{%
+\section{Évaluation du modèle
+implémenté}\label{uxe9valuation-du-moduxe8le-impluxe9mentuxe9}}
+
+\hypertarget{comment-uxe9valuer-le-moduxe8le}{%
+\subsection{Comment évaluer le modèle
+?}\label{comment-uxe9valuer-le-moduxe8le}}
+
+\label{sec:comment_evaluer}
+
+Malgré l'utilisation généralisée des \emph{word embedding}, très peu de
+travaux théoriques expliquent ce qui est réellement capturé par ces
+représentations de mots.
+
+C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes
+empiriques. Nous allons décrire dans cette partie
+\ref{sec:comment_evaluer} quelques méthodes que nous avons retenues pour
+évaluer la qualité des vecteurs-mots obtenus.
+
+\hypertarget{distance-entre-deux-mots}{%
+\subsubsection{Distance entre deux
+mots}\label{distance-entre-deux-mots}}
+
+L'un des enjeux principaux du modèle étant de pouvoir estimer la
+proximité entre deux vecteurs-mots, nous pouvons tout d'abord mesurer
+cette dernière par des calculs de distance.
+
+Il existe différents types de distances. Chacune d'elles possède des
+propriétés intéressantes et s'adaptent plus ou moins bien au problème
+traité. Nous avons ici retenu deux distances classiquement utilisées :
+
+\begin{itemize}
+\item \textbf{la distance euclidienne} $ d_{e}(\vec{u},\vec{v}) = \left\| \vec{u} - \vec{v}  \right\|_2$
+
+La longueur du vecteur mot, captée dans le cas de la distance euclidienne, est positivement corrélée à la fréquence d'apparition du mot (\cite{Schakel}). Cette information peut s'avérer utile dans l'analyse de la signification des mots, notamment lorsque l'on effectue des opérations sur les vecteurs (comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov})
+
+Toutefois, cette dépendance à la fréquence d'apparition peut également fausser l'analyse. C'est pourquoi nous avons choisi, par la suite, de normaliser les vecteurs. 
+
+$ d_{e}(\vec{u},\vec{v}) = \left\| \frac{\vec{u}}{\left\| \vec{u} \right\|_2} - \frac{\vec{v}}{\left\| \vec{v} \right\|_2}  \right\|_2$
+
+
+\item \textbf{la similarité cosinus} $ d_{c}(\vec{u}, \vec{v}) = \frac{\vec{u}.\vec{v}}{\left\| \vec{u} \right\|_2  \left\| \vec{v} \right\|_2 }$.
+
+La similarité cosinus correspond au produit scalaire entre les deux vecteurs normalisés. Elle mesure ainsi l'angle formé entre deux vecteurs-mots.
+
+C'est la distance que de nombreux papiers fondateurs de la méthode \emph{Word2Vec} (comme \cite{Mikolov} ou \cite{Levy}) utilisent avec l'argument selon lequel les mots apparaissant dans des contextes similaires sont groupés dans la même direction durant l'entraînement. 
+Une similarité est proche de +1 si deux mots sont positivement reliés (proches), de -1 s'ils sont négativements reliés (éloignés) et de 0 s'ils ne sont pas "reliés". 
+
+Il est toutefois délicat d'interpréter une similarité proche de -1. On pourrait intuitivement penser à des antonymes, comme "grand" et "petit", mais dans les faits, les antonymes sont susceptibles d'apparaître dans des contextes semblables et sont donc bien souvent positivement corrélés. 
+
+ 
+\end{itemize}
+
+\hypertarget{analyse-en-composantes-principales}{%
+\subsubsection{Analyse en Composantes
+Principales}\label{analyse-en-composantes-principales}}
+
+Une fois le modèle \emph{Word2Vec} entraîné, nous obtenons des
+\emph{word-embeddings} pour chacun de nos mots, représentés par des
+vecteurs de grandes dimensions (20, 50 ou même supérieures à 100).
+
+Dès lors, il devient complexe de bien observer la proximité entre deux
+mots. C'est pourquoi il devient utile de mobiliser des méthodes de
+réduction de dimensions comme l'analyse en composantes principales
+(ACP). L'objectif premier de cette méthode est en effet de projeter un
+nuage de points sur un espace de dimension inférieure afin de rendre
+l'information moins redondante et plus visuelle, tout en étant le plus
+proche possible de la réalité.
+
+Considérons le cas où nous disposons de \(n\) individus (dans notre cas
+les mots) et de \(p\) variables (dans notre cas, leurs composantes ou
+dimensions issues du modèle \emph{Word2Vec}). On note \(X = (x_{ij})\)
+la matrice de taille \((n,p)\) des données brutes, où \(x_{ij}\)
+représente la valeur de la \(j\)-ème variable pour le \(i\)-ème
+individu. Afin de donner à chaque individu le même poids, nous centrons
+et réduisons les colonnes de notre matrice de données. On notera par la
+suite \(Z = (z_{ij})\) la matrice des données centrées et réduites.
+
+La construction des axes de l'ACP est faite par projection orthogonale.
+Nous utilisons ici le produit scalaire \(<x,y> = x\,^t N y\) avec la
+métrique \(N = diag(\frac{1}{n},...,\frac{1}{n})\). Ainsi, la projection
+orthogonale d'un individu i (vecteur ligne) \(z_i\) sur une droite de
+vecteur directeur \(v\) vaut \(^tz_iv\) et les coordonnées de projection
+des \(n\) individus valent \(Zv\).
+
+Les vecteurs directeurs des axes sont définis de manière à maximiser la
+dispersion du nuage (son inertie) des individus projetés et conserver
+ainsi au mieux les distances entre les individus. L'inertie se définit
+comme
+
+\[I(Z) = \frac{1}{n} \sum \limits_{i = 1}^n d^2(z_i,\bar{z}) = \sum \limits_{i = 1}^n var(z^j) = p\]
+
+avec \(d(z_i,z_{i'})\) la distance euclidienne entre deux individus
+\(z_i\) et \(z_{i'}\) :
+\(d(z_i,z_{i'}) = \sum \limits_{j=1}^p (z_{ij} - z_{i'j})^2\)\footnote{Nous
+  travaillons ici dans le cadre d'une ACP normée où la matrice \(X\) a
+  été centrée puis réduite. La réduction de \(X\) a modifié les
+  distances initiales entre individus
+  (\(d(z_i,z_{i'}) \neq d(x_i,x_{i'})\)). Cela n'aurait pas été le cas
+  si la matrice \(Y\) avait été uniquement centrée (ACP non normée).}.
+
+On trouve tout d'abord le vecteur directeur \(v_1\) qui orientera le
+premier axe de l'ACP grâce au programme suivant :
+\[v_1 =\underset{ \left\| v  \right\| = 1}{\mathrm{argmin~}} Var(Zv) =\underset{ \left\| v  \right\| = 1}{\mathrm{argmin~}} v\,^t R v \]
+où \(R = Var(Z) = \frac{1}{n} Z\,^t Z\) est la matrice des corrélations
+entre les p variables.
+
+Puis, on choisit \(v_2\) orthogonal à \(v_1\) tel que l'inertie soit
+toujours maximisée
+\[v_2 =\underset{ \left\| v  \right\| = 1, v \perp v_1}{\mathrm{argmin}} Var(Zv) \]
+En procédant de manière séquentielle, on obtient \(q < r\) axes
+orthogonaux avec \(r = rg(Z)\) et \(q\) choisi par le
+statisticien\footnote{Différentes méthodes existent afin de déterminer
+  le \(q\) optimal, comme la règle de Kaiser ou encore celle du coude.}.
+
+On peut montrer que \(\forall k < q\) :
+
+\begin{itemize}
+\item $v_k$ est un vecteur propre associé à la k\ieme{} valeur propre $\lambda_k$ de $R$
+\item la composante principale $Zv_k$ est centrée et $V(Zv_k)= \lambda_k$
+\item Les $Zv_k$ ne sont pas corrélés entre eux
+\end{itemize}
+
+On obtient alors la matrice \(F = ZV\) des nouvelles coordonnées
+factorielles des individus, avec \(V = (v_1,\dots,v_q)\) la matrice des
+vecteurs propres.
+
+Nous utilisons ici l'ACP en vue d'identifier les individus (ici, nos
+mots) qui sont proches. Pour ce faire, il suffit de représenter les
+coordonnées factorielles de la matrice \(F\) dans des repères, en
+général en 2 dimensions pour une question de lisibilité. Deux mots
+apparaissant dans des contextes similaires seront proches sur ce repère
+et orientés dans la même direction.
+
+Enfin, pour juger de la qualité de la réduction de dimension, on calcule
+souvent la proportion de l'inertie totale expliquée par les \(q\)
+premières composantes principales.
+
+\[ \frac{V(F)}{I(Z)} = \frac{\sum \limits_{i = 1}^q \lambda_i}{p}\]
+
+\hypertarget{algorithme-t-distributed-stochastic-neighbor-embedding}{%
+\subsubsection{Algorithme t-distributed Stochastic Neighbor
+Embedding}\label{algorithme-t-distributed-stochastic-neighbor-embedding}}
+
+Bien que l'ACP soit une première manière de résumer l'information
+contenue dans nos vecteurs, elle présente des limites, notamment dans
+les vecteurs aux trop grandes dimensions, pour lesquels l'inertie des
+premiers axes de l'ACP peut se révéler faible.
+
+Pour combler ces lacunes, un autre algorithme de réduction de dimension
+peut être utilisé, celui dit du t-distributed Stochastic Neighbor
+Embedding. Contraitement à l'ACP, cet algorithme est stochastique et
+non-linéaire et il favorise l'apparition de groupes de mots proches. Sa
+philosophie demeure cependant identique : représenter dans un espace à
+dimension réduite notre nuage de points de manière à repérer les mots
+proches.
+
+La première étape de l'algorithme consiste en la transformation des
+distances euclidiennes entre les vecteurs \((X_1,...,X_n)\) en
+probabilités conditionnelles qui représenteront également les
+similarités entre nos vecteurs. Pour cela, on note :
+
+\[ p_{j|i} = \frac{\exp{-\frac{\left\| \vec{X_i} - \vec{X_j}  \right\|^2}{2\sigma_i^2}}}{\sum_{k \neq i}{\exp{-\frac{\left\| \vec{X_i} - \vec{X_k}  \right\|^2}{2\sigma_i^2}}}}\]
+
+La similarité entre les points \(X_i\) et \(X_j\) correspond à la
+probabilité conditionnelle que \(X_i\) choisirait \(X_j\) comme voisin
+si ces derniers étaient choisis selon une loi gaussienne centrée en
+\(X_i\). Ici, \(\sigma_i\) est la variance de cette gaussienne centrée
+en \(X_i\), calculer de manière itérative de sorte à maximiser la
+perplexité du modèle (mesure du modèle de probabilités).
+
+Dans une seconde étape, il faut réaliser les mêmes calculs mais dans
+l'espace de projection, où nous aurons nos points \((Y_1,..., Y_n)\).
+Cependant, puisqu'en dimension réduite, la gaussienne à tendance à
+concentrer les points, l'algorithme propose d'utilise une distribution
+de \emph{Student}, d'où le nom de l'algorithme, et ainsi de calculer :
+
+\[ q_{j|i} = \frac{(1+\left\| \vec{Y_i} - \vec{Y_j}  \right\|^2)^{-1}}{\sum_{k \neq i}{(1+\left\| \vec{Y_i} - \vec{Y_k}  \right\|^2)^{-1}}}\]
+
+Il ne reste plus désormais qu'à déterminer les vecteurs
+\((Y_1,...,Y_n)\) qui minimise l'écart entre les deux distributions de
+probabilité. Pour cela, l'algorithme se base sur la divergence de
+Kullback--Leibler entre les distributions P et Q :
+
+\[KL(P,Q) = \sum_{i \neq j} { p_{ij} \log{\frac{p_{ij}}{q_{ij}}}}\]
+
+Avec \[p_{ij} = \frac{p_{i|j} + p_{j|i}}{2n}\] où \(n\) est le nombre de
+vecteurs.
+
+Ensuite, on minimise grâce à une descente de gradient. On obtient alors
+les résultats de l'algorithme t-SNE, qu'il faut cependant analyser avec
+précaution : il ne s'agît pas d'un algorithme linéaire équivalent à
+l'ACP, on ne peut donc pas interpréter directement des éléments tels que
+la taille des clusters obtenus ou leur distance relative.
+
+\hypertarget{human-judgement}{%
+\subsubsection{Human judgement}\label{human-judgement}}
+
+We evaluated the word representations on four dataset, covering word
+similarity and relational analogy tasks. We used two datasets to
+evaluate pairwise word similarity: Finkelstein et al.'s WordSim353
+{[}13{]} and Bruni et al.'s MEN {[}4{]}. These datasets contain word
+pairs together with human-assigned similarity scores. The word vectors
+are evaluated by ranking the pairs according to their cosine
+similarities, and measuring the correlation (Spearman's ) with the human
+ratings.
+
+\hypertarget{choix-des-meilleurs-paramuxe8tres-pour-le-moduxe8le}{%
+\subsection{Choix des « meilleurs » paramètres pour le
+modèle}\label{choix-des-meilleurs-paramuxe8tres-pour-le-moduxe8le}}
+
+Expliquer ici notre cheminement (éventuellement foireux) pour choisir
+les différents paramètres du modèle avec 100k tweets : en particulier
+learning rate + window. Parler aussi des autres paramètres qui peuvent
+jouer mais dont on n'évalue pas l'effet. Expliquer le rôle central joué
+par la seed et pourquoi et la manière dont nous procédons pour créer des
+pseudos intervalles de confiance pour répondre à ce problème. Bien
+indiquer les limites de cette partie en raison du temps de calcul (à
+préciser) et de la puissance machine et bien dire que l'objectif était
+de nous initier à la sélection de paramètres sans avoir les capacités
+techniques de pouvoir réaliser un travail très poussé. Voir
+éventuellement plus tard si on peut tester paramètres aussi sur corpus
+fictif
+
+\hypertarget{evaluation-sur-un-corpus-fictif}{%
+\subsection{Evaluation sur un corpus
+fictif}\label{evaluation-sur-un-corpus-fictif}}
+
+Kim : Montrer les 3 évaluations du corpus fictif (tous sauf human
+judgement) dans l'objectif de montrer que notre modèle semble bien
+implémenté et robuste !
+
+Avant de nous attaquer au jeu de données complet, nous avons évalué un
+premier corpus fictif. Nous avons associé dix couples (du type
+{[}voiture, camion{]}), à dix mots contexte différents ({[}véhicule,
+moto, \dots{]}). Le corpus fictif est formé de 10 000 phrases composées
+chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots
+bruits, tous tirés aléatoirement.
+
+Nous avons donc mis en oeuvre ces trois techniques sur notre corpus
+fictif. Les résultats semblent concluants : la similarité cosinus montre
+bien une forte corrélation entre les mots focus et contexte du corpus
+initial et l'ACP et l'algorithme t-SNE permettent également de montrer
+graphiquement cette proximité (figure).
+
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mot_plus_proche}\NormalTok{(}\StringTok{"grand"}\NormalTok{, }\DataTypeTok{n =} \DecValTok{50}\NormalTok{)}
+\CommentTok{#[('énorme', 0.9914256427481623),}
+\CommentTok{# ('taille', 0.9905528713008166),}
+\CommentTok{# […]}
+\CommentTok{# ('vanille', 0.06068283530950071),}
+\CommentTok{# ('salissures', 0.0539210063101789)]}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+\hypertarget{evaluation-sur-le-corpus-final-plus-tard}{%
+\subsection{Evaluation sur le corpus final {[}PLUS
+TARD{]}}\label{evaluation-sur-le-corpus-final-plus-tard}}
+
+Montrer les 4 évaluation du corpus final de 1 000 000 de tweets. Dire en
+quoi le modèle semble bon, en quoi il semble pas bon (du style bon pour
+prédire les jours de la semaine et les chiffres de l'an dernier).
+
+\nocite{*}
+
+\begin{thebibliography}{999}
+\bibitem[Bortoli, C., \emph{et al} (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significanceusing Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
+\bibitem[Levy, O., Golberg, Y. (2015)]{Levy} Levy, O., Golberg, Y. (2015). Neural Word Embedding as Implicit Matrix Factorization.
+\url{https://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
+\bibitem[Mikolov, T., \emph{et al} (2013)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
+\end{thebibliography}
+
+\end{document}

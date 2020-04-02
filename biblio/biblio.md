@@ -34,3 +34,7 @@ They find:
 
 Larger windows tend to capture more topic/domain information: what other words (of any type) are used in related discussions? Smaller windows tend to capture more about word itself: what other words are functionally similar? (Their own extension, the dependency-based embeddings, seems best at finding most-similar words, synonyms or obvious-alternatives that could drop-in as replacements of the origin word.)
 
+# ACP et TSNE 
+
+Cours sur l'ACP : Analyse en Composantes Principales (ACP) par Marie Chavrent
+TSNE : Page wiki en anglais

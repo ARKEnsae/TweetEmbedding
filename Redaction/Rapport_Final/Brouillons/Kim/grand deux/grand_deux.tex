@@ -106,11 +106,17 @@ sous l'encadrement de Benjamin Muller (Inria)}
 \usepackage{caption}
 \usepackage{graphicx}
 \usepackage{natbib}
+\usepackage[dvipsnames]{xcolor}
 
 \begin{document}
 
 \maketitle
 
+
+\hypertarget{partie-1}{%
+\section{Partie 1}\label{partie-1}}
+
+\label{sec:word2vec}
 
 \hypertarget{uxe9valuation-du-moduxe8le-impluxe9mentuxe9}{%
 \section{Évaluation du modèle
@@ -158,7 +164,7 @@ $ d_{e}(\vec{u},\vec{v}) = \left\| \frac{\vec{u}}{\left\| \vec{u} \right\|_2} - 
 La similarité cosinus correspond au produit scalaire entre les deux vecteurs normalisés. Elle mesure ainsi l'angle formé entre deux vecteurs-mots.
 
 C'est la distance que de nombreux papiers fondateurs de la méthode \emph{Word2Vec} (comme \cite{Mikolov} ou \cite{Levy}) utilisent avec l'argument selon lequel les mots apparaissant dans des contextes similaires sont groupés dans la même direction durant l'entraînement. 
-Une similarité est proche de +1 si deux mots sont positivement reliés (proches), de -1 s'ils sont négativements reliés (éloignés) et de 0 s'ils ne sont pas \og reliés \fg. 
+Une similarité est proche de +1 si deux mots sont positivement reliés (proches), de -1 s'ils sont négativement reliés (éloignés) et de 0 s'ils ne sont pas \og reliés \fg. 
 
 Il est toutefois délicat d'interpréter une similarité proche de -1. On pourrait intuitivement penser à des antonymes, comme \og grand \fg et \og petit \fg, mais en pratique, les antonymes sont susceptibles d'apparaître dans des contextes semblables et sont donc bien souvent positivement corrélés. 
 
@@ -313,8 +319,10 @@ analyser avec précaution ses résultats. L'algorithme n'étant pas
 linéaire, l'interprétation de la taille des \emph{clusters} obtenus ou
 de la distance qui les sépare n'est alors pas directe.
 
-\hypertarget{human-judgement}{%
-\subsubsection{Human judgement}\label{human-judgement}}
+\hypertarget{jugement-humain}{%
+\subsubsection{Jugement humain}\label{jugement-humain}}
+
+\label{sec:jugement_humain}
 
 Les \emph{word-embedding} obtenus par \emph{Word2Vec} sont censés
 regrouper les mots qui apparaissent dans un contexte similaire. Une
@@ -360,45 +368,45 @@ de Student avec
 
 \[t = r\sqrt{\frac{n-2}{1-r^2}}\overset{H_0}{\sim} St(n-2)\]
 
-\hypertarget{choix-des-meilleurs-paramuxe8tres-pour-le-moduxe8le}{%
-\subsection{Choix des « meilleurs » paramètres pour le
-modèle}\label{choix-des-meilleurs-paramuxe8tres-pour-le-moduxe8le}}
-
-Expliquer ici notre cheminement (éventuellement foireux) pour choisir
-les différents paramètres du modèle avec 100k tweets : en particulier
-learning rate + window. Parler aussi des autres paramètres qui peuvent
-jouer mais dont on n'évalue pas l'effet. Expliquer le rôle central joué
-par la seed et pourquoi et la manière dont nous procédons pour créer des
-pseudos intervalles de confiance pour répondre à ce problème. Bien
-indiquer les limites de cette partie en raison du temps de calcul (à
-préciser) et de la puissance machine et bien dire que l'objectif était
-de nous initier à la sélection de paramètres sans avoir les capacités
-techniques de pouvoir réaliser un travail très poussé. Voir
-éventuellement plus tard si on peut tester paramètres aussi sur corpus
-fictif
+\colorbox{BurntOrange}{Speech sur intervalle de confiance}
 
 \hypertarget{evaluation-sur-un-corpus-fictif}{%
 \subsection{Evaluation sur un corpus
 fictif}\label{evaluation-sur-un-corpus-fictif}}
 
-Kim : Montrer les 3 évaluations du corpus fictif (tous sauf human
-judgement) dans l'objectif de montrer que notre modèle semble bien
-implémenté et robuste !
+\label{sec:corpus_fictif}
 
 Avant de nous attaquer au jeu de données complet, nous avons évalué un
-premier corpus fictif. Nous avons associé dix couples (du type
-{[}voiture, camion{]}), à dix mots contexte différents ({[}véhicule,
-moto, \dots{]}). Le corpus fictif est formé de 10 000 phrases composées
+premier corpus fictif afin de nous assurer de la robustesse du modèle
+implémenté. Nous avons associé dix couples (du type {[}voiture,
+camion{]}), à dix mots contexte différents ({[}véhicule, moto,
+\dots{]}). Le corpus fictif est formé de 10 000 phrases composées
 chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots
 bruits, tous tirés aléatoirement.
 
-Nous avons donc mis en oeuvre ces trois techniques sur notre corpus
-fictif. Les résultats semblent concluants : la similarité cosinus montre
-bien une forte corrélation entre les mots focus et contexte du corpus
-initial et l'ACP et l'algorithme t-SNE permettent également de montrer
-graphiquement cette proximité (figure).
+Nous avons ensuite mis en œuvre les différentes techniques
+d'évaluation{[}à l'exception de la méthode par \og jugement humain
+\fg puisque le corpus est ici créé fictivement par ordinateur sans
+prêter attention au réel sens des mots.{]} présentées en partie
+\ref{sec:comment_evaluer} sur ce corpus fictif.
 
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=1\textwidth]{img/figures.png}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Évaluation du modèle sur données fictives}\label{fig:figure_evaluation}
+\end{center}
+\vspace{-0.3cm}
 \footnotesize
+\emph{Note : Paramètres utilisés : epochs = 50 / lr = 0,01 / window = 5 / dim = 10.}
+\end{figure}
+
+Les résultats semblent concluants : la similarité cosinus montre bien
+une forte corrélation entre les mots focus et contexte du corpus initial
+et une faible corrélation avec les mots bruits. L'ACP et l'algorithme
+t-SNE permettent également de montrer graphiquement cette proximité
+(figure \ref{fig:figure_evaluation}). L'algorithme t-SNE semble bien
+discriminer davantage les clusters que l'ACP.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -411,23 +419,93 @@ graphiquement cette proximité (figure).
 \end{Highlighting}
 \end{Shaded}
 
-\normalsize
+\hypertarget{choix-des-meilleurs-hyperparamuxe8tres-pour-le-moduxe8le}{%
+\subsection{Choix des meilleurs hyperparamètres pour le
+modèle}\label{choix-des-meilleurs-hyperparamuxe8tres-pour-le-moduxe8le}}
 
-\hypertarget{evaluation-sur-le-corpus-final-plus-tard}{%
-\subsection{Evaluation sur le corpus final {[}PLUS
-TARD{]}}\label{evaluation-sur-le-corpus-final-plus-tard}}
+Une fois nous être assurés de la bonne implémentation du modèle (partie
+\ref{sec:corpus_fictif}) grâce au corpus fictif, nous nous sommes
+attachés à identifier les hyperparamètres les plus pertinents au regard
+des données dont nous disposons.
 
-Montrer les 4 évaluation du corpus final de 1 000 000 de tweets. Dire en
-quoi le modèle semble bon, en quoi il semble pas bon (du style bon pour
-prédire les jours de la semaine et les chiffres de l'an dernier).
+Le modèle word2vec version CBOW, décrit en partie \ref{sec:word2vec},
+fait en effet intervenir un certain nombre d'hyperparamètres\footnote{les
+  paramètres en gras sont ceux dont nous avons évalué l'effet} :
+
+\begin{itemize}
+\item \textbf{$\alpha$ : le \og \emph{learning rate} \fg, ou taux d'apprentissage}
+\item \textbf{$window$ : la taille de la fenêtre de sélection des mots contextes}
+\end{itemize}
+
+\colorbox{BurntOrange}{Compléter après lecture partie Alain et harmoniser le nom des hyperparamètres dans l'ensemble du rapport.}
+
+Or, la performance de nombreuses méthodes de \emph{machine learning},
+dont Word2Vec, dépend fortement des valeurs choisies pour les
+hyperparamètres, ces dernières dépendant directement des données
+mobilisées.
+
+Même si les méthodes d'optimisation bayésiennes deviennent de plus en
+plus performantes pour optimiser la valeur de ces hyperparamètres et de
+leurs interactions (\cite{Hutter}), le choix de ces paramètres
+s'effectue régulièrement de manière empirique, en testant différentes
+valeurs sur les données mobilisées. C'est l'approche que nous retenons
+ici.
+
+\hypertarget{utilisation-du-moduxe8le-gensim}{%
+\subsubsection{\texorpdfstring{Utilisation du modèle
+\texttt{Gensim}}{Utilisation du modèle Gensim}}\label{utilisation-du-moduxe8le-gensim}}
+
+Le package \texttt{Gensim} (\og Generate Similar \fg), dans lequel la
+méthode \emph{Word2Vec} est implémentée, est un des outils actuels les
+plus robustes et performants\footnote{Grâce à sa dépendance à
+  \texttt{NumPy}, \texttt{Gensim} puise dans des bibliothèques de bas
+  niveau. Ainsi, alors que le code de haut niveau est du Python, c'est
+  en fait du Fortran et du C hautement optimisés qui sont utilisés, ce
+  qui rend \texttt{Gensim} bien plus performant que \texttt{PyTorch} que
+  nous utilisons.} pour de modélisation sémantique non supervisée
+(\cite{Rehurek}).
+
+Nous avons choisi de mobiliser \texttt{Gensim} dans la suite de ce
+rapport, en parallèle du modèle que nous avons implémenté, en raison de
+son exécution bien plus rapide\footnote{A titre d'exemple, alors qu'une
+  epoch sur l'ensemble des tweets met une vingtaine d'heures à tourner
+  pour \og notre \fg modèle, elle met \colorbox{BurntOrange}{X minutes}
+  via \texttt{Gensim}.}. Cette rapidité d'exécution nous a permis de
+réaliser de plus nombreux tests d'hyperparamètres que nous vous
+présentons ici.
+
+Afin de tester l'effet des différentes valeurs des hyperparamètres, nous
+avons fait tourner le modèle \emph{Word2Vec} plusieurs fois en modifiant
+un à un les paramètres. Nous avons ensuite évalué ces différents modèles
+par la méthode du \og jugement humain \fg (cf.~partie
+\ref{sec:jugement_humain}). En outre, un même modèle est lancé six fois
+(six \og seeds \fg différentes) afin de construire des intervalles de
+confiance de la matière décrite précédemment.
+
+\hypertarget{sur-de-notre-moduxe8le}{%
+\subsubsection{\texorpdfstring{Sur de \og notre
+\fg modèle}{Sur de notre modèle}}\label{sur-de-notre-moduxe8le}}
+
+\colorbox{BurntOrange}{TODO : comparer en espérant que ça 
+ donne des résultats à peu près semblables à Gensim.}
+
+\hypertarget{evaluation-sur-le-corpus-final}{%
+\subsection{Evaluation sur le corpus
+final}\label{evaluation-sur-le-corpus-final}}
+
+\colorbox{BurntOrange}{Montrer les 4 évaluation du corpus final de 1 000 000 de tweets.
+ Dire en quoi le modèle semble bon, en quoi il semble pas bon
+ (du style bon pour prédire les jours de la semaine, etc. ). }
 
 \nocite{*}
 
 \begin{thebibliography}{999}
 \bibitem[Bortoli, C., \emph{et al} (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significanceusing Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
+\bibitem[Hutter, F., \emph{et al} (2014)]{Hutter} Hutter, F., Hoos, H., Leyton-Brown, K., (2014). An Efficient Approach for Assessing Hyperparameter Importance. PMLR 32(1):754-762. \url{http://proceedings.mlr.press/v32/hutter14.pdf}.
 \bibitem[Levy, O., Golberg, Y. (2015)]{Levy} Levy, O., Golberg, Y. (2015). Neural Word Embedding as Implicit Matrix Factorization.
 \url{https://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
 \bibitem[Mikolov, T., \emph{et al} (2013)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
+\bibitem[{\v R}eh{\r u}{\v r}ek, R., \emph{et al} (2010)]{Rehurek} {\v R}eh{\r u}{\v r}ek, R.,  Sojka, P. (2010). Software Framework for Topic Modelling with Large Corpora. Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. p. 46--50, 5 pp. ISBN 2-9517408-6-7. \url{https://is.muni.cz/publication/884893/en}.
 \end{thebibliography}
 
 \end{document}

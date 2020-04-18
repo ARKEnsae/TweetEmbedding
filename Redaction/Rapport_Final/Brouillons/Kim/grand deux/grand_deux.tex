@@ -30,46 +30,6 @@
 \else
   \usepackage[shorthands=off,french]{babel}
 \fi
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -107,12 +67,20 @@ sous l'encadrement de Benjamin Muller (Inria)}
 \usepackage{graphicx}
 \usepackage{natbib}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{fontawesome}
+\DeclareMathOperator{\arctanh}{arctanh}
+\usepackage{subcaption}
 
 \begin{document}
 
 \maketitle
 
 
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
 \hypertarget{partie-1}{%
 \section{Partie 1}\label{partie-1}}
 
@@ -164,9 +132,9 @@ $ d_{e}(\vec{u},\vec{v}) = \left\| \frac{\vec{u}}{\left\| \vec{u} \right\|_2} - 
 La similarité cosinus correspond au produit scalaire entre les deux vecteurs normalisés. Elle mesure ainsi l'angle formé entre deux vecteurs-mots.
 
 C'est la distance que de nombreux papiers fondateurs de la méthode \emph{Word2Vec} (comme \cite{Mikolov} ou \cite{Levy}) utilisent avec l'argument selon lequel les mots apparaissant dans des contextes similaires sont groupés dans la même direction durant l'entraînement. 
-Une similarité est proche de +1 si deux mots sont positivement reliés (proches), de -1 s'ils sont négativement reliés (éloignés) et de 0 s'ils ne sont pas \og reliés \fg. 
+Une similarité est proche de +1 si deux mots sont positivement reliés (proches), de -1 s'ils sont négativement reliés (éloignés) et de 0 s'ils ne sont pas \og reliés \fg{}. 
 
-Il est toutefois délicat d'interpréter une similarité proche de -1. On pourrait intuitivement penser à des antonymes, comme \og grand \fg et \og petit \fg, mais en pratique, les antonymes sont susceptibles d'apparaître dans des contextes semblables et sont donc bien souvent positivement corrélés. 
+Il est toutefois délicat d'interpréter une similarité proche de -1. On pourrait intuitivement penser à des antonymes, comme \og grand \fg{} et \og petit \fg{}, mais en pratique, les antonymes sont susceptibles d'apparaître dans des contextes semblables et sont donc bien souvent positivement corrélés. 
 
  
 \end{itemize}
@@ -287,7 +255,7 @@ entre les \(n\) vecteurs-mots \((x_i)_{i=1...n}\). La similarité entre
   de manière à adapter la loi conditionnelle aux données. Une faible
   dispersion autour de \(x_i\) entraînera un \(\sigma_i\) faible et
   réciproquement. Il s'agit de trouver le \(\sigma_i\) qui minimise ce
-  qui est appelé en théorie de l'information la \og perplexité \fg,
+  qui est appelé en théorie de l'information la \og perplexité \fg{},
   c'est-à-dire un indicateur qui décrit à quel point une distribution de
   probabilité réussit à prédire un échantillon.}
 
@@ -326,14 +294,17 @@ de la distance qui les sépare n'est alors pas directe.
 
 Les \emph{word-embedding} obtenus par \emph{Word2Vec} sont censés
 regrouper les mots qui apparaissent dans un contexte similaire. Une
-dernière façon de le vérifier peut être de comparer les résultats
-obtenus au point de vue des êtres humains sur la proximité qu'il peut y
-avoir entre différentes paires de mots.
+dernière façon de vérifier la qualité de nos vecteurs-mots est de les
+comparer à un jugement humain. Pour ce faire, nous utilisons la liste de
+référence RG-65 pour le français\footnote{Le RG-65 a fait appel à 18
+  évaluateurs humains. La base, initialement mobilisée dans un article
+  anglophone (\cite{Rubenstein}) a été traduite de l'anglais.}
+(\cite{Boumedyen}). Elle contient 65 paires de noms communs (tableau
+\ref{table:human_judgement}) évaluées sur une échelle de 0 (non liés) à
+4 (très liés).
 
-Pour ce faire, nous utilisons une base de données d'une soixantaine de
-paires de mots auxquelles sont associés des scores de similarité allant
-de 0 (aucun lien entre les mots) à 4 (mots identiques).
-
+\begin{table}
+\begin{center}
 \begin{tabular}{|c|c|c|}
     \hline
     mot 1 & mot 2 & similarité  \tabularnewline
@@ -347,6 +318,10 @@ de 0 (aucun lien entre les mots) à 4 (mots identiques).
     coq & coq & 4,00   \tabularnewline
     \hline
  \end{tabular}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Base de données de jugement humain}\label{table:human_judgement}
+\end{center}
+\end{table}
 
 Nous calculons ensuite la corrélation de Spearman entre les similarités
 cosinus de ces différentes paires issues de notre modèle (notées ici
@@ -363,12 +338,16 @@ r_s = \mathrm{corr}(\mathrm{rg}_X, \mathrm{rg}_Y) =
 \(\mathrm{rg}_{X_i}=j \iff X_i = X_{(j)}\) (\(X_i\) est la \(j\)ème plus
 petite variable).
 
-Pour tester la significativité de ce coefficient, nous réalisons un test
-de Student avec
+Pour tester la significativité de ce coefficient, nous utilisons la loi
+sous \((H_0)\) de la statistique de test
+\(z = \arctanh(r_s) = \frac{1}{2} \ln\frac{1+r}{1-r} \overset{H_0}{\sim}\mathcal{N}(0, \frac{1}{n-3})\)
+et obtenons l'intervalle de confiance suivant :
 
-\[t = r\sqrt{\frac{n-2}{1-r^2}}\overset{H_0}{\sim} St(n-2)\]
-
-\colorbox{BurntOrange}{Speech sur intervalle de confiance}
+\[
+IC_\alpha (r_s) = \left[\tanh\left(z-\frac{q_{1-\frac{\alpha}{2}}}{\sqrt{n-3}}\right),
+\tanh\left(z+\frac{q_{1-\frac{\alpha}{2}}}{\sqrt{n-3}}\right)\right]
+\] avec \(q_{1-\frac{\alpha}{2}}\) le quantile d'ordre
+\(1-\frac{\alpha}{2}\) d'une loi \(\mathcal{N}(0, 1)\).
 
 \hypertarget{evaluation-sur-un-corpus-fictif}{%
 \subsection{Evaluation sur un corpus
@@ -376,21 +355,51 @@ fictif}\label{evaluation-sur-un-corpus-fictif}}
 
 \label{sec:corpus_fictif}
 
-Avant de nous attaquer au jeu de données complet, nous avons évalué un
-premier corpus fictif afin de nous assurer de la robustesse du modèle
-implémenté. Nous avons associé dix couples (du type {[}voiture,
-camion{]}), à dix mots contexte différents ({[}véhicule, moto,
-\dots{]}). Le corpus fictif est formé de 10 000 phrases composées
+Avant de nous attaquer au jeu de données complet décrit plus bas, nous
+avons évalué un premier corpus fictif afin de nous assurer de la
+robustesse du modèle implémenté. Nous avons associé dix couples (du type
+{[}voiture, camion{]}), à dix mots contexte différents ({[}véhicule,
+moto, \dots{]}). Le corpus fictif est formé de 10 000 phrases composées
 chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots
 bruits, tous tirés aléatoirement.
 
 Nous avons ensuite mis en œuvre les différentes techniques
-d'évaluation{[}à l'exception de la méthode par \og jugement humain
-\fg puisque le corpus est ici créé fictivement par ordinateur sans
-prêter attention au réel sens des mots.{]} présentées en partie
-\ref{sec:comment_evaluer} sur ce corpus fictif.
+d'évaluation\footnote{à l'exception de la méthode par \og jugement
+  humain \fg{} puisque le corpus est ici créé fictivement par ordinateur
+  sans prêter attention au réel sens des mots.} présentées en partie
+\ref{sec:comment_evaluer} sur les \emph{word-embeddings} obtenus grâce à
+ce corpus fictif.
 
-\begin{figure}[!ht]
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+    \hline
+    mot & similarité cosinus \tabularnewline
+    \hline
+    énorme & 0,991   \tabularnewline
+    taille & 0,991   \tabularnewline
+    \dots & \dots    \tabularnewline
+    vanille & 0,061   \tabularnewline
+    salissures & 0,054   \tabularnewline
+    \hline
+ \end{tabular}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Mots les plus proches de \og grand \fg{} par similarité cosinus}\label{table:tableau_evaluation}
+\end{center}
+\vspace{-0.3cm}
+\footnotesize
+\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
+\end{table}
+
+Les résultats semblent concluants : la similarité cosinus montre bien
+une forte corrélation entre les mots focus et contexte du corpus initial
+et une faible corrélation avec les mots bruits (tableau
+\ref{table:tableau_evaluation}). L'ACP et l'algorithme t-SNE permettent
+également de montrer graphiquement cette proximité (figure
+~\ref{fig:figure_evaluation}). Les clusters apparaissent de manière plus
+évidente avec t-SNE.
+
+\begin{figure}
 \begin{center}
 \includegraphics[width=1\textwidth]{img/figures.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
@@ -398,26 +407,8 @@ prêter attention au réel sens des mots.{]} présentées en partie
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
-\emph{Note : Paramètres utilisés : epochs = 50 / lr = 0,01 / window = 5 / dim = 10.}
+\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{figure}
-
-Les résultats semblent concluants : la similarité cosinus montre bien
-une forte corrélation entre les mots focus et contexte du corpus initial
-et une faible corrélation avec les mots bruits. L'ACP et l'algorithme
-t-SNE permettent également de montrer graphiquement cette proximité
-(figure \ref{fig:figure_evaluation}). L'algorithme t-SNE semble bien
-discriminer davantage les clusters que l'ACP.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{mot_plus_proche}\NormalTok{(}\StringTok{"grand"}\NormalTok{, }\DataTypeTok{n =} \DecValTok{50}\NormalTok{)}
-\CommentTok{#[('énorme', 0.9914256427481623),}
-\CommentTok{# ('taille', 0.9905528713008166),}
-\CommentTok{# […]}
-\CommentTok{# ('vanille', 0.06068283530950071),}
-\CommentTok{# ('salissures', 0.0539210063101789)]}
-\end{Highlighting}
-\end{Shaded}
 
 \hypertarget{choix-des-meilleurs-hyperparamuxe8tres-pour-le-moduxe8le}{%
 \subsection{Choix des meilleurs hyperparamètres pour le
@@ -428,84 +419,396 @@ Une fois nous être assurés de la bonne implémentation du modèle (partie
 attachés à identifier les hyperparamètres les plus pertinents au regard
 des données dont nous disposons.
 
-Le modèle word2vec version CBOW, décrit en partie \ref{sec:word2vec},
-fait en effet intervenir un certain nombre d'hyperparamètres\footnote{les
-  paramètres en gras sont ceux dont nous avons évalué l'effet} :
+Ces données correspondent à un ensemble de 1,3 million de
+tweets\footnote{Ces tweets, achetés à twitter, sont la propriété de
+  l'Inria.} postés en France entre 2014 et 2017, supposés être
+représentatifs de l'ensemble de tweets nationaux publiés durant cette
+période.
+
+Le modèle \emph{Word2Vec} version CBOW, décrit en partie
+\ref{sec:word2vec}, fait en effet intervenir un certain nombre
+d'hyperparamètres parmi lesquels :
 
 \begin{itemize}
-\item \textbf{$\alpha$ : le \og \emph{learning rate} \fg, ou taux d'apprentissage}
-\item \textbf{$window$ : la taille de la fenêtre de sélection des mots contextes}
+\item $ep$ : le nombre d'\og \emph{epochs} \fg{}
+\item $lr$ ou $\alpha$ : le \og \emph{learning rate} \fg{}, ou taux d'apprentissage
+\item $w$ (\emph{window}): la taille de la fenêtre de sélection des mots contextes
+\item $dim$ : la dimension des vecteurs-mots (ou \emph{word-embeddings})
 \end{itemize}
 
-\colorbox{BurntOrange}{Compléter après lecture partie Alain et harmoniser le nom des hyperparamètres dans l'ensemble du rapport.}
-
 Or, la performance de nombreuses méthodes de \emph{machine learning},
-dont Word2Vec, dépend fortement des valeurs choisies pour les
-hyperparamètres, ces dernières dépendant directement des données
+dont \emph{Word2Vec}, dépend fortement des valeurs choisies pour ces
+paramètres, ces valeurs étant elles-mêmes très dépendantes des données
 mobilisées.
 
 Même si les méthodes d'optimisation bayésiennes deviennent de plus en
-plus performantes pour optimiser la valeur de ces hyperparamètres et de
-leurs interactions (\cite{Hutter}), le choix de ces paramètres
-s'effectue régulièrement de manière empirique, en testant différentes
-valeurs sur les données mobilisées. C'est l'approche que nous retenons
-ici.
+plus performantes pour optimiser la valeur de ces hyperparamètres en
+tenant compte de leurs interactions (\cite{Hutter}), ce choix s'effectue
+régulièrement de manière empirique, en testant différentes valeurs
+d'hyperparamètres sur les données mobilisées. C'est l'approche que nous
+retenons ici.
 
-\hypertarget{utilisation-du-moduxe8le-gensim}{%
-\subsubsection{\texorpdfstring{Utilisation du modèle
-\texttt{Gensim}}{Utilisation du modèle Gensim}}\label{utilisation-du-moduxe8le-gensim}}
-
-Le package \texttt{Gensim} (\og Generate Similar \fg), dans lequel la
+Le package \texttt{Gensim} (\og Generate Similar \fg{}), dans lequel la
 méthode \emph{Word2Vec} est implémentée, est un des outils actuels les
 plus robustes et performants\footnote{Grâce à sa dépendance à
   \texttt{NumPy}, \texttt{Gensim} puise dans des bibliothèques de bas
   niveau. Ainsi, alors que le code de haut niveau est du Python, c'est
   en fait du Fortran et du C hautement optimisés qui sont utilisés, ce
   qui rend \texttt{Gensim} bien plus performant que \texttt{PyTorch} que
-  nous utilisons.} pour de modélisation sémantique non supervisée
+  nous avons utilisé pour implémenter le modèle décrit en partie
+  \ref{sec:word2vec}.} pour la modélisation sémantique non supervisée
 (\cite{Rehurek}).
 
 Nous avons choisi de mobiliser \texttt{Gensim} dans la suite de ce
 rapport, en parallèle du modèle que nous avons implémenté, en raison de
-son exécution bien plus rapide\footnote{A titre d'exemple, alors qu'une
-  epoch sur l'ensemble des tweets met une vingtaine d'heures à tourner
-  pour \og notre \fg modèle, elle met \colorbox{BurntOrange}{X minutes}
-  via \texttt{Gensim}.}. Cette rapidité d'exécution nous a permis de
-réaliser de plus nombreux tests d'hyperparamètres que nous vous
-présentons ici.
+son temps d'exécution bien plus rapide\footnote{A titre d'exemple, alors
+  qu'une epoch sur l'ensemble des tweets met une vingtaine d'heures à
+  tourner pour \og notre \fg{} modèle, elle met 1 minute via
+  \texttt{Gensim}.}. Cette rapidité d'exécution nous a permis de
+réaliser des tests d'hyperparamètres plus nombreux.
 
-Afin de tester l'effet des différentes valeurs des hyperparamètres, nous
-avons fait tourner le modèle \emph{Word2Vec} plusieurs fois en modifiant
-un à un les paramètres. Nous avons ensuite évalué ces différents modèles
-par la méthode du \og jugement humain \fg (cf.~partie
-\ref{sec:jugement_humain}). En outre, un même modèle est lancé six fois
-(six \og seeds \fg différentes) afin de construire des intervalles de
-confiance de la matière décrite précédemment.
+Pour réaliser ces tests, nous avons fait tourner le modèle
+\emph{Word2Vec} plusieurs fois en modifiant un à un les paramètres. Nous
+avons ensuite évalué ces différents modèles par la méthode du
+\og jugement humain \fg{} (cf.~partie \ref{sec:jugement_humain}) en
+comparant la mesure de la similarité cosinus\footnote{Nous avons
+  également évalué les modèles en utilisant (l'inverse de) la distance
+  euclidienne à la place de la similarité cosinus. L'effet des
+  paramètres devient alors bien moins clair et la performance du modèle
+  est inférieure, ce va dans le sens de l'utilisation plus fréquente de
+  la méthode de la similarité cosinus dans la littérature.} entre deux
+mots obtenue à partir de notre modèle à l'évaluation subjective de cette
+proximité par des individus. En outre, un même modèle est lancé six fois
+(six \og seeds \fg{} différentes) afin de construire des intervalles de
+confiance de la matière décrite précédemment, en empilant les six
+échantillons de mesure de proximités correspondant aux six
+implémentations d'un même modèle\footnote{Pour chaque modèle, nous
+  calculons les statistiques de rang des 65 paires de mots de la base de
+  jugement humain ainsi que le rang des similarités cosinus des mots
+  obtenus en sortie du modèle. Nous réalisons ces actions pour les six
+  implémentations du même modèle et empilons les résultats obtenus.
+  C'est à partir de cette base empilée de 6x65 lignes moins les données
+  manquantes que nous calculons chaque intervalle de confiance selon la
+  formule décrite en partie \ref{sec:jugement_humain}.}.
 
-\hypertarget{sur-de-notre-moduxe8le}{%
-\subsubsection{\texorpdfstring{Sur de \og notre
-\fg modèle}{Sur de notre modèle}}\label{sur-de-notre-moduxe8le}}
+\hypertarget{nombre-depochs-taille-de-fenuxeatre-et-taux-dapprentissage}{%
+\subsubsection{Nombre d'epochs, taille de fenêtre et taux
+d'apprentissage}\label{nombre-depochs-taille-de-fenuxeatre-et-taux-dapprentissage}}
 
-\colorbox{BurntOrange}{TODO : comparer en espérant que ça 
- donne des résultats à peu près semblables à Gensim.}
+Pour cette première série de tests d'hyperparamètres, nous avons fixé la
+dimension des word-embedding à 50\footnote{En réalisant les mêmes tests
+  sur uniquement 100 000 tweets, puis en testant une dimension de
+  word-embedding de 20, les effets observés et commentés ici se
+  confirment.} et évalué l'impact du nombre d'épochs, de la taille de la
+fenêtre et du taux d'apprentissage (figure \ref{fig:evaluation_1}) .
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=1\textwidth]{img/test_parametres.png}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Tests d'hyperparamètres : epochs, fenêtre et taux d'apprentissage}\label{fig:evaluation_1}
+\end{center}
+\vspace{-0.3cm}
+\footnotesize
+\emph{Note : Paramètres utilisés : dim = 50\newline
+Le trait horizontal correspond au coefficient de Spearman calculé sur les échantillons empilés des six modèles et la barre verticale à l'intervalle de confiance associé.}
+\end{figure}
+
+\hypertarget{le-nombre-depochs}{%
+\paragraph{Le nombre d'epochs}\label{le-nombre-depochs}}
+
+~
+
+Le nombre d'epochs à un effet net. Passer de 10 à 100 epochs fait
+nettement augmenter le score de corrélation de Spearman entre données
+subjectives et données en sortie du modèle.
+
+\faArrowCircleRight{} Nous retenons alors le paramètre \textbf{ep =
+100}.
+
+\hypertarget{le-taux-dapprentissage}{%
+\paragraph{Le taux d'apprentissage}\label{le-taux-dapprentissage}}
+
+~
+
+La valeur 0,02 semble donner systématiquement de meilleurs résultats que
+0,01. En réalisant davantage de tests de taux d'apprentissage en fixant
+les autres hyperparamètres, les différents taux d'apprentissage
+présentent des performances similaires\footnote{En fixant les paramètres
+  dim = 50, ep = 100 et w = 4 (celles du modèle retenu \emph{in fine}),
+  et en testant les taux d'apprentissage 0,005, 0,01, 0,02, 0,03 et
+  0,04, les valeurs moyennes des corrélations s'échelonnent entre 0,41
+  et 0,48, soit des valeurs proches.}.
+
+\faArrowCircleRight{} Nous retenons alors le paramètre \textbf{lr =
+0,2}.
+
+\hypertarget{la-taille-de-la-fenuxeatre}{%
+\paragraph{La taille de la fenêtre}\label{la-taille-de-la-fenuxeatre}}
+
+~
+
+La taille de la fenêtre ne semble pas jouer un rôle majeur, et dépend
+beaucoup des autres paramètres choisis.
+
+Certains travaux (\cite{Levy2}) indiquent que, suivant la taille de
+fenêtre choisie, les informations capturées sont différentes. Cela
+pourrait expliquer la complexité de choisir la \og meilleure \fg{}
+taille de fenêtre. Alors que les \og grandes \fg{} fenêtres capturent
+des informations sur le domaine du mot (autres mots de tout type étant
+utilisés dans des discussions connexes), les \og petites \fg{} fenêtres
+saisissent davantage le mot en lui-même (ses extensions, synonyme, lui
+sont alors proches). La valeur de 4 représente une taille de fenêtre
+\og ni trop grande ni trop petite\fg{} et qui présente de bons résultats
+dans la plupart des tests effectués.
+
+\faArrowCircleRight{} Nous retenons alors le paramètre \textbf{w = 4}.
+
+\hypertarget{dimension-des-vecteurs-mots}{%
+\subsubsection{Dimension des
+vecteurs-mots}\label{dimension-des-vecteurs-mots}}
+
+On cherche cette fois-ci à évaluer l'effet de la dimension des
+\emph{word-embedding}. Selon certains papiers (comme \cite{Pennington}),
+la qualité des représentations vectorielles s'améliore à mesure que l'on
+augmente la taille du vecteur, mais seulement jusqu'à atteindre 300
+dimensions\footnote{La dimension des vecteurs doit également être
+  adaptée à la taille du vocabulaire. Un des articles fondateurs de
+  word2vec (\cite{Mikolov}) recommande donc d'augmenter à la fois la
+  dimension des vecteurs et la quantité de données d'apprentissage. Par
+  exemple, avec un vocabulaire d'une centaine de mots, il serait
+  inefficace d'utiliser des projections en grande dimension (risque de
+  surapprentissage).}. Après 300 dimensions, la qualité des vecteurs
+commence à diminuer et le temps de calcul augmente considérablement.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=1\textwidth]{img/test_parametres2.png}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Tests d'hyperparamètres : dimension des word-embedding}\label{fig:figure_dim}
+\end{center}
+\vspace{-0.3cm}
+\footnotesize
+\emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02.\newline
+Le trait horizontal correspond au coefficient de Spearman calculé sur les échantillons empilés des six modèles et la barre verticale à l'intervalle de confiance associé.}
+\end{figure}
+
+En pratique, en comparant l'effet de la dimension des vecteurs (modèle
+fixé à ep~=~100, w~=~4 et lr~=~0,02), on observe bien une augmentation
+de l'efficacité du modèle jusqu'en dimension 300 et une efficacité
+moindre en dimension 500 (figure~\ref{fig:figure_dim}). Bien que
+l'efficacité du modèle semble meilleure en dimension 300, la dimension
+100 améliore la rapidité de l'algorithme, pour des résultats d'une
+qualité similaire.
+
+\faArrowCircleRight{} Nous retenons alors le paramètre \textbf{dim =
+100}.
 
 \hypertarget{evaluation-sur-le-corpus-final}{%
 \subsection{Evaluation sur le corpus
 final}\label{evaluation-sur-le-corpus-final}}
 
-\colorbox{BurntOrange}{Montrer les 4 évaluation du corpus final de 1 000 000 de tweets.
- Dire en quoi le modèle semble bon, en quoi il semble pas bon
- (du style bon pour prédire les jours de la semaine, etc. ). }
+\hypertarget{avec-notre-moduxe8le}{%
+\subsubsection{\texorpdfstring{Avec \og notre \fg{}
+modèle}{Avec notre  modèle}}\label{avec-notre-moduxe8le}}
+
+Nous avons ensuite fait tourner le modèle que nous avons implémenté en
+utilisant les paramètres retenus précédemment\footnote{w~=~4, lr~=~0,02
+  et dim~=~100} mais uniquement sur 100~000 tweets et 80 epochs pour des
+questions de temps de calcul\footnote{près de 18h.}.
+
+Les résultats obtenus semblent relativement satisfaisants. La recherche
+des plus proches voisins par similarité cosinus (dont quelques exemples
+sont illustrés en tableau \ref{table:knn_ark}) donne des résultats
+proches de l'intuition.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+    \hline
+\textbf{bonjour} & \textbf{femme} & \textbf{1} & \textbf{samedi} \tabularnewline
+\emph{(669 apparitions)} & \emph{(264 apparitions)} & \emph{(765 apparitions)} & \emph{(203 apparitions)} \tabularnewline
+       \hline
+\includegraphics[height=4mm]{img/emojis/1.png} (0,59) & quelle (0,49) & 5 (0,55) & soir (0,57) \tabularnewline
+\includegraphics[height=4mm]{img/emojis/2.png} (0,59) & cette (0,46) & mois (0,51) & vivement (0,51) \tabularnewline
+merci (0,54) & une (0,44) & 10 (0,49) & demain (0,50) \tabularnewline
+nuit (0,48) & vie (0,44) & 2 (0,48) & end (0,48) \tabularnewline
+bisous (0,47) & grippe (0,44) & top (0,48) & weekend (0,47) \tabularnewline
+bonne (0,47) & belle (0,43) & depuis (0,47) & matin (0,45) \tabularnewline
+\includegraphics[height=4mm]{img/emojis/3.png} (0,46) & ma (0,43) & saison (0,46) & jeudi (0,45) \tabularnewline
+vous (0,46) & magnifique (0,43) & ans (0,44) & prochain (0,43) \tabularnewline
+plaisir (0,44) & nouvelle (0,43) & jours (0,43) & week (0,43) \tabularnewline
+allez (0,43) & vidéo (0,39) & 3 (0,43) & \includegraphics[height=4mm]{img/emojis/4.png} (0,42) \tabularnewline
+    \hline
+ \end{tabular}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{10 plus proches voisins par similarité cosinus avec \og notre \fg{} modèle}\label{table:knn_ark}
+\end{center}
+\vspace{-0.3cm}
+\footnotesize
+\emph{Note : Paramètres utilisés : ep = 80 / w = 4 / lr = 0,02 / dim = 100 / base : 100 000 tweets\newline
+La similarité cosinus de chaque paire de mots est renseignée entre les parenthèses.}
+
+\end{table}
+
+Par ailleurs, le coefficient de Spearman entre la similarité cosinus des
+mots obtenus et le jugement humain est de 0,571 (p-valeur : 4,1 \%).
+Toutefois, ce bon résultat est à considérer avec précaution puisque
+seuls 13 des couples de mots de la base RG-65 ont été reconnus dans le
+corpus de 100~000 tweets que nous utilisons ici.
+
+Enfin, les représentations graphiques des positions des mots via des ACP
+et les sommes vectorielles sur les mots\footnote{comme l'exemple de
+  \(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}\)
+  dans \cite{Mikolov}} donnent des résultats bien moins concluants que
+le modèle \texttt{Gensim} entraîné sur l'ensemble des tweets (cf.~partie
+\ref{sec:gensim_resultats})
+
+\hypertarget{avec-le-moduxe8le-gensim}{%
+\subsubsection{\texorpdfstring{Avec le modèle
+\texttt{Gensim}}{Avec le modèle Gensim}}\label{avec-le-moduxe8le-gensim}}
+
+\label{sec:gensim_resultats}
+
+Le modèle \texttt{Gensim}\footnote{w~=~4, lr~=~0,02, dim~=~100 et
+  ep~=~100.} donne des résultats encore plus convaincants que
+précédemment, ayant été davantage entraîné, et sur un corpus plus fourni
+(ensemble des tweets). En effet, les vecteurs-mots en sortie du modèle
+\texttt{Gensim} sur l'ensemble des tweets (figure
+\ref{fig:acp_freq_gensim}) sont davantage répartis dans l'ensemble du
+plan, alors que les mots en sortie du modèle que nous avons implémenté
+sur 100 000 tweets sont répartis en fonction de leur nombre
+d'occurrences, les mots les moins fréquents n'ayant probablement pas (ou
+peu) été entraînés (figure \ref{fig:acp_freq_ark}).
+
+\begin{figure}
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{img/acp_freq_gensim.png}
+  \captionof{figure}{Position des mots en fonction de\newline leur nombre d'occurrences (Modèle \texttt{Gensim})}
+  \label{fig:acp_freq_gensim}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.72\linewidth]{img/acp_freq_ark.png}
+  \captionof{figure}{Position des mots en fonction de\newline leur nombre d'occurrences (\og notre \fg{} modèle)}
+  \label{fig:acp_freq_ark}
+\end{minipage}
+\footnotesize
+\emph{Note : Paramètres utilisés : ep = 100 (gauche) ou 80 (droite) / w = 4 / lr = 0,02 / dim = 100.\newline
+Méthode utilisée : ACP, deux premiers axes.}
+\end{figure}
+
+Le coefficient de Spearman a une valeur semblable à précédemment : 0,495
+mais sa p-valeur est proche de 0 \% et, cette fois-ci, 52 des couples de
+mots de la base RG-65 ont été reconnus dans le corpus de tweets.
+
+Les 10 plus proches voisins calculés par similarité cosinus (tableau
+\ref{table:knn_gensim}) semblent encore davantage pertinents. Les plus
+proches voisins de \og \(1\) \fg{} contiennent davantage de chiffres, de
+\og samedi \fg{} davantage de jours de la semaine et le tableau contient
+désormais des synonymes de \og femme \fg{} et de \og bonjour \fg{}.
+Certains mots surprenants subsistent toutefois, comme par exemple
+\og transmets \fg{}, \og désagrément \fg{} et \og betembourg \fg{},
+voisins de \og bonjour \fg{}. Toutefois, la fréquence d'apparition de
+ces mots dans le corpus est faible (moins d'une centaine d'occurrences).
+La projection de certains vecteurs-mots sur les deux premiers axes d'une
+ACP (figure \ref{fig:acp_gensim}) nous confirme la qualité de
+l'entraînement du corpus sur l'ensemble de tweets.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+    \hline
+\textbf{bonjour} & \textbf{femme} & \textbf{1} & \textbf{samedi} \tabularnewline
+\emph{(17 043 apparitions)} & \emph{(6 177 apparitions)} & \emph{(21 055 apparitions)} & \emph{(4 917 apparitions)} \tabularnewline
+       \hline
+bonsoir (0,85) & fille (0,86) & 2 (0,65) & vendredi (0,88) \tabularnewline
+bjr (0,75) & copine (0,74) & 3 (0,64) & jeudi (0,86) \tabularnewline
+hello (0,71) & meuf (0,71) & 6 (0,63) & lundi (0,83) \tabularnewline
+salut (0,66) & demoiselle (0,66) & 4 (0,62) & mercredi (0,83) \tabularnewline
+coucou (0,55) & nana (0,66) & 7 (0,60) & dimanche (0,83) \tabularnewline
+transmets (0,49) & nièce (0,66) & 5 (0,58) & mardi (0,76) \tabularnewline
+désagrément (0,48) & sœur (0,65) & 9 (0,58) & demain (0,72) \tabularnewline
+avezvous (0,48) & barbe (0,65) & 8 (0,56) & barathon (0,56) \tabularnewline
+bettembourg (0,48) & maman (0,64) & 1e (0,55) & 22h45 (0,55) \tabularnewline
+hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
+    \hline
+ \end{tabular}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{10 plus proches voisins par similarité cosinus avec le modèle \texttt{Gensim}}\label{table:knn_gensim}
+\end{center}
+\vspace{-0.3cm}
+\footnotesize
+\emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02 / dim = 100 / base : ensemble des tweets\newline
+La similarité cosinus de chaque paire de mots est renseignée entre les parenthèses.}
+\end{table}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{img/acp_gensim.png}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{ACP sur un corpus réduit de mots}\label{fig:acp_gensim}
+\end{center}
+\vspace{-0.3cm}
+\footnotesize
+\emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02 / dim = 100 / base : ensemble des tweets }
+\end{figure}
+
+Enfin, nous avons réalisé des opérations sur les mots-vecteurs. Si
+l'opération
+\(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} = \overrightarrow{Reine}\)
+(figure \ref{fig:acp_reine}) semble fonctionner\footnote{Les similarités
+  cosinus obtenues sont les suivantes :
+  \(corr(\overrightarrow{Roi}, \overrightarrow{Homme}) = 0,34\),
+  \(corr(\overrightarrow{Homme}, \overrightarrow{Femme}) = 0,35\) et
+  \(corr(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} , \overrightarrow{Reine}) = 0,67\).
+  \(\overrightarrow{Reine}\) est bien le mot le plus proche de la somme
+  vectorielle calculée.}, l'opération
+\(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie}\)
+(cf. \cite{Mikolov}, figure \ref{fig:acp_rome}) d'identifie pas \og Rome
+\fg{} dans les mots les plus proches mais d'autres villes comme \og Lyon
+\fg{} (similarité cosinus de 0,62). \og Rome \fg{} semble effectivement
+située \og trop en haut\fg{} dans le plan de l'ACP par rapport aux
+autres villes. Peut-être ce mot n'a-t-il pas suffisamment été entraîné
+(246 apparitions dans les tweets contre 46433 pour Lyon par exemple)
+pour que le vecteur-mot obtenu soit pertinent, ou peut-être que, dans
+les tweets mobilisés, le mot \og Rome \fg{} s'utilise dans un contexte
+différent de l'article de Mikolov.
+
+\begin{figure}
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.92\linewidth]{img/acp_reine.png}
+  \captionof{figure}{\ $\protect\overrightarrow{Roi} - \protect\overrightarrow{Homme} + \protect\overrightarrow{Femme} = $ ?}
+  \label{fig:acp_reine}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.85\linewidth]{img/acp_rome.png}
+  \captionof{figure}{\ $\protect\overrightarrow{Paris} - \protect\overrightarrow{France} + \protect\overrightarrow{Italie} = $ ?}
+  \label{fig:acp_rome}
+\end{minipage}
+\footnotesize
+\emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02 / dim = 100.\newline
+Les mots en vert correspondent à ceux présents dans l'opération, le mot en rouge le mot que l'on serait supposé trouver et les mots en orange les 10 mots les plus proches du résultat de l'opération vectorielle.}
+\end{figure}
+
+\newpage
 
 \nocite{*}
 
 \begin{thebibliography}{999}
-\bibitem[Bortoli, C., \emph{et al} (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significanceusing Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
-\bibitem[Hutter, F., \emph{et al} (2014)]{Hutter} Hutter, F., Hoos, H., Leyton-Brown, K., (2014). An Efficient Approach for Assessing Hyperparameter Importance. PMLR 32(1):754-762. \url{http://proceedings.mlr.press/v32/hutter14.pdf}.
-\bibitem[Levy, O., Golberg, Y. (2015)]{Levy} Levy, O., Golberg, Y. (2015). Neural Word Embedding as Implicit Matrix Factorization.
+\bibitem[Boumedyen Billami \& Gala (2017)]{Boumedyen} Boumedyen Billami, M.,  Gala, N (2017). Création et validation de signatures sémantiques : application à la mesure de similarité sémantique et à la substitution lexicale. TALN 2017. \url{https://hal.archives-ouvertes.fr/hal-01528117/document}.
+\bibitem[Hutter, Hoos \& Leyton-Brown (2014)]{Hutter} Hutter, F., Hoos, H., Leyton-Brown, K., (2014). An Efficient Approach for Assessing Hyperparameter Importance. PMLR 32(1):754-762. \url{http://proceedings.mlr.press/v32/hutter14.pdf}.
+\bibitem[Levy \& Golberg (2015)]{Levy} Levy, O., Golberg, Y. (2015). Neural Word Embedding as Implicit Matrix Factorization.
 \url{https://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
-\bibitem[Mikolov, T., \emph{et al} (2013)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
-\bibitem[{\v R}eh{\r u}{\v r}ek, R., \emph{et al} (2010)]{Rehurek} {\v R}eh{\r u}{\v r}ek, R.,  Sojka, P. (2010). Software Framework for Topic Modelling with Large Corpora. Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. p. 46--50, 5 pp. ISBN 2-9517408-6-7. \url{https://is.muni.cz/publication/884893/en}.
+\bibitem[Levy \& Golberg (2014)]{Levy2} Levy, O., Golberg, Y. (2014). Dependency-based word embeddings. ACL. \url{http://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
+\bibitem[Mikolov, Chen, Corrado \emph{et al} (2013)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
+\bibitem[Pennington, Socher \& Manning (2014)]{Pennington} Pennington, J., Socher, R., Manning, C. D., (2014).  Glove: global vectors for word representation. Proc. of EMNLP,1532 – 1543. \url{https://www.aclweb.org/anthology/D14-1162.pdf}.
+\bibitem[{\v R}eh{\r u}{\v r}ek \& Sojka (2010)]{Rehurek} {\v R}eh{\r u}{\v r}ek, R.,  Sojka, P. (2010). Software Framework for Topic Modelling with Large Corpora. Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. p. 46--50, 5 pp. ISBN 2-9517408-6-7. \url{https://is.muni.cz/publication/884893/en}.
+\bibitem[Rubenstein \& Goodenough (1965)]{Rubenstein} Rubenstein, H.,  Goodenough, J. B. (1965). Contextual Correlates of Synonymy. Commun. ACM, 8 (10), 627–633. \url{https://dl.acm.org/doi/10.1145/365628.365657}.
+\bibitem[Schakel \& Wilson (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significance using Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
 \end{thebibliography}
 
 \end{document}

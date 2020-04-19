@@ -1,7 +1,7 @@
 ---
 title: |
     | Analyse statistique et empirique des modèles
-    | de Word Embedding sur Twitter
+    | de *Word Embedding* sur Twitter
 author: |
     | Kim Antunez, Romain Lesauvage, Alain Quartier-la-Tente
     | sous l'encadrement de Benjamin Muller (Inria)
@@ -47,9 +47,9 @@ options(enable_print_style = FALSE)
 library(shiny)
 ```
 
-# Implémentation du modèle Word2Vec {#sec:word2vec}
+# Implémentation du modèle *Word2Vec* {#sec:word2vec}
 
-## Le modèle Word2vec, un modèle de word-embedding  [Kim]
+## Le modèle *Word2vec*, un modèle de *word-embedding*  [Kim]
 
 
 ## L’algorithme Skip-Gram [Alain]
@@ -59,6 +59,7 @@ library(shiny)
 Décrire les différentes étapes de l’algo (version softmax uniquement) : reprendre cette partie de la note d’étape mais en étant plus rigoureux (introductions des formules + développer davantage).
 
 ### Version negative sampling
+
 Réexpliquer l’algo dans sa version negative sampling et faire apparaître les avantages de cette méthode (cf un peu évoqué dans note d’étape). 
 
 
@@ -66,7 +67,7 @@ Réexpliquer l’algo dans sa version negative sampling et faire apparaître les
 
 ## Comment évaluer le modèle ? {#sec:commentEvaluer}
 
-Malgré l'utilisation généralisée des *word embedding*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. 
+Malgré l'utilisation généralisée des *word embeddings*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. 
 
 C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes empiriques. Nous allons décrire dans cette partie \@ref(sec:commentEvaluer) quelques méthodes que nous avons retenues pour évaluer la qualité des vecteurs-mots obtenus. 
 
@@ -113,9 +114,9 @@ En procédant de manière séquentielle, on obtient $q < r$ axes orthogonaux ave
 
 On peut montrer que $\forall k < q$ :
 
-- $v_k$ est un vecteur propre associé à la k\ieme{} valeur propre $\lambda_k$ de $R$  
-- la composante principale $Zv_k$ est centrée et $V(Zv_k)= \lambda_k$  
-- Les $Zv_k$ ne sont pas corrélés entre eux
+- $v_k$ est un vecteur propre associé à la k\ieme{} valeur propre $\lambda_k$ de $R$ ; 
+- la composante principale $Zv_k$ est centrée et $V(Zv_k)= \lambda_k$ ; 
+- Les $Zv_k$ ne sont pas corrélés entre eux.
 
 On obtient alors la matrice $F = ZV$ des nouvelles coordonnées factorielles des individus, avec $V = (v_1,\dots,v_q)$  la matrice des vecteurs propres. 
 
@@ -129,13 +130,13 @@ Enfin, pour juger de la qualité de la réduction de dimension, on calcule souve
 $$ \frac{V(F)}{I(Z)} = \frac{\sum \limits_{i = 1}^q \lambda_i}{p}$$
 
 
-### Algorithme t-distributed Stochastic Neighbor Embedding
+### Algorithme *t-distributed Stochastic Neighbor Embedding*
 
 Bien que l'ACP soit une première manière de résumer l'information contenue dans nos vecteurs, elle présente des limites, notamment dans les vecteurs aux trop grandes dimensions, pour lesquels l'inertie des premiers axes de l'ACP peut se révéler faible. 
 
 
-Pour combler ces lacunes, un autre algorithme de réduction de dimension peut être utilisé, celui dit du t-distributed Stochastic Neighbor Embedding (t-SNE). 
-Contraitement à l'ACP, cet algorithme est stochastique et non-linéaire et il favorise l’apparition de groupes de mots proches. 
+Pour combler ces lacunes, un autre algorithme de réduction de dimension peut être utilisé, celui dit du *t-distributed Stochastic Neighbor Embedding* (t-SNE). 
+Contrairement à l'ACP, cet algorithme est stochastique et non-linéaire et il favorise l’apparition de groupes de mots proches. 
 Sa philosophie demeure cependant identique : représenter dans un espace à dimension réduite notre nuage de points de manière à repérer les mots proches.
 
 La première étape de l'algorithme consiste à calculer les similarités entre les $n$ vecteurs-mots $(x_i)_{i=1...n}$. La similarité entre $x_i$ et $x_j$ se mesure comme étant la probabilité conditionnelle $p_{j|i}$ de choisir $x_j$ comme voisin de $x_i$, si les voisins étaient tirés au sort selon une loi $\mathcal{N}(x_i, \sigma_i)$^[
@@ -165,7 +166,7 @@ Comme dans l'algorithme de l'ACP, l'algorithme de t-SNE nous permet d'obtenir un
 
 ### Jugement humain {#sec:jugementHumain}
 
-Les *word-embedding* obtenus par *Word2Vec* sont censés regrouper les mots qui apparaissent dans un contexte similaire. Une dernière façon de vérifier la qualité de nos vecteurs-mots est de les comparer à un jugement humain. Pour ce faire, nous utilisons la liste de référence RG-65 pour le français^[Le RG-65 a fait appel à 18 évaluateurs humains. La base, initialement mobilisée dans un article anglophone (\cite{Rubenstein})  a été traduite de l'anglais.]  (\cite{Boumedyen}). Elle contient 65 paires de noms communs (tableau \ref{table:human_judgement}) évaluées sur une échelle de 0 (non liés) à 4 (très liés).
+Les *word-embeddings* obtenus par *Word2Vec* sont censés regrouper les mots qui apparaissent dans un contexte similaire. Une dernière façon de vérifier la qualité de nos vecteurs-mots est de les comparer à un jugement humain. Pour ce faire, nous utilisons la liste de référence RG-65 pour le français^[Le RG-65 a fait appel à 18 évaluateurs humains. La base, initialement mobilisée dans un article anglophone (\cite{Rubenstein})  a été traduite de l'anglais.]  (\cite{Boumedyen}). Elle contient 65 paires de noms communs (tableau \ref{table:human_judgement}) évaluées sur une échelle de 0 (non liés) à 4 (très liés).
 
 
 \begin{table}
@@ -210,9 +211,9 @@ IC_\alpha (r_s) = \left[\tanh\left(z-\frac{q_{1-\frac{\alpha}{2}}}{\sqrt{n-3}}\r
 $$
 avec $q_{1-\frac{\alpha}{2}}$ le quantile d'ordre $1-\frac{\alpha}{2}$ d'une loi $\mathcal{N}(0, 1)$.
 
-## Evaluation sur un corpus fictif {#sec:corpusFictif}
+## Évaluation sur un corpus fictif {#sec:corpusFictif}
 
-Avant de nous attaquer au jeu de données complet décrit plus bas, nous avons évalué un premier corpus fictif afin de nous assurer de la robustesse du modèle implémenté. Nous avons associé dix couples (du type [voiture, camion]), à dix mots contexte différents ([véhicule, moto, \dots]). 
+Avant de nous attaquer au jeu de données complet décrit plus bas, nous avons évalué un premier corpus fictif afin de nous assurer de la robustesse et de la validité du modèle implémenté. Nous avons associé dix couples (du type [voiture, camion]), à dix mots contextes différents ([véhicule, moto, \dots]). 
 Le corpus fictif est formé de 10 000 phrases composées chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots bruits, tous tirés aléatoirement. 
 
 Nous avons ensuite mis en œuvre les différentes techniques d'évaluation^[à l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.] présentées en partie \ref{sec:commentEvaluer} sur les *word-embeddings* obtenus grâce à ce corpus fictif. 
@@ -261,7 +262,7 @@ Une fois nous être assurés de la bonne implémentation du modèle (partie \@re
 
 Ces données correspondent à un ensemble de 1,3 million de tweets^[Ces tweets, achetés à twitter, sont la propriété de l'Inria.] postés en France entre 2014 et 2017, supposés être représentatifs de l'ensemble de tweets nationaux publiés durant cette période. 
 
-Le modèle *Word2Vec* version CBOW, décrit en partie \@ref(sec:word2vec), fait en effet intervenir un certain nombre d'hyperparamètres parmi lesquels : 
+Le modèle *Word2Vec* version Skip-gram, décrit en partie \@ref(sec:word2vec), fait en effet intervenir un certain nombre d'hyperparamètres parmi lesquels : 
 \begin{itemize}
 \item $ep$ : le nombre d'\og \emph{epochs} \fg{}
 \item $lr$ ou $\alpha$ : le \og \emph{learning rate} \fg{}, ou taux d'apprentissage
@@ -275,7 +276,7 @@ Même si les méthodes d'optimisation bayésiennes deviennent de plus en plus pe
 
 Le package `Gensim` (\og Generate Similar \fg{}), dans lequel la méthode *Word2Vec* est implémentée, est un des outils actuels les plus robustes et performants^[Grâce à sa dépendance à `NumPy`, `Gensim` puise dans des bibliothèques de bas niveau. Ainsi, alors que le code de haut niveau est du Python, c'est en fait du Fortran et du C hautement optimisés qui sont utilisés, ce qui rend `Gensim` bien plus performant que `PyTorch` que nous avons utilisé pour implémenter le modèle décrit en partie \@ref(sec:word2vec).] pour la modélisation sémantique non supervisée (\cite{Rehurek}). 
 
-Nous avons choisi de mobiliser `Gensim` dans la suite de ce rapport, en parallèle du modèle que nous avons implémenté, en raison de son temps d'exécution bien plus rapide^[A titre d'exemple, alors qu'une epoch sur l'ensemble des tweets met une vingtaine d'heures à tourner pour \og notre \fg{} modèle, elle met 1 minute via `Gensim`.]. Cette rapidité d'exécution nous a permis de réaliser des tests d'hyperparamètres plus nombreux. 
+Nous avons choisi de mobiliser `Gensim` dans la suite de ce rapport, en parallèle du modèle que nous avons implémenté, en raison de son temps d'exécution bien plus rapide^[À titre d'exemple, alors qu'une epoch sur l'ensemble des tweets met une vingtaine d'heures à tourner pour \og notre \fg{} modèle, elle met 1 minute via `Gensim`.]. Cette rapidité d'exécution nous a permis de réaliser des tests d'hyperparamètres plus nombreux. 
 
 Pour réaliser ces tests, nous avons fait tourner le modèle *Word2Vec* plusieurs fois en modifiant un à un les paramètres. Nous avons ensuite évalué ces différents modèles par la méthode du \og jugement humain \fg{} (cf. partie \@ref(sec:jugementHumain)) en comparant la mesure de la similarité cosinus^[Nous avons également évalué les modèles en utilisant (l'inverse de) la distance euclidienne à la place de la similarité cosinus. L'effet des paramètres devient alors bien moins clair et la performance du modèle est inférieure, ce va dans le sens de l'utilisation plus fréquente de la méthode de la similarité cosinus dans la littérature.] entre deux mots obtenue à partir de notre modèle à l'évaluation subjective de cette proximité par des individus. En outre, un même modèle est lancé six fois (six \og seeds \fg{} différentes) afin de construire des intervalles de confiance de la matière décrite précédemment, en empilant les six échantillons de mesure de proximités correspondant aux six implémentations d'un même modèle^[Pour chaque modèle, nous calculons les statistiques de rang des 65 paires de mots de la base de jugement humain ainsi que le rang des similarités cosinus des mots obtenus en sortie du modèle. Nous réalisons ces actions pour les six implémentations du même modèle et empilons les résultats obtenus. C’est à partir de cette base empilée de 6x65 lignes moins les données manquantes que nous calculons chaque intervalle de confiance selon la formule décrite en partie \@ref(sec:jugementHumain).]. 
 
@@ -283,7 +284,7 @@ Pour réaliser ces tests, nous avons fait tourner le modèle *Word2Vec* plusieur
 ### Nombre d'epochs, taille de fenêtre et taux d'apprentissage
 
 
-Pour cette première série de tests d'hyperparamètres, nous avons fixé la dimension des word-embedding à 50^[En réalisant les mêmes tests sur uniquement 100 000 tweets, puis en testant une dimension de word-embedding de 20, les effets observés et commentés ici se confirment.]  et évalué l'impact du nombre d'épochs, de la taille de la fenêtre et du taux d'apprentissage (figure \ref{fig:evaluation_1}) . 
+Pour cette première série de tests d'hyperparamètres, nous avons fixé la dimension des *word-embeddings* à 50^[En réalisant les mêmes tests sur uniquement 100 000 tweets, puis en testant une dimension de *word-embeddings* de 20, les effets observés et commentés ici se confirment.]  et évalué l'impact du nombre d'epochs, de la taille de la fenêtre et du taux d'apprentissage (figure \ref{fig:evaluation_1}) . 
 
 \begin{figure}
 \begin{center}
@@ -313,7 +314,7 @@ Le nombre d'epochs à un effet net. Passer de 10 à 100 epochs fait nettement au
 
 La valeur 0,02 semble donner systématiquement de meilleurs résultats que 0,01. En réalisant davantage de tests de taux d'apprentissage en fixant les autres hyperparamètres, les différents taux d'apprentissage présentent des performances similaires^[En fixant les paramètres dim = 50, ep = 100 et w = 4 (celles du modèle retenu *in fine*), et en testant les taux d'apprentissage 0,005, 0,01, 0,02, 0,03 et 0,04, les valeurs moyennes des corrélations s'échelonnent entre 0,41 et 0,48, soit des valeurs proches.].
 
-\faArrowCircleRight{} Nous retenons alors le paramètre **lr = 0,2**.
+\faArrowCircleRight{} Nous retenons alors le paramètre **lr = 0,02**.
 
 #### La taille de la fenêtre
 
@@ -321,19 +322,19 @@ La valeur 0,02 semble donner systématiquement de meilleurs résultats que 0,01.
 
 La taille de la fenêtre ne semble pas jouer un rôle majeur, et dépend beaucoup des autres paramètres choisis. 
 
-Certains travaux (\cite{Levy2}) indiquent que, suivant la taille de fenêtre choisie, les informations capturées sont différentes. Cela pourrait expliquer la complexité de choisir la \og meilleure \fg{} taille de fenêtre. Alors que les \og grandes \fg{} fenêtres capturent des informations sur le domaine du mot (autres mots de tout type étant utilisés dans des discussions connexes), les \og petites \fg{} fenêtres saisissent davantage le mot en lui-même (ses extensions, synonyme, lui sont alors proches). La valeur de 4 représente une taille de fenêtre \og ni trop grande ni trop petite\fg{} et qui présente de bons résultats dans la plupart des tests effectués. 
+Certains travaux (\cite{Levy2}) indiquent que, suivant la taille de fenêtre choisie, les informations capturées sont différentes. Cela pourrait expliquer la complexité de choisir la \og meilleure \fg{} taille de fenêtre. Alors que les \og grandes \fg{} fenêtres capturent des informations sur le domaine du mot (autres mots de tout type étant utilisés dans des discussions connexes), les \og petites \fg{} fenêtres saisissent davantage le mot en lui-même (ses extensions, synonymes, lui sont alors proches). La valeur de 4 représente une taille de fenêtre \og ni trop grande ni trop petite\fg{} et qui présente de bons résultats dans la plupart des tests effectués. 
 
 \faArrowCircleRight{} Nous retenons alors le paramètre **w = 4**.
 
 ### Dimension des vecteurs-mots
 
-On cherche cette fois-ci à évaluer l'effet de la dimension des *word-embedding*. Selon certains papiers (comme \cite{Pennington}), la qualité des représentations vectorielles s'améliore à mesure que l'on augmente la taille du vecteur, mais seulement jusqu'à atteindre 300 dimensions^[La dimension des vecteurs doit également être adaptée à la taille du vocabulaire. Un des articles fondateurs de word2vec (\cite{Mikolov}) recommande donc d'augmenter à la fois la dimension des vecteurs et la quantité de données d'apprentissage. Par exemple, avec un vocabulaire d'une centaine de mots, il serait inefficace d'utiliser des projections en grande dimension (risque de surapprentissage).]. Après 300 dimensions, la qualité des vecteurs commence à diminuer et le temps de calcul augmente considérablement. 
+On cherche cette fois-ci à évaluer l'effet de la dimension des *word-embeddings*. Selon certains papiers (comme \cite{Pennington}), la qualité des représentations vectorielles s'améliore à mesure que l'on augmente la taille du vecteur, mais seulement jusqu'à atteindre 300 dimensions^[La dimension des vecteurs doit également être adaptée à la taille du vocabulaire. Un des articles fondateurs de word2vec (\cite{Mikolov}) recommande donc d'augmenter à la fois la dimension des vecteurs et la quantité de données d'apprentissage. Par exemple, avec un vocabulaire d'une centaine de mots, il serait inefficace d'utiliser des projections en grande dimension (risque de surapprentissage).]. Après 300 dimensions, la qualité des vecteurs commence à diminuer et le temps de calcul augmente considérablement. 
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=1\textwidth]{img/test_parametres2.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Tests d'hyperparamètres : dimension des word-embedding}\label{fig:figure_dim}
+\caption{Tests d'hyperparamètres : dimension des *word-embeddings*}\label{fig:figure_dim}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
@@ -346,7 +347,7 @@ En pratique, en comparant l'effet de la dimension des vecteurs (modèle fixé à
 
 \faArrowCircleRight{} Nous retenons alors le paramètre **dim = 100**.
 
-## Evaluation sur le corpus final
+## Évaluation sur le corpus final
 
 ### Avec \og notre \fg{} modèle
 

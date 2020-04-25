@@ -31,8 +31,6 @@ header-includes:
 - \usepackage{fontawesome}
 - \DeclareMathOperator{\arctanh}{arctanh}
 - \usepackage{subcaption}
-
-
 ---
 
 ```{r setup, include=FALSE}
@@ -54,9 +52,47 @@ library(shiny)
 
 ## L’algorithme Skip-Gram [Alain]
 
+Le modèle *Word2Vec* est une des méthodes de machine learning utilisée pour faire du *word embedding* --- plongement lexical. 
+Elle permet de représenter, de manière vectorielle, l'ensemble des mots d'un corpus.
+Ainsi, les mots qui apparaissent dans des contextes similaires (par exemple « bonjour » et « salut ») seront représentés par des vecteurs relativement proches.
+L'objectif de cette partie est de décrire le fonctionnement de cet algorithme.
+
+Deux architectures du modèles *Word2Vec* existent (voir graphique \@ref(fig:cbowskipgram)) :
+
+- L'approche *Continuous bags of words* dont l'objectif est d'estimer la probabilité d'observer un mot, appelé *focus*, sachant que le contexte dans lequel il apparait (i.e. : les mots voisins).  
+
+- L'approche *Skip-gram* a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du  mot *focus*. 
+C'est cette approche que nous étudions dans ce projet.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=.7\textwidth]{img/cbow_skip_gram.png}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Architecture des modèles Continuous bags of words (CBOW) et Skip-gram.}\label{fig:cbowskipgram}
+%\vspace{-0.3cm}
+%\footnotesize
+%\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
+\end{figure}
+
+Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents). L'approche *Skip-gram* peut être vue comme un réseau de neurone avec trois couches. 
+
 ### Version softmax 
 
 Décrire les différentes étapes de l’algo (version softmax uniquement) : reprendre cette partie de la note d’étape mais en étant plus rigoureux (introductions des formules + développer davantage).
+
+<!-- Nous entraînons le modèle grâce à un algorithme qui peut se résumer à ces quelques étapes :  -->
+
+<!-- - Nous partons de deux matrices de poids : une en entrée et une en sortie. La taille de ces matrices est fixée par le nombre de mots différents (vocabulaire) présents dans le corpus (lignes) et la dimension souhaitée des vecteurs en sortie (colonnes).  -->
+
+<!--- L'algorithme parcourt ensuite chaque phrase du corpus (une phrase correspondant à un tweet). Pour chaque phrase, un mot appelé *focus* est sélectionné au hasard. Puis, on associe à chaque mot focus un mot *contexte* tiré lui aussi au hasard dans une fenêtre autour du mot focus choisi^[Par exemple, dans la phrase « Le chat de la voisine est roux », si le mot focus est « voisine » et que la fenêtre est de 2, le mot contexte sera tiré au hasard parmi les mots « de », « la », « est » et « roux ».].  -->
+
+<!-- - Nous sélectionnons ensuite la ligne de la matrice en entrée correspondant au mot focus. En multipliant matriciellement cette ligne avec la matrice de sortie, nous obtenons un score (produit scalaire) qui mesure pour chaque mot du vocabulaire la probabilité d'appartenir au contexte du mot focus. Ce score est ensuite transformé en probabilité d'appartenance grâce à la fonction *softmax*. Nous mettons ensuite à jour la fonction de perte (*loss*) qui dépend de ce score.  -->
+
+<!-- - Les matrices d'entrée et de sortie sont mises à jour successivement par descente de gradient $\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta L(\theta^{(t)})$ avec $\theta$ la matrice (entrée ou sortie), $L(\theta)$ la fonction de perte et $\eta$ le taux d'apprentissage (constante). -->
+
+<!-- - Ces étapes sont répétées pour l'ensemble des couples [focus, contexte]. Puis, l'ensemble de l'opération est répétée un certain nombre d'*epochs* fixé au préalable . -->
+
+<!-- Au fur et à mesure de l'apprentissage, les deux matrices d'entrée et sortie sont actualisées, et de plus en plus pertinentes. À la fin de l'algorithme, nous faisons la moyenne de ces matrices. C'est cette moyenne qui représentera les vecteurs finaux de représentation des mots du corpus.   -->
 
 ### Version negative sampling
 
@@ -479,6 +515,14 @@ Enfin, nous avons réalisé des opérations sur les mots-vecteurs. Si l'opérati
 \emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02 / dim = 100.\newline
 Les mots en vert correspondent à ceux présents dans l'opération, le mot en rouge le mot que l'on serait supposé trouver et les mots en orange les 10 mots les plus proches du résultat de l'opération vectorielle.}
 \end{figure}
+
+# Analyse des sentiments
+
+## Description de la méthode et tests [Partie rédigée par Roro]
+
+## Comparaison avec indicateurs insee
+
+
 
 
 \newpage

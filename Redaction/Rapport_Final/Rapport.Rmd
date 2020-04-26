@@ -63,46 +63,30 @@ Le « Natural Language Processing » (NLP ou « traitement automatique du langag
 
 ### Historique : de la sémantique vectorielle à *Word2Vec*
 
-La « sémantique vectorielle » est née dans les années 1950^[L’ouvrage \cite{Jurafsky} permet de retracer avec une grande richesse l’évolution des méthodes de NLP.] . C’est une méthode algébrique de représentation d’un document visant à réaliser des tâches diverses (détecter le plagiat, filtrer des articles, \dots). Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives VS négatives (heureux / triste), etc. 
+La « sémantique vectorielle » est née dans les années 1950^[L’ouvrage \cite{Jurafsky} permet de retracer avec une grande richesse l’évolution des méthodes de NLP.] . C’est une méthode algébrique de représentation d’un document visant à réaliser des tâches diverses (détecter le plagiat, filtrer des articles\dots). Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives VS négatives (heureux / triste), etc. 
 
 Un modèle répondant à ces exigences ne peut exister. Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement, dit autrement : les mots qui se produisent dans un contexte identique tendent à avoir des significations similaires^[Comme l'a écrit le linguiste britannique John Rupert Firth en 1957, « Vous connaîtrez un mot par ses fréquentations. »]. 
 
-Les premiers modèles sémantiques^[comme le *term frequency-inverse document frequency* (TF-IDF)] représentaient les relations entre mots grâce à des très grandes matrices dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0 et dites « sparses »). Les méthodes de *word-embedding* qui sont ensuite apparus ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).  Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d’accélérer les tâches d’apprentissage impliquant ces mots. 
+Les premiers modèles sémantiques^[Comme le *term frequency-inverse document frequency* (TF-IDF)] représentaient les relations entre mots grâce à des très grandes matrices dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0 et dites « sparses »). Les méthodes de *word-embedding* qui sont ensuite apparus ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).  Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d’accélérer les tâches d’apprentissage impliquant ces mots. 
 
 \cite{Mikolov} ont mis en avant en 2013 les méthodes de *word-embedding* à travers la création de *Word2Vec*. Ce modèle de réseaux de neurones^[C’est l’article \cite{Bengio} qui a introduit dix ans avant *Word2Vec* le premier modèle d’apprentissage de représentation de vecteurs-mots à partir d’un réseau de neurone simple.] à deux couches est rapidement devenu une référence grâce à la grande précision des résultats qu’il permet d’obtenir, étant entraîné en un temps record sur un corpus très volumineux.  
 
-### *Word2Vec*, un modèle d’apprentissage « auto-supervisé »
+### *Word2Vec*, un modèle d’apprentissage « auto-supervisé » {#subsec:word2vec}
 
 Pour rappel, en sortie du modèle *Word2Vec*, chaque mot est représenté par un vecteur dont la dimension est fixée par la valeur d’un hyperparamètre. Les mots qui apparaissent dans des contextes similaires (« bonjour » et « salut » par exemple) seront représentés par des vecteurs relativement proches dans l’espace vectoriel de définition de ces vecteurs. Dans la même logique, *Word2Vec* permet également de réaliser des opérations vectorielles, comme dans l’exemple, souvent cité : $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ qui provient de \cite{Mikolov}.  
-  
-Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition de certains mots **« contextes »** **voisins** d’un mot **« cible »**^[comme dans les premiers modèles sémantiques dits « sparses »], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question « Est-ce que ce mot contexte est susceptible d’être voisin du mot cible ? ». La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
 
-Les voisins d’un mot cible reposent sur un hyperparamètre : la fenêtre (window ou $w$).  Pour $w = n$, les voisins du mot cible sont les $n$ mots précédents et les $n$ mots suivants dans la phrase. Par exemple, dans la phrase :  
+\colorbox{BurntOrange}{Reorganiser cette partie (Kim) : introduction termes focus/contexte}
 
-\begin{quote}
-\LARGE \textbf{``}\normalsize \emph{Le professeur de statistique est strict avec ses élèves.} \LARGE \textbf{''}\normalsize
-\end{quote}
-
-Si le mot cible est « statistique » et si $w = 2$, alors le contexte qui lui est associé est :  `[professeur, de, est, strict]`. 
-
-Pour ce faire, nous entraînons le réseau de neurones en le nourrissant des paires `[cible, contexte]`^[Dans notre exemple : ` [statistique, professeur], [statistique, de] ` \dots] contenues dans les différentes phrases (ici tweets) du corpus afin qu’il puisse déterminer les probabilités d’apparition d’un mot dans le voisinage d’un autre mot (description de l’algorithme précis en partie \@ref(sec:skipgram)). 
-
-Ainsi, la grande force du modèle d’apprentissage *Word2Vec* est qu’il est « auto-supervisé ». En effet, comme nous avons vu plus haut, le corpus est considéré comme une donnée d'entraînement implicitement supervisée, ce qui nous évite d’avoir à mobiliser des corpus annexes annotés.
-
-
-
-## L’algorithme Skip-Gram {#sec:skipgram}
-
-L'objectif de cette partie est de décrire le fonctionnement de l'algorithme *Word2Vec*. Deux architectures du modèle existent (voir graphique \@ref(fig:cbowskipgram)) :
+Deux architectures du modèle *Word2Vec* existent (voir graphique \@ref(fig:cbowskipgram)) :
 
 - L'approche *Continuous bags of words* dont l'objectif est d'estimer la probabilité d'observer un mot, appelé *focus*, sachant que le contexte dans lequel il apparait (i.e. : les mots voisins).  
 
 - L'approche *Skip-gram* a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du  mot *focus*. 
-C'est cette approche que nous étudions dans ce projet.
+C'est cette approche que nous étudions dans ce projet et dans la suite de ce rapport.
 
 \begin{figure}[htp]
 \centering
-\includegraphics[width=.7\textwidth]{img/cbow_skip_gram.png}
+\includegraphics[width=.6\textwidth]{img/cbow_skip_gram.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
 \caption{Architecture des modèles Continuous bags of words (CBOW) et Skip-gram.}\label{fig:cbowskipgram}
 %\vspace{-0.3cm}
@@ -110,7 +94,56 @@ C'est cette approche que nous étudions dans ce projet.
 %\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{figure}
 
-Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents). L'approche *Skip-gram* peut être vue comme un réseau de neurone avec trois couches. 
+Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition de certains mots **« contextes »** **voisins** d’un mot **« focus »**^[comme dans les premiers modèles sémantiques dits « sparses »], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ». La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
+
+Les voisins d’un mot focus reposent sur un hyperparamètre : la fenêtre (window ou $w$).  Pour $w = p$, les voisins du mot focus sont les $p$ mots précédents et les $p$ mots suivants dans la phrase. Par exemple, dans la phrase :  
+
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{Le professeur de statistique est strict avec ses élèves.} \LARGE \textbf{''}\normalsize
+\end{quote}
+
+Si le mot focus est « statistique » et si $w = 2$, alors le contexte qui lui est associé est :  `[professeur, de, est, strict]`; si le mot focus est « professeur » et si $w = 2$, alors le contexte qui lui est associé est :  `[Le, de, statistique]`.
+
+Pour ce faire, nous entraînons le réseau de neurones en le nourrissant des paires `[focus, contexte]`^[Dans notre exemple : ` [statistique, professeur], [statistique, de] `\dots] contenues dans les différentes phrases (ici tweets) du corpus afin qu’il puisse déterminer les probabilités d’apparition d’un mot dans le voisinage d’un autre mot (description de l’algorithme précis en partie \@ref(sec:skipgram)). 
+
+Ainsi, la grande force du modèle d’apprentissage *Word2Vec* est qu’il est « auto-supervisé ». En effet, comme nous avons vu plus haut, le corpus est considéré comme une donnée d'entraînement implicitement supervisée, ce qui nous évite d’avoir à mobiliser des corpus annexes annotés.
+
+## L’algorithme Skip-Gram {#sec:skipgram}
+
+L'objectif de cette partie est de décrire le fonctionnement de l'approche Skip-gram. 
+
+Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents) et $d$ la dimension retenue pour.
+Comme décrit dans la partie \@ref(subsec:word2vec), l'approche *Skip-gram* peut être vue comme un réseau de neurone avec trois couches avec : 
+
+- En entrée une matrice $W_e$ de taille $n\times m$ ;
+
+- En sortie une matrice $W_S$ de taille $n\times m$.
+
+Ces deux matrices sont initialisées en générant des lois normale $\mathcal N(0,1)$. Elles sont ensuites mises à jour, grâce aux couples `[focus, contexte]` construits à partir du contexte (voir partie \@ref(subsec:baseentrainement)), par un algorithme de descente de gradient.
+À la fin de l'algorithme ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
+Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la répresentation du $i$^ème^ mot du vocabulaire.
+
+### Construction de la base d'entraînement {#subsec:baseentrainement}
+
+Peu de traitements sont effectuées sur la base initiale : nous mettons tout en miniscule, supprimons la ponctuations
+
+L'algorithme parcourt ensuite chaque phrase du corpus (une phrase correspondant à un tweet). Pour chaque phrase, un mot appelé *focus* est sélectionné au hasard. Puis, on associe à chaque mot focus un mot *contexte* tiré lui aussi au hasard dans une fenêtre autour du mot focus choisi^[Par exemple, dans la phrase « Le chat de la voisine est roux », si le mot focus est « voisine » et que la fenêtre est de 2, le mot contexte sera tiré au hasard parmi les mots « de », « la », « est » et « roux ».].
+
+nettoyage + formation des couples +
+
+### Descente de gradient {#subsec:descentedegradient}
+
+#### Version softmax 
+
+<!-- Version plus ancienne (voir mikolov 2013a), sans negative sampling -->
+
+#### Version negative sampling
+
+<!-- mikolov 2013b -->
+<!-- Tomas Mikolov, Ilya Sutskever, Kai Chen, Gregory S. Corrado, and Jeffrey Dean. Distributed represen- tations of words and phrases and their compositionality. In NIPS, 2013. -->
+
+<!-- Deux avantages : évite de surpondérer les mots trop fréquent et temps de calcul -->
+
 
 ### Version softmax 
 
@@ -290,7 +323,7 @@ avec $q_{1-\frac{\alpha}{2}}$ le quantile d'ordre $1-\frac{\alpha}{2}$ d'une loi
 
 ## Évaluation sur un corpus fictif {#sec:corpusFictif}
 
-Avant de nous attaquer au jeu de données complet décrit plus bas, nous avons évalué un premier corpus fictif afin de nous assurer de la robustesse et de la validité du modèle implémenté. Nous avons associé dix couples (du type [voiture, camion]), à dix mots contextes différents ([véhicule, moto, \dots]). 
+Avant de nous attaquer au jeu de données complet décrit plus bas, nous avons évalué un premier corpus fictif afin de nous assurer de la robustesse et de la validité du modèle implémenté. Nous avons associé dix couples (du type [voiture, camion]), à dix mots contextes différents ([véhicule, moto\dots]). 
 Le corpus fictif est formé de 10 000 phrases composées chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots bruits, tous tirés aléatoirement. 
 
 Nous avons ensuite mis en œuvre les différentes techniques d'évaluation^[à l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.] présentées en partie \ref{sec:commentEvaluer} sur les *word-embeddings* obtenus grâce à ce corpus fictif. 

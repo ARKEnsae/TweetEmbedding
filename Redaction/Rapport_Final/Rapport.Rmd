@@ -9,7 +9,7 @@ automaticcontents: true
 output:
   bookdown::pdf_document2:
         toc: true
-        toc_depth: 3
+        toc_depth: 2
         number_sections: true
         fig_width: 7
         fig_height: 6
@@ -45,19 +45,55 @@ options(enable_print_style = FALSE)
 library(shiny)
 ```
 
+# Introduction {.unnumbered}
+
+Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenu une discipline à part entière (*Natural Language Processing*). 
+Ce succès s'explique en partie grâce à l'émergence de techniques non supervisées d'apprentissage de représentation de structures linguistiques. 
+Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissant dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches. 
+Les modèles **word2vec**, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet. 
+
+Dans ce projet de statistiques appliquées, nous étudierons dans un premier temps en détail et implémenterons le modèle *word2vec* (Partie \@ref(sec:word2vec)). Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (Partie \@ref(sec:evaluation)). Enfin, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (Partie \@ref(sec:sentimentalAnalysis)).
+
+
 # Implémentation du modèle *Word2Vec* {#sec:word2vec}
 
-## Le modèle *Word2vec*, un modèle de *word-embedding*  [Kim]
+## Le modèle *Word2vec*, un modèle de *word-embedding*
+
+Le « Natural Language Processing » (NLP ou « traitement automatique du langage naturel ») est une branche de *machine learning* visant à analyser, traiter et reproduire le langage humain.  Les modèles de NLP *Word2Vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le *word-embedding* --- plongement lexical en français. 
+
+### Historique : de la sémantique vectorielle à *Word2Vec*
+
+La « sémantique vectorielle » est née dans les années 1950^[L’ouvrage \cite{Jurafsky} permet de retracer avec une grande richesse l’évolution des méthodes de NLP.] . C’est une méthode algébrique de représentation d’un document visant à réaliser des tâches diverses (détecter le plagiat, filtrer des articles, \dots). Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives VS négatives (heureux / triste), etc. 
+
+Un modèle répondant à ces exigences ne peut exister. Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement, dit autrement : les mots qui se produisent dans un contexte identique tendent à avoir des significations similaires^[Comme l'a écrit le linguiste britannique John Rupert Firth en 1957, « Vous connaîtrez un mot par ses fréquentations. »]. 
+
+Les premiers modèles sémantiques^[comme le *term frequency-inverse document frequency* (TF-IDF)] représentaient les relations entre mots grâce à des très grandes matrices dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0 et dites « sparses »). Les méthodes de *word-embedding* qui sont ensuite apparus ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).  Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d’accélérer les tâches d’apprentissage impliquant ces mots. 
+
+\cite{Mikolov} ont mis en avant en 2013 les méthodes de *word-embedding* à travers la création de *Word2Vec*. Ce modèle de réseaux de neurones^[C’est l’article \cite{Bengio} qui a introduit dix ans avant *Word2Vec* le premier modèle d’apprentissage de représentation de vecteurs-mots à partir d’un réseau de neurone simple.] à deux couches est rapidement devenu une référence grâce à la grande précision des résultats qu’il permet d’obtenir, étant entraîné en un temps record sur un corpus très volumineux.  
+
+### *Word2Vec*, un modèle d’apprentissage « auto-supervisé »
+
+Pour rappel, en sortie du modèle *Word2Vec*, chaque mot est représenté par un vecteur dont la dimension est fixée par la valeur d’un hyperparamètre. Les mots qui apparaissent dans des contextes similaires (« bonjour » et « salut » par exemple) seront représentés par des vecteurs relativement proches dans l’espace vectoriel de définition de ces vecteurs. Dans la même logique, *Word2Vec* permet également de réaliser des opérations vectorielles, comme dans l’exemple, souvent cité : $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ qui provient de \cite{Mikolov}.  
+  
+Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition de certains mots **« contextes »** **voisins** d’un mot **« cible »**^[comme dans les premiers modèles sémantiques dits « sparses »], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question « Est-ce que ce mot contexte est susceptible d’être voisin du mot cible ? ». La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
+
+Les voisins d’un mot cible reposent sur un hyperparamètre : la fenêtre (window ou $w$).  Pour $w = n$, les voisins du mot cible sont les $n$ mots précédents et les $n$ mots suivants dans la phrase. Par exemple, dans la phrase :  
+
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{Le professeur de statistique est strict avec ses élèves.} \LARGE \textbf{''}\normalsize
+\end{quote}
+
+Si le mot cible est « statistique » et si $w = 2$, alors le contexte qui lui est associé est :  `[professeur, de, est, strict]`. 
+
+Pour ce faire, nous entraînons le réseau de neurones en le nourrissant des paires `[cible, contexte]`^[Dans notre exemple : ` [statistique, professeur], [statistique, de] ` \dots] contenues dans les différentes phrases (ici tweets) du corpus afin qu’il puisse déterminer les probabilités d’apparition d’un mot dans le voisinage d’un autre mot (description de l’algorithme précis en partie \@ref(sec:skipgram)). 
+
+Ainsi, la grande force du modèle d’apprentissage *Word2Vec* est qu’il est « auto-supervisé ». En effet, comme nous avons vu plus haut, le corpus est considéré comme une donnée d'entraînement implicitement supervisée, ce qui nous évite d’avoir à mobiliser des corpus annexes annotés.
 
 
-## L’algorithme Skip-Gram [Alain]
 
-Le modèle *Word2Vec* est une des méthodes de machine learning utilisée pour faire du *word embedding* --- plongement lexical. 
-Elle permet de représenter, de manière vectorielle, l'ensemble des mots d'un corpus.
-Ainsi, les mots qui apparaissent dans des contextes similaires (par exemple « bonjour » et « salut ») seront représentés par des vecteurs relativement proches.
-L'objectif de cette partie est de décrire le fonctionnement de cet algorithme.
+## L’algorithme Skip-Gram {#sec:skipgram}
 
-Deux architectures du modèles *Word2Vec* existent (voir graphique \@ref(fig:cbowskipgram)) :
+L'objectif de cette partie est de décrire le fonctionnement de l'algorithme *Word2Vec*. Deux architectures du modèle existent (voir graphique \@ref(fig:cbowskipgram)) :
 
 - L'approche *Continuous bags of words* dont l'objectif est d'estimer la probabilité d'observer un mot, appelé *focus*, sachant que le contexte dans lequel il apparait (i.e. : les mots voisins).  
 
@@ -94,12 +130,17 @@ Décrire les différentes étapes de l’algo (version softmax uniquement) : rep
 
 <!-- Au fur et à mesure de l'apprentissage, les deux matrices d'entrée et sortie sont actualisées, et de plus en plus pertinentes. À la fin de l'algorithme, nous faisons la moyenne de ces matrices. C'est cette moyenne qui représentera les vecteurs finaux de représentation des mots du corpus.   -->
 
+
+<!-- Ci-dessous quelques infos de Kim qui pourront peut-être t'inspirer tiré de : https://web.stanford.edu/~jurafsky/slp3/edbook_oct162019.pdf (regarder vers la page 115 sur word2vec) -->
+
+<!--  word2vec est un modèle beaucoup plus simple que le modèle de langage de réseau de neurones, de deux manières. Tout d'abord, word2vec simplifie la tâche (ce qui en fait une classification binaire au lieu de la pré-diction des mots). Deuxièmement, word2vec simplifie l'architecture (formation d'un classificateur de régression logistique au lieu d'un réseau neuronal multicouche avec des couches cachées qui nécessitent des algorithmes de formation plus sophistiqués).  -->
+
 ### Version negative sampling
 
 Réexpliquer l’algo dans sa version negative sampling et faire apparaître les avantages de cette méthode (cf un peu évoqué dans note d’étape). 
 
 
-# Évaluation du modèle implémenté
+# Évaluation du modèle implémenté {#sec:evaluation}
 
 ## Comment évaluer le modèle ? {#sec:commentEvaluer}
 
@@ -516,12 +557,17 @@ Enfin, nous avons réalisé des opérations sur les mots-vecteurs. Si l'opérati
 Les mots en vert correspondent à ceux présents dans l'opération, le mot en rouge le mot que l'on serait supposé trouver et les mots en orange les 10 mots les plus proches du résultat de l'opération vectorielle.}
 \end{figure}
 
-# Analyse des sentiments
+# Analyse des sentiments {#sec:sentimentalAnalysis}
 
-## Description de la méthode et tests [Partie rédigée par Roro]
+## Description de la méthode et tests [Roro]
 
 ## Comparaison avec indicateurs insee
 
+# Conclusion {.unnumbered}
+
+<!-- Ouverture : prolongement de word2vec (sous entendu, la science ne fait que de s’améliorer etc.).  voir par ex ici : https://web.stanford.edu/~jurafsky/slp3/edbook_oct162019.pdf -->
+<!-- Les études sur les plongements incluent des résultats montrant une relation mathématique élégante entre les plongements clairsemés et denses (Levy et Goldberg, 2014c), ainsi que de nombreuses enquêtes sur les plongements et leurs paramétrisations. (Bullinaria et Levy 2007, Bullinaria et Levy 2012, Lapesa et Evert 2014, Kiela et Clark 2014, Levy et al.2015) .Le modèle d'intégration le plus utilisé en plus de word2vec est GloVe (Penning-ton et al., 2014). Le nom signifie Global Vectors, car le modèle est basé sur la capture de statistiques globales de corpus. GloVe est basé sur des ratios de probabilités de la matrice de cooccurrence mot-mot, combinant les intuitions de modèles basés sur le comptage comme PPMI tout en capturant les structures linéaires utilisées par des méthodes comme word2vec.Une extension de word2vec, fasttext (Bojanowski et al., 2017 ), traite des mots peu connus et de la rareté dans les langues à morphologie riche, en utilisant des sous-modèles. Chaque mot en texte rapide est représenté comme lui-même, plus un sac de n-grammes constitutifs, avec des symboles de délimitation spéciaux <et> ajoutés à chaque mot. Par exemple, avec n = 3 le mot WHERE serait représenté par le caractère n-grammes: <wh, whe, her, ere, re> ainsi que la séquence <where>.  -->
+<!-- Ensuite, un enchaînement de skipgram est appris pour chaque n-gramme constitutif, et le mot est représenté par la somme de tous les plongements de ses n-grammes constitutifs. Une bibliothèque open source fasttext, comprenant des incorporations pré-formées pour 157 langues, est disponible à l'adresse http://fasttext.cc.Il existe de nombreux autres algorithmes d'intégration, utilisant des méthodes telles que la factorisation non négative de la matrice (Fyshe et al., 2015), ou en convertissant intégration PPMI clairsemée à des vecteurs denses en utilisant SVD (Levy et Goldberg, 2014c) .Dans le chapitre 10, nous introduisons des incorporations contextuelles comme ELMo (Peters et al., 2018) et BERT (Devlin et al., 2019) dans lesquelles la représentation d'un mot est contextuelle, fonction de la phrase d'entrée entière. Voir Manning et al. (2008) pour une compréhension plus approfondie du rôle des vecteurs dans la recherche d'informations, y compris comment comparer les requêtes avec des documents, plus de détails sur tf-idf et les problèmes de mise à l'échelle vers de très grands ensembles de données. Cruse (2004) est une introduction linguistique utile texte sur la sémantique lexicale. -->
 
 
 
@@ -529,23 +575,16 @@ Les mots en vert correspondent à ceux présents dans l'opération, le mot en ro
 
 \nocite{*}
 \begin{thebibliography}{999}
+\bibitem[Bengio \emph{et al} (2003)]{Bengio} Bengio, Y., Ducharme, R., Vincent, P., Janvin, C. (2003). A Neural Probabilistic Language Model. JMLR, 3:1137–1155. \url{https://papers.nips.cc/paper/1839-a-neural-probabilistic-language-model.pdf}.
 \bibitem[Boumedyen Billami \& Gala (2017)]{Boumedyen} Boumedyen Billami, M.,  Gala, N (2017). Création et validation de signatures sémantiques : application à la mesure de similarité sémantique et à la substitution lexicale. TALN 2017. \url{https://hal.archives-ouvertes.fr/hal-01528117/document}.
 \bibitem[Hutter, Hoos \& Leyton-Brown (2014)]{Hutter} Hutter, F., Hoos, H., Leyton-Brown, K., (2014). An Efficient Approach for Assessing Hyperparameter Importance. PMLR 32(1):754-762. \url{http://proceedings.mlr.press/v32/hutter14.pdf}.
+\bibitem[Jurafsky \& Martin (2019)]{Jurafsky} Jurafsky, D., Martin, J. H. (2019). Speech and Language Processing (3rd ed. draft). Prentice Hall. \url{https://web.stanford.edu/~jurafsky/slp3/edbook_oct162019.pdf}.
 \bibitem[Levy \& Golberg (2015)]{Levy} Levy, O., Golberg, Y. (2015). Neural Word Embedding as Implicit Matrix Factorization.
 \url{https://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
 \bibitem[Levy \& Golberg (2014)]{Levy2} Levy, O., Golberg, Y. (2014). Dependency-based word embeddings. ACL. \url{http://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
-\bibitem[Mikolov, Chen, Corrado \emph{et al} (2013)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
+\bibitem[Mikolov \emph{et al} (2013)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
 \bibitem[Pennington, Socher \& Manning (2014)]{Pennington} Pennington, J., Socher, R., Manning, C. D., (2014).  Glove: global vectors for word representation. Proc. of EMNLP,1532 – 1543. \url{https://www.aclweb.org/anthology/D14-1162.pdf}.
 \bibitem[{\v R}eh{\r u}{\v r}ek \& Sojka (2010)]{Rehurek} {\v R}eh{\r u}{\v r}ek, R.,  Sojka, P. (2010). Software Framework for Topic Modelling with Large Corpora. Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. p. 46--50, 5 pp. ISBN 2-9517408-6-7. \url{https://is.muni.cz/publication/884893/en}.
 \bibitem[Rubenstein \& Goodenough (1965)]{Rubenstein} Rubenstein, H.,  Goodenough, J. B. (1965). Contextual Correlates of Synonymy. Commun. ACM, 8 (10), 627–633. \url{https://dl.acm.org/doi/10.1145/365628.365657}.
 \bibitem[Schakel \& Wilson (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significance using Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
 \end{thebibliography}
-
-
-
-
-
-
-
-
-

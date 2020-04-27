@@ -123,13 +123,13 @@ Les premiers modèles sémantiques\footnote{Comme le \emph{term frequency-invers
 
 Pour rappel, en sortie du modèle \emph{Word2Vec}, chaque mot est représenté par un vecteur dont la dimension est fixée par la valeur d'un hyperparamètre. Les mots qui apparaissent dans des contextes similaires («~bonjour~» et «~salut~» par exemple) seront représentés par des vecteurs relativement proches dans l'espace vectoriel de définition de ces vecteurs. Dans la même logique, \emph{Word2Vec} permet également de réaliser des opérations vectorielles, comme dans l'exemple, souvent cité : \(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}\) qui provient de \cite{Mikolov}.
 
-\colorbox{BurntOrange}{Reorganiser cette partie (Kim) : introduction termes focus/contexte}
+\colorbox{BurntOrange}{Réorganiser cette partie (Kim) : introduction termes focus/contexte}
 
 Deux architectures du modèle \emph{Word2Vec} existent (voir graphique \ref{fig:cbowskipgram}) :
 
 \begin{itemize}
 \item
-  L'approche \emph{Continuous bags of words} dont l'objectif est d'estimer la probabilité d'observer un mot, appelé \emph{focus}, sachant le contexte dans lequel il apparait (i.e. : les mots voisins).
+  L'approche \emph{Continuous bags of words} dont l'objectif est d'estimer la probabilité d'observer un mot, appelé \emph{focus}, sachant le contexte dans lequel il apparaît (i.e. : les mots voisins).
 \item
   L'approche \emph{Skip-gram} a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du mot \emph{focus}.
   C'est cette approche que nous étudions dans ce projet et dans la suite de ce rapport.
@@ -174,14 +174,14 @@ Comme décrit dans la partie \ref{subsec:word2vec}, l'approche \emph{Skip-gram} 
   En sortie une matrice \(W_S\) de taille \(n\times m\).
 \end{itemize}
 
-Ces deux matrices sont initialisées en générant des lois normale \(\mathcal N(0,1)\). Elles sont ensuites mises à jour, grâce aux couples \texttt{{[}focus,\ contexte{]}} construits à partir du contexte (voir partie \ref{subsec:baseentrainement}), par un algorithme de descente de gradient.
+Ces deux matrices sont initialisées en générant des lois normale \(\mathcal N(0,1)\). Elles sont ensuite mises à jour, grâce aux couples \texttt{{[}focus,\ contexte{]}} construits à partir du contexte (voir partie \ref{subsec:baseentrainement}), par un algorithme de descente de gradient.
 À la fin de l'algorithme ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
-Ainsi, la ligne \(i\) de la matrice \(W=\frac{W_e+W_s}{2}\) donnera la répresentation du \(i\)\textsuperscript{ème} mot du vocabulaire.
+Ainsi, la ligne \(i\) de la matrice \(W=\frac{W_e+W_s}{2}\) donnera la représentation du \(i\)\textsuperscript{ème} mot du vocabulaire.
 
 \hypertarget{subsec:baseentrainement}{%
 \subsubsection{Construction de la base d'entraînement}\label{subsec:baseentrainement}}
 
-Peu de traitements sont effectuées sur la base initiale : nous mettons tout en miniscule, supprimons la ponctuations, mais nous laissons tous les chiffres et les accents.
+Peu de traitements sont effectuées sur la base initiale : nous mettons tout en minuscule, supprimons la ponctuations, mais nous laissons tous les chiffres et les accents.
 Chaque phrase\footnote{Dans notre cas une phrase correspond à un tweet, même si ce tweet peut-être écrit en plusieurs phrases.}
 est ensuite \emph{tokénisée} par la chaîne de caractère correspondant à un espace \texttt{"\ "} : on considère qu'il y a autant de mots de que chaînes de caractères séparées par un espace. Ainsi, les mots composés ne seront donc pas pris en compte.
 Par exemple dans la phrase «~Que pensez-vous de CE projet ?(i.e. : qu'avez-vous retenu en 10min?)~» est décomposée en 14 mots \texttt{{[}que,\ pensez,\ vous,\ de,\ ce,\ projet,\ i,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}.
@@ -194,7 +194,7 @@ Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pr
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Pour chaque phrase on effectue un sous-échantillonnage. Pour chaque mot \(w_i\) on note \(z(w_i)\) la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparait et le nombre total de mots. La probabilité de garder un mot le mot \(w_i\) est :
+  Pour chaque phrase on effectue un sous-échantillonnage. Pour chaque mot \(w_i\) on note \(z(w_i)\) la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparaît et le nombre total de mots. La probabilité de garder un mot le mot \(w_i\) est :
   \[
   \mathbb P(w_i) = \min\left\{\left(\sqrt{\frac{z(w_i)}{q}} + 1 \right)
   \times
@@ -208,7 +208,7 @@ Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pr
 \item
   \(\mathbb P(w_i) = 1\) (\(w_i\) est toujours gardé) lorsque \(z(w_i)\leq 0,0026\), c'est-à-dire si \(w_i\) représentent moins de 0,26 \% du nombre total de mots.\\
 \item
-  \(\mathbb P(w_i)=0,5\) (50 \% de chance de garder \(w_i\)) when \(z(w_i)=0,00746\).\\
+  \(\mathbb P(w_i)=0,5\) (50 \% de chance de garder \(w_i\)) lorsque \(z(w_i)=0,00746\).\\
 \item
   \(\mathbb P(w_i)=0,033\) (3,3 \% chance de garder \(w_i\)) lorsque \(z(w_i)=1,0\) (si le corpus n'est constitué que du mot \(w_i\), ce qui serait bien sûr absurde).
 \end{itemize}
@@ -234,7 +234,7 @@ Pour chaque couple \texttt{{[}focus,\ contexte{]}}, les matrice \(W_e\) et \(W_s
 \[\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta L(\theta^{(t)})\]
 avec \(\eta\) le taux d'apprentissage (un hyperparamètre à fixer) et \(L(\theta)\) la fonction de perte.
 
-Le modèle \emph{Word2vec} a initialiement été construit en utilisant une fonction de perte dérivée de la fonction \emph{softmax} (voir partie \ref{subsec:softmax} et \cite{Mikolov}). L'algorithme a ensuite été amélioré en utilisant le \emph{negative sampling} (voir partie \ref{subsec:negsampling} et \cite{MikolovNS}).
+Le modèle \emph{Word2vec} a initialement été construit en utilisant une fonction de perte dérivée de la fonction \emph{softmax} (voir partie \ref{subsec:softmax} et \cite{Mikolov}). L'algorithme a ensuite été amélioré en utilisant le \emph{negative sampling} (voir partie \ref{subsec:negsampling} et \cite{MikolovNS}).
 
 \hypertarget{subsec:softmax}{%
 \paragraph{Version softmax}\label{subsec:softmax}}
@@ -282,25 +282,58 @@ L'inconvénient de cette méthode est qu'elle est très gourmande en temps de ca
 
 La complexité est donc proportionnelle à la taille du vocabulaire, qui peut être très grande (par exemple, dans notre base de tweets, cette taille est de 70 330).
 
-C'est pourquoi la version \emph{softmax} est très peu utilisée dans les implémentations de Skip-Gram. Une approche alternative, \emph{negative sampling} avec une fonction sigmoïd, moins gourmande en temps de calcul, est alors souvent préféré\footnote{Une autre alternative à l'approche \emph{softmax} parfois utilisée est l'approches \emph{hierarchical softmax} qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à \(\log_2n\) mais reste plus importante que celle de l'approche \emph{negative sampling}.}.
+C'est pourquoi la version \emph{softmax} est très peu utilisée dans les implémentations de Skip-Gram. Une approche alternative, \emph{negative sampling} avec une fonction sigmoïde, moins gourmande en temps de calcul, est alors souvent préféré\footnote{Une autre alternative à l'approche \emph{softmax} parfois utilisée est l'approches \emph{hierarchical softmax} qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à \(\log_2n\) mais reste plus importante que celle de l'approche \emph{negative sampling}.}.
 
 \hypertarget{subsec:negsampling}{%
-\paragraph{Version negative sampling}\label{subsec:negsampling}}
+\paragraph{\texorpdfstring{Version \emph{negative sampling}}{Version negative sampling}}\label{subsec:negsampling}}
 
 Le \emph{negative sampling} est basée sur le concept de \emph{Noise Contrastive Estimation} --- estimation contrastée du bruit --- selon lequel un bon modèle logistique devrait être capable de différentier un faux signal d'un vrai signal.
 
+Plutôt que mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple \texttt{{[}focus,\ contexte{]}}, dans l'approche \emph{negative sampling} on tire \(K\) mots au hasard du vocabulaire \((w_{neg,\,i})_{i=1..K}\), selon une distribution \(P_n(w)\), en considérant que ces mots ne seront pas des mots contexte de \texttt{focus}\footnote{Il est bien sûr possible que parmi les mots tirés au hasard il y ait des mots qui soient vraiment dans le contexte. Cependant, puisque la taille du vocabulaire est très grande, on considère que cette erreur est négligeable.}.
+L'idée du \emph{negative sampling} est donc de transformer un problème de classification multi-classes en un problème de classification binaire : pour chaque couple \texttt{{[}focus,\ contexte{]}}, on cherche à déterminer si le mot contexte est dans le contexte du mot focus (\(D=1\), mot positif) ou non (\(D=0\), mot négatif).
+
+On cherche donc à maximiser \(\mathbb P(D=1\vert w_{focus},w_{contexte})\) et à minimiser \(\mathbb P(D=1\vert w_{focus},w_{neg,\,i})\).
+Pour estimer ces probabilités on utilise une fonction sigmoïde plutôt que la fonction softmax :
 \[
-\log\sigma (W_{s,w_i}{}^tW_e[w_I,])+
-\sum_{i=k}^K\mathbb E_{w_i\sim P_n(w)}[
-\log\sigma (-W_{s,w_i}{}^tW_e[w_I,])
+\mathbb P(D=1\vert w_{focus},w_{contexte})=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}}) = 
+\frac{1}{1+\exp(-W_{e,w_{focus}}{}^tW_{s,w_{contexte}})}
+\]
+et :
+\[
+\mathbb P(D=0\vert w_{focus},w_{contexte})=\sigma(-W_{e,w_{focus}}{}^tW_{s,w_{contexte}}) = 
+\frac{1}{1+\exp(W_{e,w_{focus}}{}^tW_{s,w_{contexte}})}
+\]
+Par rapport à l'approche \emph{softmax}, on cherche toujours à maximiser la quantité de l'équation \eqref{eq:objSoftMax} mais en estimant \(\log\mathbb P(w_{focus}\vert w_{context})\) par :
+\[
+\mathbb P(w_{focus}\vert w_{context}) =
+\log\underbrace{\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})}_{
+\mathbb P(D=1\vert w_{focus},w_{contexte})
+}+
+\sum_{i=1}^K\mathbb E_{w_{neg,i}\sim P_n(w)}[
+\log
+\underbrace{\sigma (-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}})}_{
+\mathbb P(D=0\vert w_{focus},w_{neg,\,i})
+}
 ]
 \]
 
-Pour le négative sampling, la probabilité de garder le mot \(w_i\) est égale à : \[
+Pour chaque couple \texttt{{[}focus,\ contexte{]}} et un ensemble \((w_{neg,\,i})_{i=1..K}\) de mots négatifs tirés, on associe la fonction de perte suivante :
+\[
+L(W_e,W_s)=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
+-
+\sum_{i=1}^K
+\log
+\sigma (-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}})
+\]
+\cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution pour générer les mots négatifs est :
+\[
 \mathbb P(w_i) = \frac{z(w_i)^{3/4}}{
 \sum_{j=1}^n z(w_j)^{3/4}
 }
-\] Avec \(z(w_j)\) la fréquence d'apparition du mot \(w_j\).
+\]
+Avec \(z(w_i)\) la fréquence d'apparition du mot \(w_i\).
+
+En plus d'être moins coûteuse en temps de calcul, cette méthode permet aussi de corriger la sur-estimation des poids des mots contextes tirés au hasard par rapport à l'approche softmax. En effet, on cherche à minimiser la proximité des mots négatifs au mot focus.
 
 \hypertarget{version-softmax}{%
 \subsubsection{Version softmax}\label{version-softmax}}

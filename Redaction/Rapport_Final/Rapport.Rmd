@@ -48,9 +48,9 @@ library(shiny)
 
 # Introduction {.unnumbered}
 
-Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenu une discipline à part entière (*Natural Language Processing*). 
+Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenue une discipline à part entière (*Natural Language Processing*). 
 Ce succès s'explique en partie grâce à l'émergence de techniques non supervisées d'apprentissage de représentation de structures linguistiques. 
-Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissant dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches. 
+Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissent dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches (au sens d'une distance définie). 
 Les modèles **word2vec**, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet. 
 
 Dans ce projet de statistiques appliquées, nous étudierons dans un premier temps en détail et implémenterons le modèle *word2vec* (Partie \@ref(sec:word2vec)). Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (Partie \@ref(sec:evaluation)). Enfin, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (Partie \@ref(sec:sentimentalAnalysis)).
@@ -60,15 +60,15 @@ Dans ce projet de statistiques appliquées, nous étudierons dans un premier tem
 
 ## Le modèle *Word2vec*, un modèle de *word-embedding*
 
-Le « Natural Language Processing » (NLP ou « traitement automatique du langage naturel ») est une branche de *machine learning* visant à analyser, traiter et reproduire le langage humain.  Les modèles de NLP *Word2Vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le *word-embedding* --- plongement lexical en français. 
+Le *Natural Language Processing* (NLP ou « traitement automatique du langage naturel ») est une branche de *machine learning* visant à analyser, traiter et reproduire le langage humain.  Les modèles de NLP *Word2Vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le *word-embedding* --- plongement lexical en français. 
 
 ### Historique : de la sémantique vectorielle à *Word2Vec*
 
-La « sémantique vectorielle » est née dans les années 1950^[L’ouvrage \cite{Jurafsky} permet de retracer avec une grande richesse l’évolution des méthodes de NLP.] . C’est une méthode algébrique de représentation d’un document visant à réaliser des tâches diverses (détecter le plagiat, filtrer des articles\dots). Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives VS négatives (heureux / triste), etc. 
+La « sémantique vectorielle » est née dans les années 1950^[L’ouvrage \cite{Jurafsky} permet de retracer avec une grande richesse l’évolution des méthodes de NLP.] . C’est une méthode algébrique de représentation d’un document visant à réaliser des tâches diverses (détecter le plagiat, filtrer des articles\dots). Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives *versus* négatives (heureux / triste), etc. 
 
-Un modèle répondant à ces exigences ne peut exister. Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement, dit autrement : les mots qui se produisent dans un contexte identique tendent à avoir des significations similaires^[Comme l'a écrit le linguiste britannique John Rupert Firth en 1957, « Vous connaîtrez un mot par ses fréquentations. »]. 
+Un modèle répondant à ces exigences ne peut exister. Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement, dit autrement : les mots qui se produisent dans un contexte identique tendent à avoir des significations similaires^[Comme l'a écrit le linguiste britannique John Rupert Firth en 1957, « Vous connaîtrez un mot par ses fréquentations ».]. 
 
-Les premiers modèles sémantiques^[Comme le *term frequency-inverse document frequency* (TF-IDF)] représentaient les relations entre mots grâce à des très grandes matrices dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0 et dites « sparses »). Les méthodes de *word-embedding* qui sont ensuite apparus ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).  Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d’accélérer les tâches d’apprentissage impliquant ces mots. 
+Les premiers modèles sémantiques^[Comme le *term frequency-inverse document frequency* (TF-IDF)] représentaient les relations entre mots grâce à des très grandes matrices dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0 et dites *sparses*). Les méthodes de *word-embedding* qui sont ensuite apparues ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).  Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d’accélérer les tâches d’apprentissage impliquant ces mots. 
 
 \cite{Mikolov} ont mis en avant en 2013 les méthodes de *word-embedding* à travers la création de *Word2Vec*. Ce modèle de réseaux de neurones^[C’est l’article \cite{Bengio} qui a introduit dix ans avant *Word2Vec* le premier modèle d’apprentissage de représentation de vecteurs-mots à partir d’un réseau de neurone simple.] à deux couches est rapidement devenu une référence grâce à la grande précision des résultats qu’il permet d’obtenir, étant entraîné en un temps record sur un corpus très volumineux.  
 
@@ -80,7 +80,7 @@ Pour rappel, en sortie du modèle *Word2Vec*, chaque mot est représenté par un
 
 Deux architectures du modèle *Word2Vec* existent (voir graphique \@ref(fig:cbowskipgram)) :
 
-- L'approche *Continuous bags of words* dont l'objectif est d'estimer la probabilité d'observer un mot, appelé *focus*, sachant que le contexte dans lequel il apparait (i.e. : les mots voisins).  
+- L'approche *Continuous bags of words* dont l'objectif est d'estimer la probabilité d'observer un mot, appelé *focus*, sachant le contexte dans lequel il apparait (i.e. : les mots voisins).  
 
 - L'approche *Skip-gram* a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du  mot *focus*. 
 C'est cette approche que nous étudions dans ce projet et dans la suite de ce rapport.
@@ -95,9 +95,9 @@ C'est cette approche que nous étudions dans ce projet et dans la suite de ce ra
 %\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{figure}
 
-Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition de certains mots **« contextes »** **voisins** d’un mot **« focus »**^[comme dans les premiers modèles sémantiques dits « sparses »], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ». La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
+Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition de certains mots **« contextes »** **voisins** d’un mot **« focus »**^[Comme dans les premiers modèles sémantiques dits *sparses*.], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ». La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
 
-Les voisins d’un mot focus reposent sur un hyperparamètre : la fenêtre (window ou $w$).  Pour $w = p$, les voisins du mot focus sont les $p$ mots précédents et les $p$ mots suivants dans la phrase. Par exemple, dans la phrase :  
+Les voisins d’un mot focus reposent sur un hyperparamètre : la fenêtre (*window* ou $w$).  Pour $w = p$, les voisins du mot focus sont les $p$ mots précédents et les $p$ mots suivants dans la phrase. Par exemple, dans la phrase :  
 
 \begin{quote}
 \LARGE \textbf{``}\normalsize \emph{Le professeur de statistique est strict avec ses élèves.} \LARGE \textbf{''}\normalsize

@@ -95,9 +95,9 @@ sous l'encadrement de Benjamin Muller (Inria)}
 Grâce à l'évolution des méthodes d'apprentissage profond (\emph{Deep Learning}), l'appréhension du langage naturel est aujourd'hui devenue une discipline à part entière (\emph{Natural Language Processing}).
 Ce succès s'explique en partie grâce à l'émergence de techniques non supervisées d'apprentissage de représentation de structures linguistiques.
 Les méthodes de \emph{word embedding} («~plongement lexical~» en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissent dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches (au sens d'une distance définie).
-Les modèles \textbf{word2vec}, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet.
+Les modèles \emph{Word2Vec}, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet.
 
-Dans ce projet de statistiques appliquées, nous étudierons dans un premier temps en détail et implémenterons le modèle \emph{word2vec} (Partie \ref{sec:word2vec}). Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (Partie \ref{sec:evaluation}). Enfin, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (Partie \ref{sec:sentimentalAnalysis}).
+Dans ce projet de statistiques appliquées, nous étudierons dans un premier temps en détail et implémenterons le modèle \emph{Word2Vec} (Partie \ref{sec:word2vec}). Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (Partie \ref{sec:evaluation}). Enfin, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (Partie \ref{sec:sentimentalAnalysis}).
 
 \hypertarget{sec:word2vec}{%
 \section{\texorpdfstring{Implémentation du modèle \emph{Word2Vec}}{Implémentation du modèle Word2Vec}}\label{sec:word2vec}}
@@ -105,7 +105,7 @@ Dans ce projet de statistiques appliquées, nous étudierons dans un premier tem
 \hypertarget{le-moduxe8le-word2vec-un-moduxe8le-de-word-embedding}{%
 \subsection{\texorpdfstring{Le modèle \emph{Word2vec}, un modèle de \emph{word-embedding}}{Le modèle Word2vec, un modèle de word-embedding}}\label{le-moduxe8le-word2vec-un-moduxe8le-de-word-embedding}}
 
-Le \emph{Natural Language Processing} (NLP ou «~traitement automatique du langage naturel~») est une branche de \emph{machine learning} visant à analyser, traiter et reproduire le langage humain. Les modèles de NLP \emph{Word2Vec}, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le \emph{word-embedding} --- plongement lexical en français.
+Le \emph{Natural Language Processing} (NLP ou «~traitement automatique du langage naturel~») est une branche de \emph{machine learning} visant à analyser, traiter et reproduire le langage humain. Les modèles de NLP \emph{Word2Vec}, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le \emph{word-embedding} -- plongement lexical en français.
 
 \hypertarget{historique-de-la-suxe9mantique-vectorielle-uxe0-word2vec}{%
 \subsubsection{\texorpdfstring{Historique : de la sémantique vectorielle à \emph{Word2Vec}}{Historique : de la sémantique vectorielle à Word2Vec}}\label{historique-de-la-suxe9mantique-vectorielle-uxe0-word2vec}}
@@ -116,22 +116,20 @@ Un modèle répondant à ces exigences ne peut exister. Pour y répondre au mieu
 
 Les premiers modèles sémantiques\footnote{Comme le \emph{term frequency-inverse document frequency} (TF-IDF)} représentaient les relations entre mots grâce à des très grandes matrices dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0 et dites \emph{sparses}). Les méthodes de \emph{word-embedding} qui sont ensuite apparues ont permis de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000). Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d'accélérer les tâches d'apprentissage impliquant ces mots.
 
-\cite{Mikolov} ont mis en avant en 2013 les méthodes de \emph{word-embedding} à travers la création de \emph{Word2Vec}. Ce modèle de réseaux de neurones\footnote{C'est l'article \cite{Bengio} qui a introduit dix ans avant \emph{Word2Vec} le premier modèle d'apprentissage de représentation de vecteurs-mots à partir d'un réseau de neurone simple.} à deux couches est rapidement devenu une référence grâce à la grande précision des résultats qu'il permet d'obtenir, étant entraîné en un temps record sur un corpus très volumineux.
+\cite{Mikolov} ont mis en avant en 2013 les méthodes de \emph{word-embedding} à travers la création de \emph{Word2Vec}. Ce modèle de réseaux de neurones\footnote{C'est l'article \cite{Bengio} qui a introduit dix ans avant \emph{Word2Vec} le premier modèle d'apprentissage de représentation de vecteurs-mots à partir d'un réseau de neurone simple.} à deux couches est rapidement devenu une référence grâce à la grande précision des résultats qu'il permet d'obtenir, pouvant être entraîné en un temps record sur un corpus très volumineux.
 
 \hypertarget{subsec:word2vec}{%
 \subsubsection{\texorpdfstring{\emph{Word2Vec}, un modèle d'apprentissage «~auto-supervisé~»}{Word2Vec, un modèle d'apprentissage «~auto-supervisé~»}}\label{subsec:word2vec}}
 
 Pour rappel, en sortie du modèle \emph{Word2Vec}, chaque mot est représenté par un vecteur dont la dimension est fixée par la valeur d'un hyperparamètre. Les mots qui apparaissent dans des contextes similaires («~bonjour~» et «~salut~» par exemple) seront représentés par des vecteurs relativement proches dans l'espace vectoriel de définition de ces vecteurs. Dans la même logique, \emph{Word2Vec} permet également de réaliser des opérations vectorielles, comme dans l'exemple, souvent cité : \(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}\) qui provient de \cite{Mikolov}.
 
-\colorbox{BurntOrange}{Réorganiser cette partie (Kim) : introduction termes focus/contexte}
-
 Deux architectures du modèle \emph{Word2Vec} existent (voir graphique \ref{fig:cbowskipgram}) :
 
 \begin{itemize}
 \item
-  L'approche \emph{Continuous bags of words} dont l'objectif est d'estimer la probabilité d'observer un mot, appelé \emph{focus}, sachant le contexte dans lequel il apparaît (i.e. : les mots voisins).
+  L'approche \emph{Continuous bags of words} dont l'objectif est d'estimer la probabilité d'observer un mot, appelé \textbf{«~focus~»}, sachant le contexte dans lequel il apparaît (i.e. : les mots \textbf{voisins} qualifiés de \textbf{«~contextes~»}).
 \item
-  L'approche \emph{Skip-gram} a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du mot \emph{focus}.
+  L'approche \emph{Skip-gram} a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du mot focus.
   C'est cette approche que nous étudions dans ce projet et dans la suite de ce rapport.
 \end{itemize}
 
@@ -145,7 +143,7 @@ Deux architectures du modèle \emph{Word2Vec} existent (voir graphique \ref{fig:
 %\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{figure}
 
-Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d'apparition de certains mots \textbf{«~contextes~»} \textbf{voisins} d'un mot \textbf{«~focus~»}\footnote{Comme dans les premiers modèles sémantiques dits \emph{sparses}.}, nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question «~Est-ce que ce mot contexte est susceptible d'être voisin du mot focus ?~». La prédiction en elle-même ne nous intéresse pas, c'est plutôt le poids du classifieur en sortie du modèle qui correspondra aux \emph{word-embeddings}.
+Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d'apparition des mots contextes voisins d'un mot forcus\footnote{Comme dans les premiers modèles sémantiques dits \emph{sparses}.}, nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question (dans le cas Skip-Gram) «~Est-ce que ce mot contexte est susceptible d'être voisin du mot focus ?~». La prédiction en elle-même ne nous intéresse pas, c'est plutôt le poids du classifieur en sortie du modèle qui correspondra aux \emph{word-embeddings}.
 
 Les voisins d'un mot focus reposent sur un hyperparamètre : la fenêtre (\emph{window} ou \(w\)). Pour \(w = p\), les voisins du mot focus sont les \(p\) mots précédents et les \(p\) mots suivants dans la phrase. Par exemple, dans la phrase :
 
@@ -164,14 +162,14 @@ Ainsi, la grande force du modèle d'apprentissage \emph{Word2Vec} est qu'il est 
 
 L'objectif de cette partie est de décrire le fonctionnement de l'approche Skip-gram.
 
-Dans la suite de ce projet nous noterons \(n\) la taille du vocabulaire (i.e. : le nombre de mots différents) et \(d\) la dimension retenue pour.
-Comme décrit dans la partie \ref{subsec:word2vec}, l'approche \emph{Skip-gram} peut être vue comme un réseau de neurone avec trois couches avec :
+Dans la suite de ce projet nous noterons \(n\) la taille du vocabulaire (i.e. : le nombre de mots différents) et \(d\) la dimension retenue pour \colorbox{BurntOrange}{les \emph{word-embeddings}}.
+Comme décrit dans la partie \ref{subsec:word2vec}, l'approche \emph{Skip-gram} peut être vue comme un réseau de neurones avec trois couches avec : \colorbox{BurntOrange}{deux ou trois ? si trois, corriger aussi plus haut}
 
 \begin{itemize}
 \item
-  En entrée une matrice \(W_e\) de taille \(n\times m\) ;
+  En entrée une matrice \(W_e\) de taille \(n\times d\) ;
 \item
-  En sortie une matrice \(W_S\) de taille \(n\times m\).
+  En sortie une matrice \(W_S\) de taille \(n\times d\).
 \end{itemize}
 
 Ces deux matrices sont initialisées en générant des lois normale \(\mathcal N(0,1)\). Elles sont ensuite mises à jour, grâce aux couples \texttt{{[}focus,\ contexte{]}} construits à partir du contexte (voir partie \ref{subsec:baseentrainement}), par un algorithme de descente de gradient.
@@ -181,26 +179,29 @@ Ainsi, la ligne \(i\) de la matrice \(W=\frac{W_e+W_s}{2}\) donnera la représen
 \hypertarget{subsec:baseentrainement}{%
 \subsubsection{Construction de la base d'entraînement}\label{subsec:baseentrainement}}
 
-Peu de traitements sont effectuées sur la base initiale : nous mettons tout en minuscule, supprimons la ponctuations, mais nous laissons tous les chiffres et les accents.
-Chaque phrase\footnote{Dans notre cas une phrase correspond à un tweet, même si ce tweet peut-être écrit en plusieurs phrases.}
-est ensuite \emph{tokénisée} par la chaîne de caractère correspondant à un espace \texttt{"\ "} : on considère qu'il y a autant de mots de que chaînes de caractères séparées par un espace. Ainsi, les mots composés ne seront donc pas pris en compte.
-Par exemple dans la phrase «~Que pensez-vous de CE projet ?(i.e. : qu'avez-vous retenu en 10min?)~» est décomposée en 14 mots \texttt{{[}que,\ pensez,\ vous,\ de,\ ce,\ projet,\ i,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}.
+Peu de traitements sont effectués sur la base initiale : nous mettons tout en minuscule, remplaçons les ponctuations par des espaces, mais laissons tous les chiffres et les accents.
+Chaque phrase\footnote{Dans notre cas une phrase correspond à un tweet, même si ce tweet peut être composé de plusieurs phrases.}
+est ensuite \emph{tokénisée} par la chaîne de caractère correspondant à un espace \texttt{"\ "} : on considère qu'il y a autant de mots de que chaînes de caractères séparées par un espace\footnote{Les mots composés sont donc considérés comme plusieurs mots distincts.}.
 
-Comme décrit dans la partie \ref{subsec:word2vec}, les couples \texttt{{[}focus,\ contexte{]}} dépendent d'un hyperparamètre : la fenêtre \(w\).
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{Que pensez-vous de CE projet ?(i.e. : qu'avez-vous retenu en 10min?)} \LARGE \textbf{''}\normalsize
+\end{quote}
 
-Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pronoms personnels), soient sur-entraînés, deux traitements sont effectués :
+Cette phrase est décomposée en 14 mots \texttt{{[}que,\ pensez,\ vous,\ de,\ ce,\ projet,\ i,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}.
+
+Comme décrit dans la partie \ref{subsec:word2vec}, les couples \texttt{{[}focus,\ contexte{]}} dépendent d'un hyperparamètre : la fenêtre \(w\). Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pronoms personnels), soient sur-entraînés, deux traitements sont effectués :
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Pour chaque phrase on effectue un sous-échantillonnage. Pour chaque mot \(w_i\) on note \(z(w_i)\) la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparaît et le nombre total de mots. La probabilité de garder un mot le mot \(w_i\) est :
+  Pour chaque phrase on effectue un sous-échantillonnage (\emph{sub-sampling}). Pour chaque mot \(w_i\) on note \(z(w_i)\) la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparaît et le nombre total de mots. La probabilité de garder un mot le mot \(w_i\) est :
   \[
   \mathbb P(w_i) = \min\left\{\left(\sqrt{\frac{z(w_i)}{q}} + 1 \right)
   \times
   \frac{q}{z(w_i)},1\right\}
   \]
-  Le paramètre \(q\) est appelé «~sample~» --- échantillonnage- -- contrôle le nombre de sous-échantillonnages. La valeur par défaut est 0,001 et pour :
+  Le paramètre \(q\) appelé «~sample~» -- échantillonnage -- contrôle le nombre de sous-échantillonnages \colorbox{BurntOrange}{pas clair, expliciter, éventuellement avec une ndbp}. Si \(q\) vaut 0,001 (valeur par défaut) alors par exemples :
 \end{enumerate}
 
 \begin{itemize}
@@ -218,12 +219,12 @@ Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pr
 \setcounter{enumi}{1}
 \tightlist
 \item
-  Pour chaque phrase on tire au hasard (selon une loi uniforme) un mot focus et on tire pour ce mot un mot \emph{contexte} au hasard dans la fenêtre \(w\) en imposant que les deux mots choisis soient parmi les mots sous-échantillonnés.
+  Pour chaque phrase, on tire au hasard (selon une loi uniforme) un mot focus pour lequel on tire un mot \emph{contexte} au hasard dans la fenêtre \(w\) en imposant que les deux mots choisis soient parmi les mots sous-échantillonnés \colorbox{BurntOrange}{sinon on retire ? éventuellement ndbp}.
 \end{enumerate}
 
 Par exemple, supposons que dans la phrase \texttt{{[}que,\ pensez,\ vous,\ de,\ ce,\ projet,\ i,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}, les mots sous-échantillonnés soient les mots en position 2, 5, 6, 8, 9, 10, 11, 12, 13, 14.
-Pour mieux comprendre, nous remplaçons les mots non échantillonnés par «~nonsubsampled~», mot qui a priori n'est pas dans le vocabulaire. La phrase devient \texttt{{[}nonsubsampled,\ pensez,\ nonsubsampled,\ nonsubsampled,\ ce,\ projet,\ nonsubsampled,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}.
-Si \(w=2\) alors le mot focus tiré ne peux être «~pensez~» puisque dans ce cas il n'y aurait aucun mot contexte associé. Si le mot focus tiré est «~qu~» alors le mot contexte est tiré au hasard parmi \texttt{{[}e,\ avez,\ vous{]}}.
+Pour mieux comprendre, nous remplaçons les mots non échantillonnés par «~nonsubsampled~». La phrase devient \texttt{{[}nonsubsampled,\ pensez,\ nonsubsampled,\ nonsubsampled,\ ce,\ projet,\ nonsubsampled,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}.
+Si \(w=2\) alors le mot focus tiré ne peut pas être «~pensez~» puisque dans ce cas il n'y aurait aucun mot contexte associé. Si le mot focus tiré est «~qu~» alors le mot contexte est tiré au hasard parmi \texttt{{[}e,\ avez,\ vous{]}}.
 
 Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois. Le nombre de fois que l'ensemble du corpus est parcouru est appelé \emph{epochs}.
 
@@ -241,7 +242,7 @@ Le modèle \emph{Word2vec} a initialement été construit en utilisant une fonct
 
 Étant donné les mots \(w_1,\,\dots,\,w_T\) utilisés pour entraîner le modèle, l'objectif du modèle Skip-Gram est de maximiser la quantité :
 \begin{equation}
-\frac 1 T\sum_{i=1}^T\sum_{-w\leq j \leq w,\,j\ne 0} \log \mathbb P(w_{t+j}\vert w_{t}) 
+\frac 1 T\sum_{t=1}^T\sum_{-w\leq j \leq w,\,j\ne 0} \log \mathbb P(w_{t+j}\vert w_{t}) 
 \label{eq:objSoftMax}
 \end{equation}
 où :
@@ -250,11 +251,11 @@ où :
 \item
   \(w\) est la fenêtre ;
 \item
-  les \(w_{t+j}\) sont les mots voisins de \(w_t\) (\(w_t\) est donc un mot contexte et \(w_{t+j}\) un mot focus) ;
+  les \(w_{t+j}\) sont les mots voisins de \(w_t\) (\(w_t\) est donc un mot contexte et \(w_{t+j}\) un mot focus) ; \colorbox{BurntOrange}{être bien sûr que c'est pas l'nverse mais si ça se trouve c'est ça}.
 \item
-  \(\mathbb P(w_{t+j}\vert w_{t})\) est la probabilité d'observer le mot \(w_{t+j}\) sachant que l'on a observé le mot voisin \(w_t\).
+  \(\mathbb P(w_{t+j}\vert w_{t})\) est la probabilité d'observer le mot focus \(w_{t+j}\) sachant que l'on a observé le mot contexte \(w_t\).
   Cette quantité est calculée en fonction des matrices \(W_e\) et \(W_s\) à partir de la fonction softmax
-  \footnote{Étant donné le vecteur \(z=(z_1,\,\dots,\,z_n)\)) la fonction softmax est la fonction qui \(z\) associé le vecteur \(\sigma(z)\) dont la \(j\)\textsuperscript{ème} coordonnée est égale à \(\sigma(z)_j=\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}\).} :
+  \footnote{Étant donné le vecteur \(z=(z_1,\,\dots,\,z_n)\)) la fonction softmax est la fonction qui à \(z\) associe le vecteur dont la \(j\)\textsuperscript{ème} coordonnée est égale à \(\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}\).} :
   \[
   \mathbb P(w_{focus}\vert w_{context}) = 
   \frac{
@@ -263,7 +264,7 @@ où :
   \sum_{i=1}^n\exp(W_{s,w_i}\times {}^tW_{e,w_{contexte}})
   }
   \]
-  avec \(W_{e,w_i}\) et \(W_{s,w_i}\) sont les représentations vectorielles du mot \(w_i\) dans la matrice d'entrée et de sortie et \(n\) la taille du vocabulaire.
+  avec \(W_{e,w_i}\) et \(W_{s,w_i}\) les représentations vectorielles du mot \(w_i\) respectivement dans la matrice d'entrée et de sortie et \(n\) la taille du vocabulaire.
 \end{itemize}
 
 De manière équivalente à l'équation \eqref{eq:objSoftMax}, qu'il faut maximiser, pour chaque couple \texttt{{[}focus,\ contexte{]}} on associe la fonction de perte suivante, qu'il faut minimiser :
@@ -275,24 +276,24 @@ L'inconvénient de cette méthode est qu'elle est très gourmande en temps de ca
 
 \begin{itemize}
 \item
-  Pour chaque couple \texttt{{[}focus,\ contexte{]}}, le calcul de \(\log\mathbb P(w_{focus}\vert w_{context})\) est proportionnel à la taille du vocabulaire ;
+  Pour chaque couple \texttt{{[}focus,\ contexte{]}}, la complexité du calcul de \(\log\mathbb P(w_{focus}\vert w_{context})\) est proportionnelle à la taille du vocabulaire ;
 \item
-  Le calcul de \(\nabla_\theta \log\mathbb P(w_{focus}\vert w_{context})\) pour la descente de gradient est aussi proportionnelle à la taille du vocabulaire.
+  La complexité du calcul de \(\nabla_\theta \log\mathbb P(w_{focus}\vert w_{context})\) dans l'étape de descente de gradient est aussi proportionnelle à la taille du vocabulaire. \colorbox{BurntOrange}{à conserver ? Alain}
 \end{itemize}
 
-La complexité est donc proportionnelle à la taille du vocabulaire, qui peut être très grande (par exemple, dans notre base de tweets, cette taille est de 70 330).
+La taille du vocabulaire pouvant être très grande (par exemple, dans notre base de tweets, cette taille est de 70 330), le temps de calcul peut vite devenir très important.
 
-C'est pourquoi la version \emph{softmax} est très peu utilisée dans les implémentations de Skip-Gram. Une approche alternative, \emph{negative sampling} avec une fonction sigmoïde, moins gourmande en temps de calcul, est alors souvent préféré\footnote{Une autre alternative à l'approche \emph{softmax} parfois utilisée est l'approches \emph{hierarchical softmax} qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à \(\log_2n\) mais reste plus importante que celle de l'approche \emph{negative sampling}.}.
+C'est pourquoi la version \emph{softmax} est très peu utilisée dans les implémentations de Skip-Gram. Une approche alternative, \emph{negative sampling} avec une fonction sigmoïde, moins gourmande en temps de calcul, est alors souvent préférée\footnote{Une autre alternative à l'approche \emph{softmax} parfois utilisée est l'approches \emph{hierarchical softmax} qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à \(\log_2n\) mais reste plus importante que celle de l'approche \emph{negative sampling}.}.
 
 \hypertarget{subsec:negsampling}{%
 \paragraph{\texorpdfstring{Version \emph{negative sampling}}{Version negative sampling}}\label{subsec:negsampling}}
 
-Le \emph{negative sampling} est basée sur le concept de \emph{Noise Contrastive Estimation} --- estimation contrastée du bruit --- selon lequel un bon modèle logistique devrait être capable de différentier un faux signal d'un vrai signal.
+Le \emph{negative sampling} est basé sur le concept de \emph{Noise Contrastive Estimation} -- estimation contrastée du bruit -- selon lequel un bon modèle logistique devrait être capable de différentier un faux signal d'un vrai signal \colorbox{BurntOrange}{à clarifier ?}.
 
-Plutôt que mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple \texttt{{[}focus,\ contexte{]}}, dans l'approche \emph{negative sampling} on tire \(K\) mots au hasard du vocabulaire \((w_{neg,\,i})_{i=1..K}\), selon une distribution \(P_n(w)\), en considérant que ces mots ne seront pas des mots contexte de \texttt{focus}\footnote{Il est bien sûr possible que parmi les mots tirés au hasard il y ait des mots qui soient vraiment dans le contexte. Cependant, puisque la taille du vocabulaire est très grande, on considère que cette erreur est négligeable.}.
-L'idée du \emph{negative sampling} est donc de transformer un problème de classification multi-classes en un problème de classification binaire : pour chaque couple \texttt{{[}focus,\ contexte{]}}, on cherche à déterminer si le mot contexte est dans le contexte du mot focus (\(D=1\), mot positif) ou non (\(D=0\), mot négatif).
+Dans cette approche, plutôt que de mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple \texttt{{[}focus,\ contexte{]}}, on tire \(K\) mots au hasard du vocabulaire \((w_{neg,\,i})_{i=1..K}\), selon une distribution \(P_n(w)\), en considérant que ces mots ne seront pas des mots voisins de \texttt{focus}\footnote{Il est bien sûr possible que parmi les mots tirés au hasard il y ait des mots qui soient vraiment dans le contexte. Cependant, puisque la taille du vocabulaire est très grande, on considère que cette erreur est négligeable.}.
+L'idée du \emph{negative sampling} est donc de transformer un problème de classification multi-classes en un problème de classification binaire : pour chaque couple \texttt{{[}focus,\ mot2{]}}, on cherche à déterminer si \texttt{mot2} est dans le contexte de \texttt{focus}. Si c'est le cas, alors la décision \(D=1\) (mot2 est positif et est le \texttt{contexte}), sinon \(D=0\) (mot négatif, appartient à \((w_{neg,\,i})_{i=1..K}\)).
 
-On cherche donc à maximiser \(\mathbb P(D=1\vert w_{focus},w_{contexte})\) et à minimiser \(\mathbb P(D=1\vert w_{focus},w_{neg,\,i})\).
+On cherche donc à maximiser \(\mathbb P(D=1\vert w_{focus},w_{contexte})\) et \(\mathbb P(D=0\vert w_{focus},w_{neg,\,i})\).
 Pour estimer ces probabilités on utilise une fonction sigmoïde plutôt que la fonction softmax :
 \[
 \mathbb P(D=1\vert w_{focus},w_{contexte})=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}}) = 
@@ -300,8 +301,8 @@ Pour estimer ces probabilités on utilise une fonction sigmoïde plutôt que la 
 \]
 et :
 \[
-\mathbb P(D=0\vert w_{focus},w_{contexte})=\sigma(-W_{e,w_{focus}}{}^tW_{s,w_{contexte}}) = 
-\frac{1}{1+\exp(W_{e,w_{focus}}{}^tW_{s,w_{contexte}})}
+\mathbb P(D=0\vert w_{focus},w_{neg,\,i})=\sigma(-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}}) = 
+\frac{1}{1+\exp(W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}})}
 \]
 Par rapport à l'approche \emph{softmax}, on cherche toujours à maximiser la quantité de l'équation \eqref{eq:objSoftMax} mais en estimant \(\log\mathbb P(w_{focus}\vert w_{context})\) par :
 \[
@@ -336,16 +337,6 @@ La complexité est ici bien plus faible que pour la fonction softmax puiqu'elle 
 Avec \(z(w_i)\) la fréquence d'apparition du mot \(w_i\). Ils recommandent de prendre \(K\in\{5,\dots,20\}\) pour les petites bases de données et \(K\in\{2,\dots,5\}\) pour les grandes bases de données. Dans ce projet nous utiliserons \(K=5\).
 
 En plus d'être moins coûteuse en temps de calcul, cette méthode permet aussi de corriger la sur-estimation des poids des mots contextes tirés au hasard par rapport à l'approche softmax. En effet, on cherche à minimiser la proximité des mots négatifs au mot focus.
-
-\hypertarget{version-softmax}{%
-\subsubsection{Version softmax}\label{version-softmax}}
-
-Décrire les différentes étapes de l'algo (version softmax uniquement) : reprendre cette partie de la note d'étape mais en étant plus rigoureux (introductions des formules + développer davantage).
-
-\hypertarget{version-negative-sampling}{%
-\subsubsection{Version negative sampling}\label{version-negative-sampling}}
-
-Réexpliquer l'algo dans sa version negative sampling et faire apparaître les avantages de cette méthode (cf un peu évoqué dans note d'étape).
 
 \hypertarget{sec:evaluation}{%
 \section{Évaluation du modèle implémenté}\label{sec:evaluation}}
@@ -442,7 +433,7 @@ La première étape de l'algorithme consiste à calculer les similarités entre 
 \exp\left(-\frac{(d_e(x_i - x_k))^2}{2\sigma_i^2}\right)
 }\]
 
-La seconde étape de l'algorithme consiste à trouver le nouvel espace de projection à faible nombre de dimensions. On appellera \(g_i\) les \(x_i\) projetés dans cet espace que l'on cherche à déterminer. De la même manière que précédemment, on exprime des probabilité conditionnelles \(q_{j|i}\) en fonction des \(g_i\) mais qui suivent cette fois-ci une distribution de \emph{Student} --- d'où le nom de l'algorithme --- plutôt qu'une loi gaussienne\footnote{Dans un espace à faible dimension, la dispersion des vecteurs est réduite. La distribution de Student possède des queues plus épaisses que la loi normale, ce qui permet de mieux différencier les vecteurs distants des vecteurs similaires.}.
+La seconde étape de l'algorithme consiste à trouver le nouvel espace de projection à faible nombre de dimensions. On appellera \(g_i\) les \(x_i\) projetés dans cet espace que l'on cherche à déterminer. De la même manière que précédemment, on exprime des probabilité conditionnelles \(q_{j|i}\) en fonction des \(g_i\) mais qui suivent cette fois-ci une distribution de \emph{Student} -- d'où le nom de l'algorithme -- plutôt qu'une loi gaussienne\footnote{Dans un espace à faible dimension, la dispersion des vecteurs est réduite. La distribution de Student possède des queues plus épaisses que la loi normale, ce qui permet de mieux différencier les vecteurs distants des vecteurs similaires.}.
 
 \[ q_{j|i} = \frac{(1+ (d_e(g_i - g_j))^2)^{-1}}{\sum_{k \neq i}{(1+ (d_e(g_i - g_k))^2)^{-1}}}\]
 

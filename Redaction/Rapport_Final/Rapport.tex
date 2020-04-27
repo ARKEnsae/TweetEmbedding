@@ -194,11 +194,13 @@ Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pr
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Pour chaque phrase on effectue un sous-échantillonnage. Pour chaque mot \(w_i\) on note \(z(w_i)\) la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparait et le nombre total de mots. La probabilité de garder un mot le mot \(w_i\) est : \[
+  Pour chaque phrase on effectue un sous-échantillonnage. Pour chaque mot \(w_i\) on note \(z(w_i)\) la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparait et le nombre total de mots. La probabilité de garder un mot le mot \(w_i\) est :
+  \[
   \mathbb P(w_i) = \min\left\{\left(\sqrt{\frac{z(w_i)}{q}} + 1 \right)
   \times
   \frac{q}{z(w_i)},1\right\}
-  \] Le paramètre \(q\) est appelé «~sample~» --- échantillonnage- -- contrôle le nombre de sous-échantillonnages. La valeur par défaut est 0,001 et pour :
+  \]
+  Le paramètre \(q\) est appelé «~sample~» --- échantillonnage- -- contrôle le nombre de sous-échantillonnages. La valeur par défaut est 0,001 et pour :
 \end{enumerate}
 
 \begin{itemize}
@@ -256,12 +258,12 @@ où :
   \[
   \mathbb P(w_{focus}\vert w_{context}) = 
   \frac{
-  \exp(W_s[focus,]\times {}^tW_e[context,])
+  \exp(W_{s,w_{focus}}\times {}^tW_{e,w_{contexte}})
   }{
-  \sum_{i=1}^n\exp(W_s[i,]\times {}^tW_e[context,])
+  \sum_{i=1}^n\exp(W_{s,w_i}\times {}^tW_{e,w_{contexte}})
   }
   \]
-  avec \(W_e[i,]\) et \(W_s[i,]\) sont les représentations vectorielles du mot \(i\) dans la matrice d'entrée et de sortie et \(n\) la taille du vocabulaire.
+  avec \(W_{e,w_i}\) et \(W_{s,w_i}\) sont les représentations vectorielles du mot \(w_i\) dans la matrice d'entrée et de sortie et \(n\) la taille du vocabulaire.
 \end{itemize}
 
 De manière équivalente à l'équation \eqref{eq:objSoftMax}, qu'il faut maximiser, pour chaque couple \texttt{{[}focus,\ contexte{]}} on associe la fonction de perte suivante, qu'il faut minimiser :
@@ -286,6 +288,19 @@ C'est pourquoi la version \emph{softmax} est très peu utilisée dans les implé
 \paragraph{Version negative sampling}\label{subsec:negsampling}}
 
 Le \emph{negative sampling} est basée sur le concept de \emph{Noise Contrastive Estimation} --- estimation contrastée du bruit --- selon lequel un bon modèle logistique devrait être capable de différentier un faux signal d'un vrai signal.
+
+\[
+\log\sigma (W_{s,w_i}{}^tW_e[w_I,])+
+\sum_{i=k}^K\mathbb E_{w_i\sim P_n(w)}[
+\log\sigma (-W_{s,w_i}{}^tW_e[w_I,])
+]
+\]
+
+Pour le négative sampling, la probabilité de garder le mot \(w_i\) est égale à : \[
+\mathbb P(w_i) = \frac{z(w_i)^{3/4}}{
+\sum_{j=1}^n z(w_j)^{3/4}
+}
+\] Avec \(z(w_j)\) la fréquence d'apparition du mot \(w_j\).
 
 \hypertarget{version-softmax}{%
 \subsubsection{Version softmax}\label{version-softmax}}

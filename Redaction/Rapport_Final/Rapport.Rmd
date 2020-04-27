@@ -260,13 +260,15 @@ L(W_e,W_s)=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
 \log
 \sigma (-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}})
 $$
+La complexité est ici bien plus faible que pour la fonction softmax puiqu'elle est proportionnelle à $K$.
+
 \cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution pour générer les mots négatifs est :
 $$
 \mathbb P(w_i) = \frac{z(w_i)^{3/4}}{
 \sum_{j=1}^n z(w_j)^{3/4}
 }
 $$ 
-Avec $z(w_i)$ la fréquence d'apparition du mot $w_i$.
+Avec $z(w_i)$ la fréquence d'apparition du mot $w_i$. Ils recommandent de prendre $K\in\{5,\dots,20\}$ pour les petites bases de données et $K\in\{2,\dots,5\}$ pour les grandes bases de données. Dans ce projet nous utiliserons $K=5$.
 
 En plus d'être moins coûteuse en temps de calcul, cette méthode permet aussi de corriger la sur-estimation des poids des mots contextes tirés au hasard par rapport à l'approche softmax. En effet, on cherche à minimiser la proximité des mots négatifs au mot focus.
 <!-- Cette méthode permet d’une part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu’elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus (negatives samples), mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de loss. Elle est d’autre part moins coûteuse en temps de calcul puisqu’elle permet d’actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les negatives samples) -->

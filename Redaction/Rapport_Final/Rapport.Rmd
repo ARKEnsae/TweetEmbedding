@@ -123,12 +123,12 @@ Ainsi, la grande force du modèle d’apprentissage *Word2Vec* est qu’il est �
 
 L'objectif de cette partie est de décrire le fonctionnement de l'approche Skip-gram. 
 
-Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents) et $d$ la dimension retenue pour les *word-embeddings*.
+Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents) et $dim$ la dimension retenue pour les *word-embeddings*.
 Comme décrit dans la partie \@ref(subsec:word2vec), l'approche *Skip-gram* peut être vue comme un réseau de neurones à deux couches avec :
 
-- En entrée une matrice $W_e$ de taille $n\times d$ ;
+- En entrée une matrice $W_e$ de taille $n\times dim$ ;
 
-- En sortie une matrice $W_S$ de taille $n\times d$.
+- En sortie une matrice $W_S$ de taille $n\times dim$.
 
 Ces deux matrices sont initialisées en générant des lois normale $\mathcal N(0,1)$. Elles sont ensuite mises à jour, grâce aux couples `[focus, contexte]` construits à partir du contexte (voir partie \@ref(subsec:baseentrainement)), par un algorithme de descente de gradient.
 À la fin de l'algorithme ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
@@ -193,7 +193,9 @@ où :
 
 -  $\mathbb P(w_{t+j}\vert w_{t})$ est la probabilité d'observer le mot focus $w_{t+j}$ sachant que l'on a observé le mot contexte $w_t$.
 Cette quantité est calculée en fonction des matrices $W_e$ et $W_s$ à partir de la fonction softmax
-^[Étant donné le vecteur $z=(z_1,\,\dots,\,z_n)$) la fonction softmax est la fonction qui à $z$ associe le vecteur dont la $j$^ème^ coordonnée est égale à $\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}$.]. En notant $n$ la taille du vocabulaire et $W_{e,w_i}$ et $W_{s,w_i}$ les représentations vectorielles du mot $w_i$ respectivement dans la matrice d'entrée et de sortie, cette probabilité est égale à :
+^[Étant donné le vecteur $z=(z_1,\,\dots,\,z_n)$) la fonction softmax est la fonction qui à $z$ associe le vecteur dont la $j$^ème^ coordonnée est égale à $\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}$.]. En notant $n$ la taille du vocabulaire et $W_{e,w_i}$ et $W_{s,w_i}$ les représentations vectorielles du mot $w_i$ respectivement dans la matrice d'entrée et de sortie, cette probabilité est égale à^[
+Dans tout le rapport nous utiliserons la notation $^{t}X$ pour désigner la transposée de la matrice $X$.
+] :
 $$
 \mathbb P(w_{focus}\vert w_{context}) = 
 \frac{
@@ -311,8 +313,9 @@ L'un des enjeux principaux du modèle étant de pouvoir estimer la proximité en
 
 Il existe différents types de distances. Chacune d'elles possède des propriétés intéressantes et s'adaptent plus ou moins bien au problème traité. Nous avons ici retenu deux distances classiquement utilisées :  
 
+<!-- https://arxiv.org/pdf/1510.02675.pdf donne des résultats un peu plus clairs sur le lien entre fréquence et longueur -->
 - **la distance euclidienne** : $d_{e}(\vec{u},\vec{v}) = \left\| \vec{u} - \vec{v}  \right\|_2$  
-La longueur du vecteur mot, captée dans le cas de la distance euclidienne, est positivement corrélée à la fréquence d'apparition du mot (\cite{Schakel}). Cette information peut s'avérer utile dans l'analyse de la signification des mots, notamment lorsque l'on effectue des opérations sur les vecteurs (comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov}).  
+Un problème est que la longueur du vecteur mot, captée dans le cas de la distance euclidienne, est positivement corrélée à la fréquence d'apparition du mot (\cite{Schakel}). Cette information peut s'avérer utile dans l'analyse de la signification des mots, notamment lorsque l'on effectue des opérations sur les vecteurs (comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov}).  
 Toutefois, cette dépendance à la fréquence d'apparition peut également fausser l'analyse. C'est pourquoi nous avons choisi, par la suite, de normaliser les vecteurs : 
 $$ d_{e}(\vec{u},\vec{v}) = \left\| \frac{\vec{u}}{\left\| \vec{u} \right\|_2} - \frac{\vec{v}}{\left\| \vec{v} \right\|_2}  \right\|_2$$
 - **la similarité cosinus** : $d_{c}(\vec{u}, \vec{v}) = \frac{\vec{u}.\vec{v}}{\left\| \vec{u} \right\|_2  \left\| \vec{v} \right\|_2 }$.  
@@ -329,7 +332,7 @@ Dès lors, il devient complexe de bien observer la proximité entre deux mots. C
 
 Considérons le cas où nous disposons de $n$ individus (dans notre cas les mots) et de $p$ variables (dans notre cas, leurs composantes ou dimensions issues du modèle *Word2Vec*). On note $X = (x_{ij})$ la matrice de taille $(n,p)$ des données brutes, où $x_{ij}$ représente la valeur de la $j$-ème variable pour le $i$-ème individu. Afin de donner à chaque individu le même poids, nous centrons et réduisons les colonnes de notre matrice de données. On notera par la suite $Z = (z_{ij})$ la matrice des données centrées et réduites.
 
-La construction des axes de l'ACP est faite par projection orthogonale. Nous utilisons ici le produit scalaire $\langle x,y\rangle_{N} = x\,^t N y$ avec la métrique $N = diag(\frac{1}{n},...,\frac{1}{n})$. Ainsi, la projection orthogonale d'un individu $i$ (vecteur ligne) $z_i$ sur une droite de vecteur directeur $v$ vaut $^tz_iv$ et les coordonnées de projection des $n$ individus valent $Zv$.
+La construction des axes de l'ACP est faite par projection orthogonale. Nous utilisons ici le produit scalaire $\langle x,y\rangle_{N} = ^t\!xN y$ avec la métrique $N = diag(\frac{1}{n},...,\frac{1}{n})$. Ainsi, la projection orthogonale d'un individu $i$ (vecteur ligne) $z_i$ sur une droite de vecteur directeur $v$ vaut $^tz_iv$ et les coordonnées de projection des $n$ individus valent $Zv$.
 
 
 Les vecteurs directeurs des axes sont définis de manière à maximiser la dispersion du nuage (son inertie) des individus projetés et conserver ainsi au mieux les distances entre les individus. L'inertie se définit comme
@@ -339,11 +342,16 @@ $$I(Z) = \frac{1}{n} \sum \limits_{i = 1}^n d_{e}^2(z_i,\bar{z}) =
 avec $d_{e}(z_i,z_{i'})$ la distance euclidienne entre deux individus $z_i$ et $z_{i'}$ : $d_{e}(z_i,z_{i'}) = \sum \limits_{j=1}^p (z_{ij} - z_{i'j})^2$^[Nous travaillons ici dans le cadre d'une ACP normée où la matrice $X$ a été centrée puis réduite. La réduction de $X$ a modifié les distances initiales entre individus ($d_{e}(z_i,z_{i'}) \neq d_{e}(x_i,x_{i'})$). Cela n'aurait pas été le cas si la matrice $Y$ avait été uniquement centrée (ACP non normée).]. 
 
 On trouve tout d'abord le vecteur directeur $v_1$ qui orientera le premier axe de l'ACP grâce au programme suivant : 
-$$v_1 =\underset{\Vert v \Vert = 1}{\mathrm{argmax~}} Var(Zv) =\underset{\Vert v \Vert = 1}{\mathrm{argmax~}} v\,^t R v $$ où $R = Var(Z) = \frac{1}{n} Z\,^t Z$ est la matrice des corrélations entre les $p$ variables.
-La norme du vecteur $v$ se calcule dans ce nouvel espace comme $\Vert v \Vert = \sqrt{\langle v,v\rangle} = v ^tv =\sqrt{ \sum \limits_{i = 1}^p v_i^2}$
+$$
+v_1 =\underset{\Vert v \Vert = 1}{\mathrm{argmax~}} Var(Zv) =\underset{\Vert v \Vert = 1}{\mathrm{argmax~}} ^t\!v\ R v 
+$$ 
+où $R = Var(Z) = \frac{1}{n} ^t\!Z Z$ est la matrice des corrélations entre les $p$ variables.
+La norme du vecteur $v$ se calcule dans ce nouvel espace comme $\Vert v \Vert = \sqrt{\langle v,v\rangle} = \sqrt{^t\!vv} =\sqrt{ \sum \limits_{i = 1}^p v_i^2}$
 
 Puis, on choisit $v_2$ orthogonal à $v_1$ tel que l'inertie soit toujours maximisée :
-$$v_2 =\underset{ \Vert v \Vert = 1,\,v \perp v_1}{\mathrm{argmax}}\;  Var(Zv) $$
+$$
+v_2 =\underset{ \Vert v \Vert = 1,\,v \perp v_1}{\mathrm{argmax}}\;  Var(Zv)
+$$
 En procédant de manière séquentielle, on obtient $q < r$ axes orthogonaux avec $r = rg(Z)$ et $q$ choisi par le statisticien^[Différentes méthodes existent afin de déterminer le $q$ optimal, comme la règle de Kaiser ou encore celle du coude.].
 
 On peut montrer que $\forall k < q$ :
@@ -383,24 +391,21 @@ $$ p_{j|i} = \frac{
 \exp\left(-\frac{(d_e(x_i - x_k))^2}{2\sigma_i^2}\right)
 }$$
 
-
-
-
-
-La seconde étape de l'algorithme consiste à trouver le nouvel espace de projection à faible nombre de dimensions. On appellera $g_i$ les $x_i$ projetés dans cet espace que l'on cherche à déterminer. De la même manière que précédemment, on exprime des probabilité conditionnelles $q_{j|i}$ en fonction des $g_i$ mais qui suivent cette fois-ci une distribution de *Student* -- d'où le nom de l'algorithme -- plutôt qu'une loi gaussienne^[Dans un espace à faible dimension, la dispersion des vecteurs est réduite. La distribution de Student possède des queues plus épaisses que la loi normale, ce qui permet de mieux différencier les vecteurs distants des vecteurs similaires.]. 
+La seconde étape de l'algorithme consiste à trouver le nouvel espace de projection à faible nombre de dimensions. 
+On appellera $g_i$ les $x_i$ projetés dans cet espace que l'on cherche à déterminer.
+On calcule maintenant les probabilité conditionnelles $q_{j|i}$ de choisir $g_j$ comme voisin de $g_i$ en supposant que les $(g_i)_i$ suivent cette fois-ci une distribution de *Student* -- d'où le nom de l'algorithme -- plutôt qu'une loi gaussienne^[Dans un espace à faible dimension, la dispersion des vecteurs est réduite. La distribution de Student possède des queues plus épaisses que la loi normale, ce qui permet de mieux différencier les vecteurs distants des vecteurs similaires.]. 
 
 $$ q_{j|i} = \frac{(1+ (d_e(g_i - g_j))^2)^{-1}}{\sum_{k \neq i}{(1+ (d_e(g_i - g_k))^2)^{-1}}}$$
 
-Afin d'obtenir les $g_i$, on minimise, par descente de gradient, la divergence de Kullback–Leibler entre les distributions de probabilité P et Q :
+Afin d'obtenir les $g_i$, on minimise, par descente de gradient, la divergence de Kullback–Leibler entre les distributions de probabilité P et Q des $p_{ij}$ et $q_{ij}$ définis par :
 $$KL(P,Q) = \sum_{i \neq j} { p_{ij} \log{\frac{p_{ij}}{q_{ij}}}} \qquad\text{avec}\qquad p_{ij} = \frac{p_{i|j} + p_{j|i}}{2n}$$ 
 
 Comme dans l'algorithme de l'ACP, l'algorithme de t-SNE nous permet d'obtenir une nouvelle projection des $x_i$. Il faut cependant analyser avec précaution ses résultats. L'algorithme n'étant pas linéaire, l'interprétation de la taille des *clusters* obtenus ou de la distance qui les sépare n'est alors pas directe.
 
 
-
 ### Jugement humain {#sec:jugementHumain}
 
-Les *word-embeddings* obtenus par *Word2Vec* sont censés regrouper les mots qui apparaissent dans un contexte similaire. Une dernière façon de vérifier la qualité de nos vecteurs-mots est de les comparer à un jugement humain. Pour ce faire, nous utilisons la liste de référence RG-65 pour le français^[Le RG-65 a fait appel à 18 évaluateurs humains. La base, initialement mobilisée dans un article anglophone (\cite{Rubenstein})  a été traduite de l'anglais.]  (\cite{Boumedyen}). Elle contient 65 paires de noms communs (tableau \ref{table:human_judgement}) évaluées sur une échelle de 0 (non liés) à 4 (très liés).
+Les *word-embeddings* obtenus par *Word2Vec* sont censés regrouper les mots qui apparaissent dans un contexte similaire. Une dernière façon de vérifier la qualité de nos vecteurs-mots est de les comparer à un jugement humain. Pour ce faire, nous utilisons la liste de référence RG-65 pour le français^[Le RG-65 a fait appel à 18 évaluateurs humains. La base, initialement mobilisée dans un article anglophone (\cite{Rubenstein}) a été traduite de l'anglais.]  (\cite{Boumedyen}). Elle contient 65 paires de noms communs (tableau \ref{table:human_judgement}) évaluées sur une échelle de 0 (non liés) à 4 (très liés).
 
 
 \begin{table}
@@ -450,7 +455,7 @@ avec $q_{1-\frac{\alpha}{2}}$ le quantile d'ordre $1-\frac{\alpha}{2}$ d'une loi
 Avant de nous attaquer au jeu de données complet décrit plus bas, nous avons évalué un premier corpus fictif afin de nous assurer de la robustesse et de la validité du modèle implémenté. Nous avons associé dix couples (du type [voiture, camion]), à dix mots contextes différents ([véhicule, moto\dots]). 
 Le corpus fictif est formé de 10 000 phrases composées chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots bruits, tous tirés aléatoirement. 
 
-Nous avons ensuite mis en œuvre les différentes techniques d'évaluation^[à l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.] présentées en partie \ref{sec:commentEvaluer} sur les *word-embeddings* obtenus grâce à ce corpus fictif. 
+Nous avons ensuite mis en œuvre les différentes techniques d'évaluation^[À l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.] présentées en partie \ref{sec:commentEvaluer} sur les *word-embeddings* obtenus grâce à ce corpus fictif. 
 
 \begin{table}
 \begin{center}
@@ -512,7 +517,7 @@ Le package `Gensim` (\og Generate Similar \fg{}), dans lequel la méthode *Word2
 
 Nous avons choisi de mobiliser `Gensim` dans la suite de ce rapport, en parallèle du modèle que nous avons implémenté, en raison de son temps d'exécution bien plus rapide^[À titre d'exemple, alors qu'une epoch sur l'ensemble des tweets met une vingtaine d'heures à tourner pour \og notre \fg{} modèle, elle met 1 minute via `Gensim`.]. Cette rapidité d'exécution nous a permis de réaliser des tests d'hyperparamètres plus nombreux. 
 
-Pour réaliser ces tests, nous avons fait tourner le modèle *Word2Vec* plusieurs fois en modifiant un à un les paramètres. Nous avons ensuite évalué ces différents modèles par la méthode du \og jugement humain \fg{} (cf. partie \@ref(sec:jugementHumain)) en comparant la mesure de la similarité cosinus^[Nous avons également évalué les modèles en utilisant (l'inverse de) la distance euclidienne à la place de la similarité cosinus. L'effet des paramètres devient alors bien moins clair et la performance du modèle est inférieure, ce va dans le sens de l'utilisation plus fréquente de la méthode de la similarité cosinus dans la littérature.] entre deux mots obtenue à partir de notre modèle à l'évaluation subjective de cette proximité par des individus. En outre, un même modèle est lancé six fois (six \og seeds \fg{} différentes) afin de construire des intervalles de confiance de la matière décrite précédemment, en empilant les six échantillons de mesure de proximités correspondant aux six implémentations d'un même modèle^[Pour chaque modèle, nous calculons les statistiques de rang des 65 paires de mots de la base de jugement humain ainsi que le rang des similarités cosinus des mots obtenus en sortie du modèle. Nous réalisons ces actions pour les six implémentations du même modèle et empilons les résultats obtenus. C’est à partir de cette base empilée de 6x65 lignes moins les données manquantes que nous calculons chaque intervalle de confiance selon la formule décrite en partie \@ref(sec:jugementHumain).]. 
+Pour réaliser ces tests, nous avons fait tourner le modèle *Word2Vec* plusieurs fois en modifiant un à un les paramètres. Nous avons ensuite évalué ces différents modèles par la méthode du \og jugement humain \fg{} (voir partie \@ref(sec:jugementHumain)) en comparant la mesure de la similarité cosinus^[Nous avons également évalué les modèles en utilisant (l'inverse de) la distance euclidienne à la place de la similarité cosinus. L'effet des paramètres devient alors bien moins clair et la performance du modèle est inférieure, ce va dans le sens de l'utilisation plus fréquente de la méthode de la similarité cosinus dans la littérature.] entre deux mots obtenue à partir de notre modèle à l'évaluation subjective de cette proximité par des individus. En outre, un même modèle est lancé six fois (six \og seeds \fg{} différentes) afin de construire des intervalles de confiance de la matière décrite précédemment, en empilant les six échantillons de mesure de proximités correspondant aux six implémentations d'un même modèle^[Pour chaque modèle, nous calculons les statistiques de rang des 65 paires de mots de la base de jugement humain ainsi que le rang des similarités cosinus des mots obtenus en sortie du modèle. Nous réalisons ces actions pour les six implémentations du même modèle et empilons les résultats obtenus. C’est à partir de cette base empilée de 6x65 lignes moins les données manquantes que nous calculons chaque intervalle de confiance selon la formule décrite en partie \@ref(sec:jugementHumain).]. 
 
 
 ### Nombre d'epochs, taille de fenêtre et taux d'apprentissage
@@ -537,7 +542,7 @@ Le trait horizontal correspond au coefficient de Spearman calculé sur les écha
 
 \ 
 
-Le nombre d'epochs à un effet net. Passer de 10 à 100 epochs fait nettement augmenter le score de corrélation de Spearman entre données subjectives et données en sortie du modèle. 
+Le nombre d'epochs a un effet net. Passer de 10 à 100 epochs fait nettement augmenter le score de corrélation de Spearman entre données subjectives et données en sortie du modèle. 
 
 \faArrowCircleRight{} Nous retenons alors le paramètre **ep = 100**.
 
@@ -585,7 +590,7 @@ En pratique, en comparant l'effet de la dimension des vecteurs (modèle fixé à
 
 ### Avec \og notre \fg{} modèle
 
-Nous avons ensuite fait tourner le modèle que nous avons implémenté en utilisant les paramètres retenus précédemment^[w = 4, lr = 0,02 et dim = 100] mais uniquement sur 100 000 tweets et 80 epochs pour des questions de temps de calcul^[près de 18h.].
+Nous avons ensuite fait tourner le modèle que nous avons implémenté en utilisant les paramètres retenus précédemment^[w = 4, lr = 0,02 et dim = 100] mais uniquement sur 100 000 tweets et 80 epochs pour des questions de temps de calcul^[Près de 18 heures.].
 
 Les résultats obtenus semblent relativement satisfaisants. La recherche des plus proches voisins par similarité cosinus (dont quelques exemples sont illustrés en tableau \ref{table:knn_ark}) donne des résultats proches de l'intuition. 
 
@@ -619,14 +624,14 @@ La similarité cosinus de chaque paire de mots est renseignée entre les parenth
 \end{table}
 
 
-
 Par ailleurs, le coefficient de Spearman entre la similarité cosinus des mots obtenus et le jugement humain est de 0,571 (p-valeur : 4,1 %). Toutefois, ce bon résultat est à considérer avec précaution puisque seuls 13 des couples de mots de la base RG-65 ont été reconnus dans le corpus de 100 000 tweets que nous utilisons ici. 
 
-Enfin, les représentations graphiques des positions des mots via des ACP et les sommes vectorielles sur les mots^[comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov}] donnent des résultats bien moins concluants que le modèle `Gensim` entraîné sur l'ensemble des tweets (cf. partie \@ref(sec:gensimresultats)). 
+Enfin, les représentations graphiques des positions des mots via des ACP et les sommes vectorielles sur les mots^[Comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov}] donnent des résultats bien moins concluants que le modèle `Gensim` entraîné sur l'ensemble des tweets (voir partie \@ref(sec:gensimresultats)). 
 
 ### Avec le modèle `Gensim` {#sec:gensimresultats}
 
-Le modèle `Gensim`^[w = 4, lr = 0,02, dim = 100 et ep = 100.] donne des résultats encore plus convaincants que précédemment, ayant été davantage entraîné, et sur un corpus plus fourni (ensemble des tweets). En effet, les vecteurs-mots en sortie du modèle `Gensim` sur l'ensemble des tweets (figure \ref{fig:acp_freq_gensim}) sont davantage répartis dans l'ensemble du plan, alors que les mots en sortie du modèle que nous avons implémenté sur 100 000 tweets sont répartis en fonction de leur nombre d'occurrences, les mots les moins fréquents n'ayant probablement pas (ou peu) été entraînés (figure \ref{fig:acp_freq_ark}). 
+Le modèle `Gensim`^[w = 4, lr = 0,02, dim = 100 et ep = 100.] donne des résultats encore plus convaincants que précédemment, ayant été davantage entraîné, et sur un corpus plus fourni (ensemble des tweets). 
+En effet, les vecteurs-mots en sortie du modèle `Gensim` sur l'ensemble des tweets (figure \ref{fig:acp_freq_gensim}) sont davantage répartis dans l'ensemble du plan, alors que les mots en sortie du modèle que nous avons implémenté sur 100 000 tweets sont répartis en fonction de leur nombre d'occurrences, les mots les moins fréquents n'ayant probablement pas (ou peu) été entraînés (figure \ref{fig:acp_freq_ark}). 
 
 \begin{figure}
 \begin{minipage}{.5\textwidth}
@@ -649,8 +654,11 @@ Méthode utilisée : ACP, deux premiers axes.}
 Le coefficient de Spearman a une valeur semblable à précédemment : 0,495 mais sa p-valeur est proche de 0 % et, cette fois-ci, 52 des couples de mots de la base RG-65 ont été reconnus dans le corpus de tweets. 
 
 
-
-Les 10 plus proches voisins calculés par similarité cosinus (tableau  \ref{table:knn_gensim}) semblent encore davantage pertinents. Les plus proches voisins de \og $1$ \fg{} contiennent davantage de chiffres, de \og samedi \fg{} davantage de jours de la semaine et le tableau contient désormais des synonymes de \og femme \fg{} et de \og bonjour \fg{}. Certains mots surprenants subsistent toutefois, comme par exemple \og transmets \fg{}, \og désagrément \fg{} et \og betembourg \fg{}, voisins de \og bonjour \fg{}. Toutefois, la fréquence d'apparition de ces mots dans le corpus est faible (moins d'une centaine d'occurrences). La projection de certains vecteurs-mots sur les deux premiers axes d'une ACP (figure \ref{fig:acp_gensim}) nous confirme la qualité de l'entraînement du corpus sur l'ensemble de tweets. 
+Les 10 plus proches voisins calculés par similarité cosinus (tableau  \ref{table:knn_gensim}) semblent encore davantage pertinents. 
+Les plus proches voisins de \og $1$ \fg{} contiennent davantage de chiffres, de \og samedi \fg{} davantage de jours de la semaine et le tableau contient désormais des synonymes de \og femme \fg{} et de \og bonjour \fg{}. 
+Certains mots surprenants subsistent toutefois, comme par exemple \og transmets \fg{}, \og désagrément \fg{} et \og betembourg \fg{}, voisins de \og bonjour \fg{}. 
+Toutefois, la fréquence d'apparition de ces mots dans le corpus est faible (moins d'une centaine d'occurrences). 
+La projection de certains vecteurs-mots sur les deux premiers axes d'une ACP (figure \ref{fig:acp_gensim}) nous confirme la qualité de l'entraînement du corpus sur l'ensemble de tweets. 
 
 \begin{table}
 \begin{center}
@@ -692,9 +700,13 @@ La similarité cosinus de chaque paire de mots est renseignée entre les parenth
 \emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02 / dim = 100 / base : ensemble des tweets }
 \end{figure}
  
-Enfin, nous avons réalisé des opérations sur les mots-vecteurs. Si l'opération $\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} = \overrightarrow{Reine}$ (figure \ref{fig:acp_reine}) semble fonctionner
-^[Les similarités cosinus obtenues sont les suivantes : $corr(\overrightarrow{Roi}, \overrightarrow{Homme}) = 0,34$, $corr(\overrightarrow{Homme}, \overrightarrow{Femme}) = 0,35$ et $corr(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} , \overrightarrow{Reine}) = 0,67$. $\overrightarrow{Reine}$ est bien le mot le plus proche de la somme vectorielle calculée.],
- l'opération $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie}$  (cf. \cite{Mikolov}, figure \ref{fig:acp_rome}) n'identifie pas \og Rome \fg{} dans les mots les plus proches mais d'autres villes comme \og Lyon \fg{} (similarité cosinus de 0,62). \og Rome \fg{} semble effectivement située \og trop en haut\fg{} dans le plan de l'ACP  par rapport aux autres villes.  Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions dans les tweets contre 46433 pour Lyon par exemple) pour que le vecteur-mot obtenu soit pertinent, ou peut-être que, dans les tweets mobilisés, le mot \og Rome \fg{} s'utilise dans un contexte différent de l'article de Mikolov.
+Enfin, nous avons réalisé des opérations sur les mots-vecteurs. 
+Si l'opération $\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} = \overrightarrow{Reine}$ (figure \ref{fig:acp_reine}) semble fonctionner
+^[
+Les similarités cosinus obtenues sont les suivantes : $corr(\overrightarrow{Roi}, \overrightarrow{Homme}) = 0,34$, $corr(\overrightarrow{Homme}, \overrightarrow{Femme}) = 0,35$ et $corr(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} , \overrightarrow{Reine}) = 0,67$. $\overrightarrow{Reine}$ est bien le mot le plus proche de la somme vectorielle calculée.
+], l'opération $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie}$ (figure \ref{fig:acp_rome}) n'identifie pas \og Rome \fg{}(\colorbox{BurntOrange}{similarité cosinus de XXXXXXX}) dans les mots les plus proches mais d'autres villes comme \og Lyon \fg{} (similarité cosinus de 0,62). 
+\og Rome \fg{} semble effectivement située \og trop en haut\fg{} dans le plan de l'ACP  par rapport aux autres villes.
+Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions dans les tweets contre 46 433 pour Lyon par exemple) pour que le vecteur-mot obtenu soit pertinent, ou peut-être que, dans les tweets mobilisés, le mot \og Rome \fg{} s'utilise dans un contexte différent de l'article de Mikolov.
 
 \begin{figure}
 \begin{minipage}{.5\textwidth}

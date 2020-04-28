@@ -38,3 +38,5 @@ Larger windows tend to capture more topic/domain information: what other words (
 
 Cours sur l'ACP : Analyse en Composantes Principales (ACP) par Marie Chavrent
 TSNE : Page wiki en anglais
+
+The norm of the vector is linked with both the frequency and the variance of the contexts on which occurs. See http://arxiv.org/abs/1510.02675 for a study on this.

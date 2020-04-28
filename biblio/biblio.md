@@ -19,6 +19,8 @@ https://medium.com/towardsdatascience/word2vec-negative-sampling-made-easy-7a1a6
 
 https://aegis4048.github.io/optimize_computational_efficiency_of_skip-gram_with_negative_sampling (Alain)
 
+Blog sur NCE :  https://www.kdnuggets.com/2019/07/introduction-noise-contrastive-estimation.html
+
 # Softmax vs sigmoid
 https://dejanbatanjac.github.io/2019/07/04/softmax-vs-sigmoid.html (Alain)
 
@@ -39,4 +41,5 @@ Larger windows tend to capture more topic/domain information: what other words (
 Cours sur l'ACP : Analyse en Composantes Principales (ACP) par Marie Chavrent
 TSNE : Page wiki en anglais
 
-The norm of the vector is linked with both the frequency and the variance of the contexts on which occurs. See http://arxiv.org/abs/1510.02675 for a study on this.
+The norm of the vector is linked with both the frequency and the variance of the contexts on which occurs. See http://arxiv.org/abs/1510.02675 for a study on this. Article de Roro : https://arxiv.org/pdf/1508.02297v1.pdf
+

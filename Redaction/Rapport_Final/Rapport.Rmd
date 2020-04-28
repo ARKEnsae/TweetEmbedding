@@ -53,35 +53,45 @@ Ce succès s'explique en partie grâce à l'émergence de techniques non supervi
 Les méthodes de *word embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissent dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches (au sens d'une distance définie). 
 Les modèles *Word2Vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet. 
 
-Dans ce projet de statistiques appliquées, nous étudierons dans un premier temps en détail et implémenterons le modèle *Word2Vec* (Partie \@ref(sec:word2vec)). Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (Partie \@ref(sec:evaluation)). Enfin, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (Partie \@ref(sec:sentimentalAnalysis)).
+Dans ce projet de statistique appliquée, nous étudierons dans un premier temps en détail et implémenterons le modèle *Word2Vec* (partie \@ref(sec:word2vec)). 
+Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (partie \@ref(sec:evaluation)). 
+Enfin, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (partie \@ref(sec:sentimentalAnalysis)).
 
 
 # Implémentation du modèle *Word2Vec* {#sec:word2vec}
 
 ## Le modèle *Word2vec*, un modèle de *word-embedding*
 
-Le *Natural Language Processing* (NLP ou « traitement automatique du langage naturel ») est une branche de *machine learning* visant à analyser, traiter et reproduire le langage humain.  Les modèles de NLP *Word2Vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le *word-embedding* -- plongement lexical en français. 
+Le *Natural Language Processing* (NLP ou « traitement automatique du langage naturel ») est une branche du *machine learning* visant à analyser, traiter et reproduire le langage humain. 
+Les modèles de NLP *Word2Vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le *word-embedding* -- plongement lexical en français. 
 
 ### Historique : de la sémantique vectorielle à *Word2Vec*
 
-La « sémantique vectorielle » est née dans les années 1950^[L’ouvrage \cite{Jurafsky} permet de retracer avec une grande richesse l’évolution des méthodes de NLP.] . C’est une méthode algébrique de représentation d’un document visant à réaliser des tâches diverses (détecter le plagiat, filtrer des articles\dots). Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives *versus* négatives (heureux / triste), etc. 
+La « sémantique vectorielle » est née dans les années 1950^[L’ouvrage \cite{Jurafsky} permet de retracer avec une grande richesse l’évolution des méthodes de NLP.]. 
+C’est une méthode algébrique de représentation d’un document visant à réaliser des tâches diverses (détecter le plagiat, filtrer des articles\dots). 
+Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives *versus* négatives (heureux / triste), etc. 
 
-Un modèle répondant à ces exigences ne peut exister. Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement, dit autrement : les mots qui se produisent dans un contexte identique tendent à avoir des significations similaires^[Comme l'a écrit le linguiste britannique John Rupert Firth en 1957, « Vous connaîtrez un mot par ses fréquentations ».]. 
+Un modèle répondant à toutes ces exigences ne peut exister. 
+Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement.
+Dit autrement : les mots qui se produisent dans un contexte identique tendent à avoir des significations similaires^[Comme l'a écrit le linguiste britannique John Rupert Firth en 1957, « Vous connaîtrez un mot par ses fréquentations ».]. 
 
-Les premiers modèles sémantiques^[Comme le *term frequency-inverse document frequency* (TF-IDF)] représentaient les relations entre mots grâce à des très grandes matrices dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0 et dites *sparses*). Les méthodes de *word-embedding* qui sont ensuite apparues ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).  Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d’accélérer les tâches d’apprentissage impliquant ces mots. 
+Les premiers modèles sémantiques (comme le *term frequency-inverse document frequency* (TF-IDF)) représentaient les relations entre mots grâce à des très grandes matrices, dites *sparses*, dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0). Les méthodes de *word-embedding* qui sont ensuite apparues ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).
+Si la réduction de dimension rend les vecteurs-mots moins facilement interprétables, elle a pour grand avantage de faciliter et d’accélérer les tâches d’apprentissage impliquant ces mots. 
 
 \cite{Mikolov} ont mis en avant en 2013 les méthodes de *word-embedding* à travers la création de *Word2Vec*. Ce modèle de réseaux de neurones^[C’est l’article \cite{Bengio} qui a introduit dix ans avant *Word2Vec* le premier modèle d’apprentissage de représentation de vecteurs-mots à partir d’un réseau de neurone simple.] à deux couches est rapidement devenu une référence grâce à la grande précision des résultats qu’il permet d’obtenir, pouvant être entraîné en un temps record sur un corpus très volumineux.  
 
 ### *Word2Vec*, un modèle d’apprentissage « auto-supervisé » {#subsec:word2vec}
 
-Pour rappel, en sortie du modèle *Word2Vec*, chaque mot est représenté par un vecteur dont la dimension est fixée par la valeur d’un hyperparamètre. Les mots qui apparaissent dans des contextes similaires (« bonjour » et « salut » par exemple) seront représentés par des vecteurs relativement proches dans l’espace vectoriel de définition de ces vecteurs. Dans la même logique, *Word2Vec* permet également de réaliser des opérations vectorielles, comme dans l’exemple, souvent cité : $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ qui provient de \cite{Mikolov}.  
+En sortie du modèle *Word2Vec*, chaque mot est représenté par un vecteur dont la dimension est fixée par la valeur d’un hyperparamètre. Les mots qui apparaissent dans des contextes similaires (« bonjour » et « salut » par exemple) seront représentés par des vecteurs relativement proches dans l’espace vectoriel de définition de ces vecteurs. Dans la même logique, *Word2Vec* permet également de réaliser des opérations vectorielles, comme dans l’exemple, souvent cité : $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ qui provient de \cite{Mikolov}.  
 
 Deux architectures du modèle *Word2Vec* existent (voir graphique \@ref(fig:cbowskipgram)) :
 
 - L'approche *Continuous bags of words* dont l'objectif est d'estimer la probabilité d'observer un mot, appelé **« focus »**, sachant le contexte dans lequel il apparaît (i.e. : les mots **voisins** qualifiés de **« contextes »**).  
 
-- L'approche *Skip-gram* a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du  mot focus. 
+- L'approche *Skip-gram* a un objectif inverse : estimer, pour chaque mot du vocabulaire, la probabilité d'être proche du mot focus. 
 C'est cette approche que nous étudions dans ce projet et dans la suite de ce rapport.
+<!-- Skip-gram: works well with a small amount of the training data, represents well even rare words or phrases. -->
+<!-- CBOW: several times faster to train than the skip-gram, slightly better accuracy for the frequent words. -->
 
 \begin{figure}[htp]
 \centering
@@ -93,17 +103,19 @@ C'est cette approche que nous étudions dans ce projet et dans la suite de ce ra
 %\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{figure}
 
-Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition des mots contextes voisins d’un mot forcus^[Comme dans les premiers modèles sémantiques dits *sparses*.], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question (dans le cas Skip-Gram) « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ». La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
+Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition des mots contextes voisins d’un mot focus^[Comme dans les premiers modèles sémantiques dits *sparses*.], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question (dans le cas Skip-Gram) « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ».
+La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
 
-Les voisins d’un mot focus reposent sur un hyperparamètre : la fenêtre (*window* ou $w$).  Pour $w = p$, les voisins du mot focus sont les $p$ mots précédents et les $p$ mots suivants dans la phrase. Par exemple, dans la phrase :  
+Les voisins d’un mot focus reposent sur un hyperparamètre : la fenêtre (*window* ou $w$). 
+Pour $w = p$, les voisins du mot focus sont les $p$ mots précédents et les $p$ mots suivants dans la phrase. Par exemple, dans la phrase :  
 
 \begin{quote}
 \LARGE \textbf{``}\normalsize \emph{Le professeur de statistique est strict avec ses élèves.} \LARGE \textbf{''}\normalsize
 \end{quote}
 
-Si le mot focus est « statistique » et si $w = 2$, alors le contexte qui lui est associé est :  `[professeur, de, est, strict]`; si le mot focus est « professeur » et si $w = 2$, alors le contexte qui lui est associé est :  `[Le, de, statistique]`.
+pour $w=2$, si le mot focus est « statistique » alors le contexte qui lui est associé est : `[professeur, de, est, strict]` ; si le mot focus est « professeur » alors le contexte qui lui est associé est :  `[Le, de, statistique]`.
 
-Pour ce faire, nous entraînons le réseau de neurones en le nourrissant des paires `[focus, contexte]`^[Dans notre exemple : ` [statistique, professeur], [statistique, de] `\dots] contenues dans les différentes phrases (ici tweets) du corpus afin qu’il puisse déterminer les probabilités d’apparition d’un mot dans le voisinage d’un autre mot (description de l’algorithme précis en partie \@ref(sec:skipgram)). 
+Pour déterminer les représentations vectorielles des mots, nous entraînons le réseau de neurones en le nourrissant des paires `[focus, contexte]`^[Dans notre exemple : ` [statistique, professeur], [statistique, de] `\dots] contenues dans les différentes phrases (ici tweets) du corpus afin qu’il puisse déterminer les probabilités d’apparition d’un mot dans le voisinage d’un autre mot (voir description de l’algorithme en partie \@ref(sec:skipgram)). 
 
 Ainsi, la grande force du modèle d’apprentissage *Word2Vec* est qu’il est « auto-supervisé ». En effet, comme nous avons vu plus haut, le corpus est considéré comme une donnée d'entraînement implicitement supervisée, ce qui nous évite d’avoir à mobiliser des corpus annexes annotés.
 
@@ -111,14 +123,12 @@ Ainsi, la grande force du modèle d’apprentissage *Word2Vec* est qu’il est �
 
 L'objectif de cette partie est de décrire le fonctionnement de l'approche Skip-gram. 
 
-Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents) et $d$ la dimension retenue pour \colorbox{BurntOrange}{les \emph{word-embeddings}}.
-Comme décrit dans la partie \@ref(subsec:word2vec), l'approche *Skip-gram* peut être vue comme un réseau de neurones avec trois couches avec : \colorbox{BurntOrange}{deux ou trois ? si trois, corriger aussi plus haut}
-
+Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents) et $d$ la dimension retenue pour les *word-embeddings*.
+Comme décrit dans la partie \@ref(subsec:word2vec), l'approche *Skip-gram* peut être vue comme un réseau de neurones à deux couches avec :
 
 - En entrée une matrice $W_e$ de taille $n\times d$ ;
 
 - En sortie une matrice $W_S$ de taille $n\times d$.
-
 
 Ces deux matrices sont initialisées en générant des lois normale $\mathcal N(0,1)$. Elles sont ensuite mises à jour, grâce aux couples `[focus, contexte]` construits à partir du contexte (voir partie \@ref(subsec:baseentrainement)), par un algorithme de descente de gradient.
 À la fin de l'algorithme ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
@@ -128,30 +138,31 @@ Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentati
 
 Peu de traitements sont effectués sur la base initiale : nous mettons tout en minuscule, remplaçons les ponctuations par des espaces, mais laissons tous les chiffres et les accents. 
 Chaque phrase^[Dans notre cas une phrase correspond à un tweet, même si ce tweet peut être composé de plusieurs phrases.]
-est ensuite *tokénisée* par la chaîne de caractère correspondant à un espace `" "` : on considère qu'il y a autant de mots de que chaînes de caractères séparées par un espace^[Les mots composés sont donc considérés comme plusieurs mots distincts.]. 
-
+est ensuite *tokénisée* par la chaîne de caractère correspondant à un espace `" "` : on considère qu'il y a autant de mots de que chaînes de caractères séparées par un espace^[Les mots composés sont donc considérés comme plusieurs mots distincts.]. Par exemple, la phrase :
 \begin{quote}
-\LARGE \textbf{``}\normalsize \emph{Que pensez-vous de CE projet ?(i.e. : qu'avez-vous retenu en 10min?)} \LARGE \textbf{''}\normalsize
+\LARGE \textbf{``}\normalsize \emph{Que pensez-vous de CE projet?(i.e. : qu'avez-vous retenu en 10min ?)} \LARGE \textbf{''}\normalsize
 \end{quote}
-
-Cette phrase est décomposée en 14 mots `[que, pensez, vous, de, ce, projet, i, e, qu, avez, vous, retenu, en, 10min]`.
+est décomposée en 14 mots `[que, pensez, vous, de, ce, projet, i, e, qu, avez, vous, retenu, en, 10min]`.
 
 Comme décrit dans la partie \@ref(subsec:word2vec), les couples `[focus, contexte]` dépendent d'un hyperparamètre : la fenêtre $w$. Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pronoms personnels), soient sur-entraînés, deux traitements sont effectués :
 
-1. Pour chaque phrase on effectue un sous-échantillonnage (*sub-sampling*). Pour chaque mot $w_i$ on note $z(w_i)$ la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparaît et le nombre total de mots. La probabilité de garder un mot le mot $w_i$ est : 
+1. Pour chaque phrase on effectue un sous-échantillonnage (*subsampling*). Pour chaque mot $w_i$ on note $z(w_i)$ la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparaît et le nombre total de mots. La probabilité de garder un mot le mot $w_i$ est donnée par : 
 $$
 \mathbb P(w_i) = \min\left\{\left(\sqrt{\frac{z(w_i)}{q}} + 1 \right)
 \times
 \frac{q}{z(w_i)},1\right\}
 $$
-Le paramètre $q$ appelé « sample » -- échantillonnage -- contrôle le nombre de sous-échantillonnages \colorbox{BurntOrange}{pas clair, expliciter, éventuellement avec une ndbp}. Si $q$ vaut 0,001 (valeur par défaut) alors par exemples :  
+Le paramètre $q$ appelé « sample » -- échantillonnage -- contrôle le nombre de mots sous-échantillonnés (plus il est grand, plus la probabilité de garder le mot $w_i$ est grande). Si $q$ vaut 0,001 (valeur par défaut) alors par exemples :  
 
-  - $\mathbb P(w_i) = 1$ ($w_i$ est toujours gardé) lorsque $z(w_i)\leq 0,0026$, c'est-à-dire si $w_i$ représentent moins de 0,26 \% du nombre total de mots.  
-  - $\mathbb P(w_i)=0,5$ (50 \% de chance de garder $w_i$) lorsque $z(w_i)=0,00746$.  
-  - $\mathbb P(w_i)=0,033$ (3,3 \% chance de garder $w_i$) lorsque $z(w_i)=1,0$ (si le corpus n'est constitué que du mot $w_i$, ce qui serait bien sûr absurde).
+    - $\mathbb P(w_i) = 1$ ($w_i$ est toujours gardé) lorsque $z(w_i)\leq 0,0026$, c'est-à-dire si $w_i$ représentent moins de 0,26 \% du nombre total de mots.  
+    - $\mathbb P(w_i) = 0,5$ (50 \% de chance de garder $w_i$) lorsque $z(w_i)=0,00746$.  
+    - $\mathbb P(w_i) = 0,033$ (3,3 \% chance de garder $w_i$) lorsque $z(w_i)=1,0$ (si le corpus n'est constitué que du mot $w_i$, ce qui serait bien sûr absurde).
+    
+Ce sous-échantillonnage est effectuée de manière indépendante pour chaque phrase de manière : un même mot peut donc être sous-échantillonné dans une phrase et ne pas l'être dans une autre.
   
-2. Pour chaque phrase, on tire au hasard (selon une loi uniforme) un mot focus pour lequel on tire un mot *contexte* au hasard dans la fenêtre $w$ en imposant que les deux mots choisis soient parmi les mots sous-échantillonnés \colorbox{BurntOrange}{sinon on retire ? éventuellement ndbp}.
-
+2. Pour chaque phrase, on tire au hasard (selon une loi uniforme) un mot focus pour lequel on tire un mot *contexte* au hasard dans la fenêtre $w$, tout en imposant que les deux mots choisis soient parmi les mots sous-échantillonnés^[
+Si ce n'est pas possible alors on ne retient aucun couple `[focus, contexte]` pour cette phrase. Sinon, on ne fait un tirage du mot focus parmi ceux tels qu'il y a au moins un mot contexte échantillonné dans la fenêtre $w$.
+].
 Par exemple, supposons que dans la phrase `[que, pensez, vous, de, ce, projet, i, e, qu, avez, vous, retenu, en, 10min]`, les mots sous-échantillonnés soient les mots en position 2, 5, 6, 8, 9, 10, 11, 12, 13, 14. 
 Pour mieux comprendre, nous remplaçons les mots non échantillonnés par « nonsubsampled ». La phrase devient `[nonsubsampled, pensez, nonsubsampled, nonsubsampled, ce, projet, nonsubsampled, e, qu, avez, vous, retenu, en, 10min]`.
 Si $w=2$ alors le mot focus tiré ne peut pas être « pensez » puisque dans ce cas il n'y aurait aucun mot contexte associé. Si le mot focus tiré est « qu »  alors le mot contexte est tiré au hasard parmi `[e, avez, vous]`.
@@ -171,20 +182,18 @@ Le modèle *Word2vec* a initialement été construit en utilisant une fonction d
 
 #### Version softmax {#subsec:softmax}
 
-Étant donné les mots $w_1,\,\dots,\,w_T$ utilisés pour entraîner le modèle, l'objectif du modèle Skip-Gram est de maximiser la quantité :
+Soit $w_1,\,\dots,\,w_T$ les mots utilisés pour entraîner le modèle. L'objectif du modèle Skip-Gram est, étant donné un mot contexte, de prévoir quels sont les mots voisins focus dans une certaine fenêtre $w$. Mathématiquement, on cherche à maximiser la quantité :
 \begin{equation}
-\frac 1 T\sum_{t=1}^T\sum_{-w\leq j \leq w,\,j\ne 0} \log \mathbb P(w_{t+j}\vert w_{t}) 
+\frac 1 T\sum_{t=1}^T\sum_{-w\leq j \leq w,\,j\ne 0} \log \mathbb P(w_{t+j}\vert w_{t})
 (\#eq:objSoftMax)
 \end{equation}
 où :
 
-- $w$ est la fenêtre ;
-
-- les $w_{t+j}$ sont les mots voisins de $w_t$ ($w_t$ est donc un mot contexte et $w_{t+j}$ un mot focus) ;  \colorbox{BurntOrange}{être bien sûr que c'est pas l'nverse mais si ça se trouve c'est ça}.
+- les $w_{t+j}$ sont les mots voisins de $w_t$ ($w_t$ est donc un mot contexte et $w_{t+j}$ un mot focus) ; 
 
 -  $\mathbb P(w_{t+j}\vert w_{t})$ est la probabilité d'observer le mot focus $w_{t+j}$ sachant que l'on a observé le mot contexte $w_t$.
 Cette quantité est calculée en fonction des matrices $W_e$ et $W_s$ à partir de la fonction softmax
-^[Étant donné le vecteur $z=(z_1,\,\dots,\,z_n)$) la fonction softmax est la fonction qui à $z$ associe le vecteur dont la $j$^ème^ coordonnée est égale à $\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}$.] :
+^[Étant donné le vecteur $z=(z_1,\,\dots,\,z_n)$) la fonction softmax est la fonction qui à $z$ associe le vecteur dont la $j$^ème^ coordonnée est égale à $\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}$.]. En notant $n$ la taille du vocabulaire et $W_{e,w_i}$ et $W_{s,w_i}$ les représentations vectorielles du mot $w_i$ respectivement dans la matrice d'entrée et de sortie, cette probabilité est égale à :
 $$
 \mathbb P(w_{focus}\vert w_{context}) = 
 \frac{
@@ -193,23 +202,21 @@ $$
 \sum_{i=1}^n\exp(W_{s,w_i}\times {}^tW_{e,w_{contexte}})
 }
 $$
-avec $W_{e,w_i}$ et $W_{s,w_i}$ les représentations vectorielles du mot $w_i$ respectivement dans la matrice d'entrée et de sortie et $n$ la taille du vocabulaire.
 
 De manière équivalente à l'équation \@ref(eq:objSoftMax), qu'il faut maximiser, pour chaque couple `[focus, contexte]` on associe la fonction de perte suivante, qu'il faut minimiser :
 $$
-L(W_e,W_s)=-\log\mathbb P(w_{focus}\vert w_{context})
+L(W_e,W_s)=-\log\mathbb P(w_{focus}\vert w_{context}) =
+-W_{s,w_{focus}}\times {}^tW_{e,w_{contexte}}+
+\log\left(\sum_{i=1}^n\exp(W_{s,w_i}\times {}^tW_{e,w_{contexte}})\right)
 $$
-
-L'inconvénient de cette méthode est qu'elle est très gourmande en temps de calcul : 
-
-- Pour chaque couple `[focus, contexte]`, la complexité du calcul de $\log\mathbb P(w_{focus}\vert w_{context})$ est proportionnelle à la taille du vocabulaire ;  
-
-- La complexité du calcul de $\nabla_\theta \log\mathbb P(w_{focus}\vert w_{context})$ dans l'étape de descente de gradient est aussi proportionnelle à la taille du vocabulaire. \colorbox{BurntOrange}{à conserver ? Alain}
-
+L'inconvénient de cette méthode est qu'elle est très gourmande en temps de calcul. 
+En effet, pour chaque couple `[focus, contexte]`, la complexité du calcul de $\log\mathbb P(w_{focus}\vert w_{context})$ est proportionnelle à la taille du vocabulaire.
 La taille du vocabulaire pouvant être très grande (par exemple, dans notre base de tweets, cette taille est de 70 330), le temps de calcul peut vite devenir très important. 
 
+<!-- - La complexité du calcul de $\nabla_\theta \log\mathbb P(w_{focus}\vert w_{context})$ dans l'étape de descente de gradient est aussi proportionnelle à la taille du vocabulaire. \colorbox{BurntOrange}{à conserver ? Alain} -->
+
 C'est pourquoi la version *softmax* est très peu utilisée dans les implémentations de Skip-Gram. Une approche alternative, *negative sampling* avec une fonction sigmoïde, moins gourmande en temps de calcul, est alors souvent préférée^[
-Une autre alternative à l'approche *softmax* parfois utilisée est l'approches *hierarchical softmax* qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à $\log_2n$ mais reste plus importante que celle de l'approche *negative sampling*.
+Une autre alternative à l'approche *softmax* parfois utilisée est l'approche *hierarchical softmax* qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à $\log_2n$ mais reste plus importante que celle de l'approche *negative sampling*.
 ].
 
 <!-- data = torch.matmul(input[focus,], torch.t(output)) -->
@@ -223,12 +230,16 @@ Une autre alternative à l'approche *softmax* parfois utilisée est l'approches 
 
 #### Version *negative sampling* {#subsec:negsampling}
 
-Le *negative sampling* est basé sur le concept de *Noise Contrastive Estimation* -- estimation contrastée du bruit -- selon lequel un bon modèle logistique devrait être capable de différentier un faux signal d'un vrai signal \colorbox{BurntOrange}{à clarifier ?}.
+Le *negative sampling* est basé sur le concept du *Noise Contrastive Estimation* -- estimation contrastée du bruit -- où on cherche, à partir d'un modèle logistique, à différencier un vrai signal (un vrai couple `[focus, contexte]`) d'un faux (un bruit, i.e. : de faux couples `[focus, contexte]` qui seraient générés aléatoirement).
 
 Dans cette approche, plutôt que de mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple `[focus, contexte]`, on tire $K$ mots au hasard du vocabulaire $(w_{neg,\,i})_{i=1..K}$, selon une loi $P$ (définie plus tard), en considérant que ces mots ne seront pas des mots voisins de `focus`^[
 Il est bien sûr possible que parmi les mots tirés au hasard il y ait des mots qui soient vraiment dans le contexte. Cependant, puisque la taille du vocabulaire est très grande, on considère que cette erreur est négligeable.
 ]. 
-L'idée du *negative sampling* est donc de transformer un problème de classification multi-classes en un problème de classification binaire : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors la décision $D=1$ (mot2 est positif et est le `contexte`), sinon $D=0$ (mot négatif, appartient à $(w_{neg,\,i})_{i=1..K}$). 
+
+L'approche *softmax* peut être vue comme un problème de classification multiclasses : étant donné un mot `contexte` on estime la probabilité que les autres mots soient voisins (chaque classe étant un mot du vocabulaire).
+L'idée du *negative sampling* est de transformer ce problème de classification multiclasses en un problème de classification binaire d'une variable $D$ : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors $D=1$ (mot2 est positif et est le `contexte`), sinon $D=0$ (mot2 est négatif, il appartient à $(w_{neg,\,i})_{i=1..K}$). 
+
+<!-- Predicting the next word is like predicting the class. That is, such a network is just a "standard" multinomial (multi-class) classifier. And this network must have as many output neurons as classes there are. When classes are actual words, the number of neurons is, well, huge. -->
 
 On cherche donc à maximiser $\mathbb P(D=1\vert w_{focus},w_{contexte})$ et $\mathbb P(D=0\vert w_{focus},w_{neg,\,i})$.
 Pour estimer ces probabilités on utilise une fonction sigmoïde plutôt que la fonction softmax :
@@ -255,7 +266,7 @@ $$
 ]
 $$
 
-Ainsi, pour chaque couple `[focus, contexte]` et un ensemble $(w_{neg,\,i})_{i=1..K}$ de mots négatifs tirés,  on associe la fonction de perte suivante à minimiser :
+Ainsi, pour chaque couple `[focus, contexte]` et un ensemble $(w_{neg,\,i})_{i=1..K}$ de mots négatifs tirés,  on associe la fonction de perte suivante, à minimiser :
 $$
 L(W_e,W_s)=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
 -
@@ -265,21 +276,19 @@ L(W_e,W_s)=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
 $$
 La complexité est ici bien plus faible que pour la fonction softmax puiqu'elle est proportionnelle à $K$.
 
-\cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution pour générer les mots négatifs est :
+\cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution $P$ pour générer les mots négatifs est :
 $$
-\mathbb P(w_i) = \frac{z(w_i)^{3/4}}{
+\mathbb P_P(w_i) = \frac{z(w_i)^{3/4}}{
 \sum_{j=1}^n z(w_j)^{3/4}
 }
 $$ 
 
-\colorbox{BurntOrange}{harmoniser avec la loi de proba définie plus haut pour bien qu'on comprenne qu'on fait référence à la mm chose}
+Avec $z(w_i)$ la fréquence d'apparition du mot $w_i$.
 
-Avec $z(w_i)$ la fréquence d'apparition du mot $w_i$. Ils recommandent de prendre $K\in\{5,\dots,20\}$ pour les petites bases de données et $K\in\{2,\dots,5\}$ pour les grandes bases de données. Dans ce projet nous utiliserons $K=5$.
+Ils recommandent également de prendre $K\in\{5,\dots,20\}$ pour les petites bases de données et $K\in\{2,\dots,5\}$ pour les grandes bases de données. Dans ce projet nous utiliserons $K=5$ (pour chaque couple `[focus, contexte]` nous tirons donc 5 mots négatifs).
 
-En plus d'être moins coûteuse en temps de calcul, cette méthode permet aussi de corriger la sur-estimation des poids des mots contextes tirés au hasard par rapport à l'approche softmax. En effet, on cherche à minimiser la proximité des mots négatifs au mot focus.
+<!-- En plus d'être moins coûteuse en temps de calcul, cette méthode permet aussi de corriger la sur-estimation des poids des mots contextes tirés au hasard par rapport à l'approche softmax. En effet, on cherche à minimiser la proximité des mots négatifs au mot focus. -->
 <!-- Cette méthode permet d’une part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu’elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus (negatives samples), mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de loss. Elle est d’autre part moins coûteuse en temps de calcul puisqu’elle permet d’actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les negatives samples) -->
-
-\colorbox{BurntOrange}{reformuler pour la V2 devant el profesor Kim}
 
 <!-- mikolov 2013b -->
 <!-- Tomas Mikolov, Ilya Sutskever, Kai Chen, Gregory S. Corrado, and Jeffrey Dean. Distributed representations of words and phrases and their compositionality. In NIPS, 2013. -->
@@ -718,6 +727,9 @@ Les mots en vert correspondent à ceux présents dans l'opération, le mot en ro
 <!-- Ensuite, un enchaînement de skipgram est appris pour chaque n-gramme constitutif, et le mot est représenté par la somme de tous les plongements de ses n-grammes constitutifs. Une bibliothèque open source fasttext, comprenant des incorporations pré-formées pour 157 langues, est disponible à l'adresse http://fasttext.cc.Il existe de nombreux autres algorithmes d'intégration, utilisant des méthodes telles que la factorisation non négative de la matrice (Fyshe et al., 2015), ou en convertissant intégration PPMI clairsemée à des vecteurs denses en utilisant SVD (Levy et Goldberg, 2014c) .Dans le chapitre 10, nous introduisons des incorporations contextuelles comme ELMo (Peters et al., 2018) et BERT (Devlin et al., 2019) dans lesquelles la représentation d'un mot est contextuelle, fonction de la phrase d'entrée entière. Voir Manning et al. (2008) pour une compréhension plus approfondie du rôle des vecteurs dans la recherche d'informations, y compris comment comparer les requêtes avec des documents, plus de détails sur tf-idf et les problèmes de mise à l'échelle vers de très grands ensembles de données. Cruse (2004) est une introduction linguistique utile texte sur la sémantique lexicale. -->
 
 
+# (APPENDIX) Appendix {-}
+
+# Annexe 1
 
 \newpage
 

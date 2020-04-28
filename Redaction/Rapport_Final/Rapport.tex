@@ -383,7 +383,7 @@ Dès lors, il devient complexe de bien observer la proximité entre deux mots. C
 
 Considérons le cas où nous disposons de \(n\) individus (dans notre cas les mots) et de \(p\) variables (dans notre cas, leurs composantes ou dimensions issues du modèle \emph{Word2Vec}). On note \(X = (x_{ij})\) la matrice de taille \((n,p)\) des données brutes, où \(x_{ij}\) représente la valeur de la \(j\)-ème variable pour le \(i\)-ème individu. Afin de donner à chaque individu le même poids, nous centrons et réduisons les colonnes de notre matrice de données. On notera par la suite \(Z = (z_{ij})\) la matrice des données centrées et réduites.
 
-La construction des axes de l'ACP est faite par projection orthogonale. Nous utilisons ici le produit scalaire \(\langle x,y\rangle_{N} = ^t\!xN y\) avec la métrique \(N = diag(\frac{1}{n},...,\frac{1}{n})\). Ainsi, la projection orthogonale d'un individu \(i\) (vecteur ligne) \(z_i\) sur une droite de vecteur directeur \(v\) vaut \(^tz_iv\) et les coordonnées de projection des \(n\) individus valent \(Zv\).
+La construction des axes de l'ACP est faite par projection orthogonale. Nous utilisons ici le produit scalaire \(\langle x,y\rangle_{N} = ^t\!xN y\) avec la métrique \(N = diag(\frac{1}{n},...,\frac{1}{n})\). Ainsi, la projection orthogonale d'un individu \(i\) (vecteur ligne) \(z_i\) sur une droite de vecteur directeur unitaire \(v\) vaut \(z_iv\times v\) et les coordonnées de projection des \(n\) individus valent \(Zv\).
 
 Les vecteurs directeurs des axes sont définis de manière à maximiser la dispersion du nuage (son inertie) des individus projetés et conserver ainsi au mieux les distances entre les individus. L'inertie se définit comme
 \[I(Z) = \frac{1}{n} \sum \limits_{i = 1}^n d_{e}^2(z_i,\bar{z}) =

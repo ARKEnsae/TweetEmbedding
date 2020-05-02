@@ -99,8 +99,8 @@ C'est cette approche que nous étudions dans ce projet et dans la suite de ce ra
 \captionsetup{margin=0cm,format=hang,justification=justified}
 \caption{Architecture des modèles Continuous bags of words (CBOW) et Skip-gram.}\label{fig:cbowskipgram}
 %\vspace{-0.3cm}
-%\footnotesize
-%\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
+\footnotesize
+\emph{Source : \cite{Mikolov}}
 \end{figure}
 
 Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition des mots contextes voisins d’un mot focus^[Comme dans les premiers modèles sémantiques dits *sparses*.], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire et répond à la question (dans le cas Skip-Gram) « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ».
@@ -131,8 +131,8 @@ Comme décrit dans la partie \@ref(subsec:word2vec), l'approche *Skip-gram* peut
 - En sortie une matrice $W_S$ de taille $n\times dim$.
 
 Ces deux matrices sont initialisées en générant des lois normale $\mathcal N(0,1)$. Elles sont ensuite mises à jour, grâce aux couples `[focus, contexte]` construits à partir du contexte (voir partie \@ref(subsec:baseentrainement)), par un algorithme de descente de gradient.
-À la fin de l'algorithme ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
-Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentation du $i$^ème^ mot du vocabulaire.
+À la fin de l'algorithme, ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
+Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentation du $i$^ème^ mot du vocabulaire en dimension $dim$.
 
 ### Construction de la base d'entraînement {#subsec:baseentrainement}
 
@@ -158,13 +158,12 @@ Le paramètre $q$ appelé « sample » -- échantillonnage -- contrôle le nom
     - $\mathbb P(w_i) = 0,5$ (50 \% de chance de garder $w_i$) lorsque $z(w_i)=0,00746$.  
     - $\mathbb P(w_i) = 0,033$ (3,3 \% chance de garder $w_i$) lorsque $z(w_i)=1,0$ (si le corpus n'est constitué que du mot $w_i$, ce qui serait bien sûr absurde).
     
-Ce sous-échantillonnage est effectuée de manière indépendante pour chaque phrase de manière : un même mot peut donc être sous-échantillonné dans une phrase et ne pas l'être dans une autre.
+Ce sous-échantillonnage est effectué de manière indépendante pour chaque phrase : un même mot peut donc être sous-échantillonné dans une phrase et ne pas l'être dans une autre.
   
-2. Pour chaque phrase, on tire au hasard (selon une loi uniforme) un mot focus pour lequel on tire un mot *contexte* au hasard dans la fenêtre $w$, tout en imposant que les deux mots choisis soient parmi les mots sous-échantillonnés^[
-Si ce n'est pas possible alors on ne retient aucun couple `[focus, contexte]` pour cette phrase. Sinon, on ne fait un tirage du mot focus parmi ceux tels qu'il y a au moins un mot contexte échantillonné dans la fenêtre $w$.
-].
-Par exemple, supposons que dans la phrase `[que, pensez, vous, de, ce, projet, i, e, qu, avez, vous, retenu, en, 10min]`, les mots sous-échantillonnés soient les mots en position 2, 5, 6, 8, 9, 10, 11, 12, 13, 14. 
-Pour mieux comprendre, nous remplaçons les mots non échantillonnés par « nonsubsampled ». La phrase devient `[nonsubsampled, pensez, nonsubsampled, nonsubsampled, ce, projet, nonsubsampled, e, qu, avez, vous, retenu, en, 10min]`.
+2. Pour chaque phrase, on tire au hasard (selon une loi uniforme) un mot focus pour lequel on tire un mot *contexte* au hasard dans la fenêtre $w$, en imposant que les deux mots choisis soient parmi les mots sous-échantillonnés^[
+Si pour une phrase, aucun couple `[focus, contexte]` ne figurent simultanément dans les mots sous-échantillonnés, alors aucun couple n'est retenu pour cette phrase.]. 
+Par exemple, nous supposons que dans la phrase `[que, pensez, vous, de, ce, projet, i, e, qu, avez, vous, retenu, en, 10min]`, les mots sous-échantillonnés sont les mots en position 2, 5, 6, 8, 9, 10, 11, 12, 13, 14. 
+Pour mieux comprendre, nous remplaçons les mots non échantillonnés par « nonsubsampled ». La phrase devient alors `[nonsubsampled, pensez, nonsubsampled, nonsubsampled, ce, projet, nonsubsampled, e, qu, avez, vous, retenu, en, 10min]`.
 Si $w=2$ alors le mot focus tiré ne peut pas être « pensez » puisque dans ce cas il n'y aurait aucun mot contexte associé. Si le mot focus tiré est « qu »  alors le mot contexte est tiré au hasard parmi `[e, avez, vous]`.
 
 Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois. Le nombre de fois que l'ensemble du corpus est parcouru est appelé *epochs*.
@@ -175,7 +174,7 @@ Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble 
 ### Descente de gradient {#subsec:descentedegradient}
 
 Pour chaque couple `[focus, contexte]`, les matrice $W_e$ et $W_s$ sont mises à jour par descente de gradient. C'est-à-dire que $\theta^{(t)} = W_e$ et $\theta^{(t)} = W_s$, les matrices obtenues après la $t$^ème^ itération de l'algorithme, sont mises à jour par l'équation :
-$$\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta L(\theta^{(t)})$$
+$$\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta Loss(\theta^{(t)})$$
 avec $\eta$ le taux d'apprentissage (un hyperparamètre à fixer) et $L(\theta)$ la fonction de perte.
 
 Le modèle *Word2vec* a initialement été construit en utilisant une fonction de perte dérivée de la fonction *softmax* (voir partie \@ref(subsec:softmax) et \cite{Mikolov}). L'algorithme a ensuite été amélioré en utilisant le *negative sampling*  (voir partie \@ref(subsec:negsampling) et \cite{MikolovNS}).
@@ -205,9 +204,11 @@ $$
 }
 $$
 
-De manière équivalente à l'équation \@ref(eq:objSoftMax), qu'il faut maximiser, pour chaque couple `[focus, contexte]` on associe la fonction de perte suivante, qu'il faut minimiser :
+Maximiser l'équation \@ref(eq:objSoftMax) revient à minimiser la fonction de perte suivante pour chaque couple [focus, contexte] :
+
+
 $$
-L(W_e,W_s)=-\log\mathbb P(w_{focus}\vert w_{context}) =
+Loss_{1}=-\log\mathbb P(w_{focus}\vert w_{context}) =
 -W_{s,w_{focus}}\times {}^tW_{e,w_{contexte}}+
 \log\left(\sum_{i=1}^n\exp(W_{s,w_i}\times {}^tW_{e,w_{contexte}})\right)
 $$
@@ -232,19 +233,19 @@ Une autre alternative à l'approche *softmax* parfois utilisée est l'approche *
 
 #### Version *negative sampling* {#subsec:negsampling}
 
-Le *negative sampling* est basé sur le concept du *Noise Contrastive Estimation* -- estimation contrastée du bruit -- où on cherche, à partir d'un modèle logistique, à différencier un vrai signal (un vrai couple `[focus, contexte]`) d'un faux (un bruit, i.e. : de faux couples `[focus, contexte]` qui seraient générés aléatoirement).
+Le *negative sampling* est basé sur le concept du *Noise Contrastive Estimation* -- estimation contrastée du bruit -- où on cherche, à partir d'un modèle logistique, à différencier un vrai signal (un vrai couple `[focus, contexte]`) d'un faux (un bruit qui correspondrait à un faux couple `[focus, contexte]` généré aléatoirement).
 
 Dans cette approche, plutôt que de mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple `[focus, contexte]`, on tire $K$ mots au hasard du vocabulaire $(w_{neg,\,i})_{i=1..K}$, selon une loi $P$ (définie plus tard), en considérant que ces mots ne seront pas des mots voisins de `focus`^[
 Il est bien sûr possible que parmi les mots tirés au hasard il y ait des mots qui soient vraiment dans le contexte. Cependant, puisque la taille du vocabulaire est très grande, on considère que cette erreur est négligeable.
 ]. 
 
-L'approche *softmax* peut être vue comme un problème de classification multiclasses : étant donné un mot `contexte` on estime la probabilité que les autres mots soient voisins (chaque classe étant un mot du vocabulaire).
+L'approche *softmax* peut être vue comme un problème de classification multiclasses : étant donné un mot `contexte`, on estime la probabilité que les autres mots soient parmi ses voisins (chaque classe étant un mot du vocabulaire).
 L'idée du *negative sampling* est de transformer ce problème de classification multiclasses en un problème de classification binaire d'une variable $D$ : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors $D=1$ (mot2 est positif et est le `contexte`), sinon $D=0$ (mot2 est négatif, il appartient à $(w_{neg,\,i})_{i=1..K}$). 
 
 <!-- Predicting the next word is like predicting the class. That is, such a network is just a "standard" multinomial (multi-class) classifier. And this network must have as many output neurons as classes there are. When classes are actual words, the number of neurons is, well, huge. -->
 
 On cherche donc à maximiser $\mathbb P(D=1\vert w_{focus},w_{contexte})$ et $\mathbb P(D=0\vert w_{focus},w_{neg,\,i})$.
-Pour estimer ces probabilités on utilise une fonction sigmoïde plutôt que la fonction softmax :
+Pour estimer ces probabilités, on utilise une fonction sigmoïde plutôt que la fonction softmax :
 $$
 \mathbb P(D=1\vert w_{focus},w_{contexte})=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}}) = 
 \frac{1}{1+\exp(-W_{e,w_{focus}}{}^tW_{s,w_{contexte}})}
@@ -270,7 +271,7 @@ $$
 
 Ainsi, pour chaque couple `[focus, contexte]` et un ensemble $(w_{neg,\,i})_{i=1..K}$ de mots négatifs tirés,  on associe la fonction de perte suivante, à minimiser :
 $$
-L(W_e,W_s)=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
+Loss_{2}=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
 -
 \sum_{i=1}^K
 \log
@@ -278,7 +279,7 @@ L(W_e,W_s)=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
 $$
 La complexité est ici bien plus faible que pour la fonction softmax puiqu'elle est proportionnelle à $K$.
 
-\cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution $P$ pour générer les mots négatifs est :
+\cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution $P$ pour générer les mots négatifs est telle que :
 $$
 \mathbb P_P(w_i) = \frac{z(w_i)^{3/4}}{
 \sum_{j=1}^n z(w_j)^{3/4}
@@ -287,7 +288,7 @@ $$
 
 Avec $z(w_i)$ la fréquence d'apparition du mot $w_i$.
 
-Ils recommandent également de prendre $K\in\{5,\dots,20\}$ pour les petites bases de données et $K\in\{2,\dots,5\}$ pour les grandes bases de données. Dans ce projet nous utiliserons $K=5$ (pour chaque couple `[focus, contexte]` nous tirons donc 5 mots négatifs).
+Ils recommandent également de prendre $K\in\{5,\dots,20\}$ pour les petites bases de données et $K\in\{2,\dots,5\}$ pour les grandes bases de données. Dans ce projet, nous utiliserons $K=5$ (pour chaque couple `[focus, contexte]` nous tirons donc 5 mots négatifs).
 
 <!-- En plus d'être moins coûteuse en temps de calcul, cette méthode permet aussi de corriger la sur-estimation des poids des mots contextes tirés au hasard par rapport à l'approche softmax. En effet, on cherche à minimiser la proximité des mots négatifs au mot focus. -->
 <!-- Cette méthode permet d’une part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu’elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus (negatives samples), mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de loss. Elle est d’autre part moins coûteuse en temps de calcul puisqu’elle permet d’actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les negatives samples) -->
@@ -304,8 +305,7 @@ Ils recommandent également de prendre $K\in\{5,\dots,20\}$ pour les petites bas
 Malgré l'utilisation généralisée des *word embeddings*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. 
 
 C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes empiriques. 
-Les méthodes quelques méthodes que nous avons retenues pour évaluer la qualité des vecteurs-mots obtenus sont décrites plus précisément dans l'annexe \@ref(annexe:commentEvaluer). 
-Nous les appliquerons dans les parties suivantes. 
+Les méthodes que nous avons retenues pour évaluer, dans les parties qui suivent, la qualité des vecteurs-mots obtenus sont décrites plus précisément dans l'annexe \@ref(annexe:commentEvaluer). 
 
 ## Évaluation sur un corpus fictif {#sec:corpusFictif}
 
@@ -573,7 +573,7 @@ Enfin, nous avons réalisé des opérations sur les mots-vecteurs.
 Si l'opération $\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} = \overrightarrow{Reine}$ (figure \ref{fig:acp_reine}) semble fonctionner
 ^[
 Les similarités cosinus obtenues sont les suivantes : $corr(\overrightarrow{Roi}, \overrightarrow{Homme}) = 0,34$, $corr(\overrightarrow{Homme}, \overrightarrow{Femme}) = 0,35$ et $corr(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} , \overrightarrow{Reine}) = 0,67$. $\overrightarrow{Reine}$ est bien le mot le plus proche de la somme vectorielle calculée.
-], l'opération $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie}$ (figure \ref{fig:acp_rome}) n'identifie pas \og Rome \fg{}(\colorbox{BurntOrange}{similarité cosinus de XXXXXXX}) dans les mots les plus proches mais d'autres villes comme \og Lyon \fg{} (similarité cosinus de 0,62). 
+], l'opération $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie}$ (figure \ref{fig:acp_rome}) n'identifie pas \og Rome \fg{}(similarité cosinus de 0,18 seulement) dans les mots les plus proches mais d'autres villes comme \og Lyon \fg{} (similarité cosinus de 0,62). 
 \og Rome \fg{} semble effectivement située \og trop en haut\fg{} dans le plan de l'ACP  par rapport aux autres villes.
 Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions dans les tweets contre 46 433 pour Lyon par exemple) pour que le vecteur-mot obtenu soit pertinent, ou peut-être que, dans les tweets mobilisés, le mot \og Rome \fg{} s'utilise dans un contexte différent de l'article de Mikolov.
 
@@ -642,17 +642,18 @@ En effet, l'objectif premier de cette méthode est de projeter un nuage de point
 Cela permet de rendre l'information moins redondante et plus visuelle, tout en étant le plus proche possible de la réalité. 
 
 Considérons le cas où nous disposons de $n$ individus (dans notre cas les mots) et de $p$ variables (dans notre cas, leurs composantes ou dimensions issues du modèle *Word2Vec*).
-On note $X = (x_{ij})$ la matrice de taille $(n,p)$ des données brutes, où $x_{ij}$ représente la valeur de la $j$-ème variable pour le $i$-ème individu. Mathématiquement, pour définir l'ACP on définit deux espaces :
+On note $X = (x_{ij})$ la matrice de taille $(n,p)$ des données brutes, où $x_{ij}$ représente la valeur de la $j$-ème variable pour le $i$-ème individu. Mathématiquement, pour définir l'ACP, on définit deux espaces :
 
-- L'*espace des individus*, qui est de dimension $p$, à qui on associe une métrique $M$ utilisée pour le produit scalaire. Dans la suite nous utiliserons $M =I_p$ la matrice identité : la norme et le produit scalaire associés à $M$ sont égaux à la norme et le produit scalaire eucliden.
+- L'*espace des individus*, de dimension $p$, auquel on associe la métrique $M$ utilisée pour le produit scalaire. Dans la suite nous utiliserons $M =I_p$ la matrice identité. La norme et le produit scalaire associés à $M$ sont donc euclidiens.
 
-- L'*espace des variables*, qui est de dimension $n$, à qui on associe une métrique $N=diag(p_1,...,p_n)$ avec $\sum_{i=1}^np_i=1$. La matrice $N$ représente le poids donné à chaque individus, par simplification nous utiliserons ici que des poids uniformes : $N=\frac{1}{n}I_n$. Afin de donner le même poids à toutes les variables, chaque variable est centrée-réduite : cela revient à centrer-réduire les colonnes de notre matrice $X$. Nous notons $Z =\bar X= (z_{ij})$  la matrice des données centrées et réduites^[Nous travaillons ici dans le cadre d'une ACP normée où la matrice $X$ a été centrée puis réduite. La réduction de $X$ a modifié les distances initiales entre individus ($\langle z_i,z_{i'}\rangle_M \neq \langle x_i,x_{i'}\rangle_M$). Cela n'aurait pas été le cas si la matrice $X$ avait été uniquement centrée (ACP non normée).].
+- L'*espace des variables*, de dimension $n$, auquel associe la métrique $N=diag(p_1,...,p_n)$ avec $\sum_{i=1}^np_i=1$. La matrice $N$ représente le poids donné à chaque individu. Par simplification nous utiliserons ici des poids uniformes : $N=\frac{1}{n}I_n$. Afin de donner le même poids à toutes les variables, chaque variable est centrée-réduite : cela revient à centrer-réduire les colonnes de notre matrice $X$. Nous notons $Z =\bar X= (z_{ij})$  la matrice des données centrées et réduites^[Nous travaillons ici dans le cadre d'une ACP normée où la matrice $X$ a été centrée puis réduite. La réduction de $X$ a modifié les distances initiales entre individus ($\langle z_i,z_{i'}\rangle_M \neq \langle x_i,x_{i'}\rangle_M$). Cela n'aurait pas été le cas si la matrice $X$ avait été uniquement centrée (ACP non normée).].
 
-Pour toute métrique $D$ ($D=N$ ou $D=M$) on associe le produit scalaire  $\langle x,y\rangle_{D} = ^t\!xD y$. 
+Pour toute métrique $D$ ($D=N$ ou $D=M$), on associe le produit scalaire  $\langle x,y\rangle_{D} = {}^t\!xD y$. 
 La construction des axes de l'ACP est faite par projection orthogonale. 
 La projection orthogonale d'un individu $i$ (vecteur ligne) $z_i$ sur une droite de vecteur directeur unitaire $v$ vaut $\langle {}^tz_i,v\rangle_{M}=z_i\times v$ et les coordonnées de projection des $n$ individus valent $Zv$.
 
-Les vecteurs directeurs des axes sont définis de manière à maximiser la dispersion du nuage (son inertie) des individus projetés et conserver ainsi au mieux les distances entre les individus. L'inertie se définit comme la dispersion du nuage de points, c'est une généralisation de la notion de variance au cadre multivarié (dispersion des données mesurées sur $p$ variables) :
+Les vecteurs directeurs des axes sont définis de manière à maximiser la dispersion du nuage (son inertie^[]) des individus projetés et conserver ainsi au mieux les distances entre les individus. L'inertie^[La dispersion d’un nuage de points unidimensionnel par rapport à sa moyenne se mesure par la variance. Dans le cadre multidimensionnel, la dispersion du nuage par rapport à son barycentre $\bar z$ se mesure par l'inertie, qui généralise la variance.] se définit alors comme : 
+
 \begin{align*}
 I(Z) &= \sum_{i = 1}^n p_i\|z_i-\bar{z}\|_M^2 \text{ avec }
   \bar{z} = 
@@ -667,13 +668,13 @@ I(Z) &= \sum_{i = 1}^n p_i\|z_i-\bar{z}\|_M^2 \text{ avec }
 \\&=\sum_{j = 1}^p Var(z^j)\text{, avec } z^j = 
   \begin{pmatrix} z_{1,j} \\ \vdots \\  z_{n,j} 
   \end{pmatrix}
-s\\ &= p \text{ car les variables sont réduites}
+\\ &= p \text{ car les variables sont réduites}
 \end{align*}
 
 On trouve tout d'abord le vecteur directeur $v_1$ qui orientera le premier axe de l'ACP grâce au programme suivant : 
 $$
 v_1 =\underset{\| v \|_M = 1}{\mathrm{argmax~}} 
-\underbrace{\|Zv\|_N}_{=Var(Zv)} =\underset{\| v \|_M = 1}{\mathrm{argmax~}} ^t\!v\ R v 
+\underbrace{\|Zv\|_N}_{=Var(Zv)} =\underset{\| v \|_M = 1}{\mathrm{argmax~}} ^t\!vR v 
 $$ 
 où $R = Var(Z) = \frac{1}{n} ^t\!Z Z$ est la matrice des corrélations entre les $p$ variables.
 
@@ -685,7 +686,7 @@ En procédant de manière séquentielle, on obtient $q < r$ axes orthogonaux ave
 
 On peut montrer que $\forall k < q$ :
 
-- $v_k$ est un vecteur propre associé à la k\ieme{} valeur propre $\lambda_k$ de $R$ (les valeurs propres étant rangées par ordre croissant)  ; 
+- $v_k$ est un vecteur propre associé à la k\ieme{} valeur propre $\lambda_k$ de $R$ (les valeurs propres étant rangées par ordre décroissant)  ; 
 - la composante principale $Zv_k$ est centrée et $V(Zv_k)= \lambda_k$ ; 
 - les $Zv_k$ ne sont pas corrélés entre eux.
 

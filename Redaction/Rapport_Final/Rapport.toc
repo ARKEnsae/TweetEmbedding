@@ -1,0 +1,31 @@
+\babel@toc {french}{}
+\contentsline {section}{Introduction}{1}{section*.2}%
+\contentsline {section}{\numberline {1}Implémentation du modèle \emph {Word2Vec}}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Le modèle \emph {Word2vec}, un modèle de \emph {word-embedding}}{2}{subsection.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.1}Historique : de la sémantique vectorielle à \emph {Word2Vec}}{2}{subsubsection.1.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.2}\emph {Word2Vec}, un modèle d'apprentissage «\nobreakspace {}auto-supervisé\nobreakspace {}»}{3}{subsubsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.2}L'algorithme Skip-Gram}{4}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}Construction de la base d'entraînement}{4}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Descente de gradient}{5}{subsubsection.1.2.2}%
+\contentsline {paragraph}{\numberline {1.2.2.1}Version softmax}{6}{paragraph.1.2.2.1}%
+\contentsline {paragraph}{\numberline {1.2.2.2}Version \emph {negative sampling}}{6}{paragraph.1.2.2.2}%
+\contentsline {section}{\numberline {2}Évaluation du modèle implémenté}{8}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Évaluation sur un corpus fictif}{8}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Choix des meilleurs hyperparamètres pour le modèle}{8}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Nombre d'epochs, taille de fenêtre et taux d'apprentissage}{10}{subsubsection.2.2.1}%
+\contentsline {paragraph}{\numberline {2.2.1.1}Le nombre d'epochs}{10}{paragraph.2.2.1.1}%
+\contentsline {paragraph}{\numberline {2.2.1.2}Le taux d'apprentissage}{11}{paragraph.2.2.1.2}%
+\contentsline {paragraph}{\numberline {2.2.1.3}La taille de la fenêtre}{11}{paragraph.2.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.2.2}Dimension des vecteurs-mots}{11}{subsubsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.3}Évaluation sur le corpus final}{12}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Avec \FB@og notre \FB@fg \relax {} modèle}{12}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Avec le modèle \texttt {Gensim}}{13}{subsubsection.2.3.2}%
+\contentsline {section}{\numberline {3}Analyse des sentiments}{15}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Description de la méthode et tests {[}Roro{]}}{15}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Comparaison avec indicateurs insee}{15}{subsection.3.2}%
+\contentsline {section}{Conclusion}{15}{section*.13}%
+\contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{16}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Distance entre deux mots}{16}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{16}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{18}{subsection.A.3}%
+\contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{19}{subsubsection.A.3.1}%

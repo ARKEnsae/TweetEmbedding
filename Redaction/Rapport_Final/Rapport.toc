@@ -8,7 +8,7 @@
 \contentsline {subsubsection}{\numberline {1.2.1}Construction de la base d'entraînement}{4}{subsubsection.1.2.1}%
 \contentsline {subsubsection}{\numberline {1.2.2}Descente de gradient}{5}{subsubsection.1.2.2}%
 \contentsline {paragraph}{\numberline {1.2.2.1}Version softmax}{6}{paragraph.1.2.2.1}%
-\contentsline {paragraph}{\numberline {1.2.2.2}Version \emph {negative sampling}}{6}{paragraph.1.2.2.2}%
+\contentsline {paragraph}{\numberline {1.2.2.2}Version \emph {negative sampling}}{7}{paragraph.1.2.2.2}%
 \contentsline {section}{\numberline {2}Évaluation du modèle implémenté}{8}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Évaluation sur un corpus fictif}{8}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Choix des meilleurs hyperparamètres pour le modèle}{8}{subsection.2.2}%

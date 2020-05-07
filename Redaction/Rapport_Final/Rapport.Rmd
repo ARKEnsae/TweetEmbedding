@@ -1,7 +1,7 @@
 ---
 title: |
     | Analyse statistique et empirique des modèles
-    | de *Word Embedding* sur Twitter
+    | de *Word-Embedding* sur Twitter
 author: |
     | Kim Antunez, Romain Lesauvage, Alain Quartier-la-Tente
     | sous l'encadrement de Benjamin Muller (Inria)
@@ -595,13 +595,67 @@ Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions da
 Les mots en vert correspondent à ceux présents dans l'opération, le mot en rouge le mot que l'on serait supposé trouver et les mots en orange les 10 mots les plus proches du résultat de l'opération vectorielle.}
 \end{figure}
 
-# Analyse des sentiments {#sec:sentimentalAnalysis}
+# Analyse des sentiments [Kim] {#sec:sentimentalAnalysis}
 
-## Description de la méthode et tests [Roro]
+<!-- LAISSER EN COMMENTAIRES :  -->
+<!-- A évoquer (ordre à l’appréciation du rédacteur avec sous parties éventuelles) :  -->
+<!-- - objectif de la partie : en gros construire un indicateur mensuel de tweets de sentiments des Français que l’on comparerait à l’indicateur de la statistique publique Camme en mobilisant données SNCF pour qualifier le sentiment d’un tweet  -->
+<!-- * décrire ce qu’est Camme.  -->
+<!-- * évoquer les données de tweets utilisées avec la nuance 2011-2018 par rapport à ce qui a été dit avant.  -->
+<!-- * décrire la base SNCF (demander à Benji plus de précisions dessus).  -->
 
-## Comparaison avec indicateurs insee
+## Prédire le sentiment d’un tweet à partir des *word-embeddings* [Romain sauf la fin Kim]
 
-# Conclusion {.unnumbered}
+<!-- LAISSER EN COMMENTAIRES :  -->
+<!-- A évoquer (ordre à l’appréciation du rédacteur avec sous parties éventuelles) :  -->
+<!-- Cette partie consiste à articuler deux approches -->
+<!-- * celle qui n’utilise pas les word-embedding : la baseline2 -->
+<!-- * celle qui utilise les word-embedding : logit sur les vecteurs-mots -->
+<!-- Il s’agit donc dans l’ordre qui semble le plus évident de :  -->
+<!-- - décrire les méthodos. En revenant sur les bases de tests et d’entraînement utilisées.  -->
+<!-- - pour la méthode logit sur vecteurs mots : faire une partie sur la sélection de modèle et évoquer le choix sur  -->
+<!-- * lf VS z -->
+<!-- * rmsw VS nrmsw -->
+<!-- * logit VS probit -->
+
+<!-- - comparer les résultats (en gros dire que word-embedding n’améliore pas vraiment la base-line).  -->
+<!-- - une interprétation de cette nonamélioration malgré une méthode des word-embedding qui semble plus élaborée que la baseline : le domain-shift.  -->
+
+
+
+
+
+Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le « *dataset shift* »^[Les éléments en lien avec le *dataset shift* proviennent de \cite{Candela}]. Bien que des solutions comme la correction de biais de sélection des échantillons, ou encore celle des données déséquilibrées, soient étudiées depuis de nombreuses décennies dans le monde de la statistique, certains autres problèmes, comme celui du changement de domaine (*domain shift*) émergent depuis plus récemment suite à l’utilisation croissante des méthodes de *machine learning*. 
+
+Le changement de domaine se caractérise par un changement de la nature, du « domaine » des données utilisées. Dans le cas de *deep-learning* sur des données de photographie, il pourrait par exemple s’agir de traiter de corpus de photos prises par des appareil photo calibrés de manière différentes (contraste, luminosité…) . Dans notre cas précis, il s’agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets de la SNCF, qui portent sur un sujet très spécifique et pour lesquels certains mots ont peut-être une interprétation spécifique en termes de sentiments.  Modéliser le « domain shift » implique donc d’estimer le passage d’une représentation à une autre en utilisant des informations de distribution. ^[La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le « domain shift » lié à l’utilisation d’appareil photos différents.] Dans ce qui suit, l’idée n’est pas de modéliser mathématiquement^[ Pour modéliser mathématiquement de manière relativement « grossière » un *domain shift*, il s’agirait de considérer par exemple une variable latente « idéale » $x_0$ (une base de tweets de référence), jamais observée mais qui influerait sur $y$ (l’indice mensuel). Nous observons uniquement $x$ telle $x=F(x_0)$ avec $F$ qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données $x$ utilisée. La distribution $P(y|x_0)$ (de  l’indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base « sncf » et base de tweets postés en France entre 2013 et 2017). En revanche, cette distribution est modifiée si F est modifiée.] le *domain shift* des deux bases de tweets mais de présenter quelques statistiques descriptives illustrant ce phénomène. 
+
+Pour ce faire, ...
+
+## Sentiments des tweets et enquête de conjoncture auprès des ménages [Alain]
+
+<!-- LAISSER EN COMMENTAIRES :  -->
+<!-- A évoquer (ordre à l’appréciation du rédacteur avec sous parties éventuelles) :  -->
+
+<!-- - Décrire rapidement comment on passe du modèle logit à la construction de l’indicateur mensuel (en gros on fait la moyenne des sentiments des tweets par mois).  -->
+
+<!-- - Superposer les trois séries : baseline, logit, Camme sur un graphique renormalisées de la manière la plus pertinente -->
+
+<!-- - Faire des interprétations sur les différences.  -->
+<!-- * [si pertinent, sinon supprimer la représentation de la baseline éventuellement]. Analyse de quand est-ce que baseline suit mieux la courbe Camme que notre indice. -->
+<!-- * Analyse de quand est-ce que Camme et notre indice diffèrent en évolution et trouver une interprétation sur les dates : ou il y a des pics chez nous et pas dans CAMME et expliquer pourquoi. Tester les effets économétriquement (indicatrice qui vaut 1 à la date d'un attentat). -->
+
+<!-- - Si temps suffisant et pas trop compliqué (à mon avis on le fera pas) : optique prédiction : Regarder si Xt (Indice_mensuel) granger cause Yt (Camme) ? Pour ça il faut vérifier si Xt est stationnaire (ADF...)  -->
+
+
+# Conclusion [sûrement Kim] {.unnumbered} 
+
+<!-- LAISSER EN COMMENTAIRES :  -->
+<!-- - Résumer la démarche et conclure sur le fait qu’on obtient un truc et qu’en gros on peut pas en faire grand-chose pour plusieurs raisons, la plupart certainement « quali » : -->
+<!-- 1) on en a parlé : le domain shift.   -->
+<!-- 2) le sentence embedding : est-ce que c’est pertinent pour mesurer le sentiment de la phrase (faire référence à l’ACP sur un dictionnaire de sentiment français).   -->
+<!-- 3) Pas facile de savoir quel « sentiment » résume un tweet. - Approche annuelle en ouverture avec le baromètre. Montrer que les courbes sont très différentes selon l’indicateur d’opinion choisi ce qui montre la complexité d’approché un indice subjectif uniquement avec des tweets. Solutions : filtrer sur un domaine précis grâce à un hashtag etc.  -->
+<!-- - Ouverture : prolongements existants de word2vec (sous entendu, la science ne fait que de s’améliorer etc.). -->
+
 
 <!-- Ouverture : prolongement de word2vec (sous entendu, la science ne fait que de s’améliorer etc.).  voir par ex ici : https://web.stanford.edu/~jurafsky/slp3/edbook_oct162019.pdf -->
 <!-- Les études sur les plongements incluent des résultats montrant une relation mathématique élégante entre les plongements clairsemés et denses (Levy et Goldberg, 2014c), ainsi que de nombreuses enquêtes sur les plongements et leurs paramétrisations. (Bullinaria et Levy 2007, Bullinaria et Levy 2012, Lapesa et Evert 2014, Kiela et Clark 2014, Levy et al.2015) .Le modèle d'intégration le plus utilisé en plus de word2vec est GloVe (Penning-ton et al., 2014). Le nom signifie Global Vectors, car le modèle est basé sur la capture de statistiques globales de corpus. GloVe est basé sur des ratios de probabilités de la matrice de cooccurrence mot-mot, combinant les intuitions de modèles basés sur le comptage comme PPMI tout en capturant les structures linéaires utilisées par des méthodes comme word2vec.Une extension de word2vec, fasttext (Bojanowski et al., 2017 ), traite des mots peu connus et de la rareté dans les langues à morphologie riche, en utilisant des sous-modèles. Chaque mot en texte rapide est représenté comme lui-même, plus un sac de n-grammes constitutifs, avec des symboles de délimitation spéciaux <et> ajoutés à chaque mot. Par exemple, avec n = 3 le mot WHERE serait représenté par le caractère n-grammes: <wh, whe, her, ere, re> ainsi que la séquence <where>.  -->
@@ -792,6 +846,7 @@ avec $q_{1-\frac{\alpha}{2}}$ le quantile d'ordre $1-\frac{\alpha}{2}$ d'une loi
 \begin{thebibliography}{999}
 \bibitem[Bengio \emph{et al} (2003)]{Bengio} Bengio, Y., Ducharme, R., Vincent, P., Janvin, C. (2003). A Neural Probabilistic Language Model. JMLR, 3:1137–1155. \url{https://papers.nips.cc/paper/1839-a-neural-probabilistic-language-model.pdf}.
 \bibitem[Boumedyen Billami \& Gala (2017)]{Boumedyen} Boumedyen Billami, M.,  Gala, N (2017). Création et validation de signatures sémantiques : application à la mesure de similarité sémantique et à la substitution lexicale. TALN 2017. \url{https://hal.archives-ouvertes.fr/hal-01528117/document}.
+\bibitem[Candela et al. (2009)]{Candela} Candela, J. Q., Sugiyama, M., Schwaighofer, A., \& Lawrence, N. D. (2009) Dataset shift in machine learning. The MIT Press, 1, 5. \url{http://www.acad.bg/ebook/ml/The.MIT.Press.Dataset.Shift.in.Machine.Learning.Feb.2009.eBook-DDU.pdf}.
 \bibitem[Hutter, Hoos \& Leyton-Brown (2014)]{Hutter} Hutter, F., Hoos, H., Leyton-Brown, K., (2014). An Efficient Approach for Assessing Hyperparameter Importance. PMLR 32(1):754-762. \url{http://proceedings.mlr.press/v32/hutter14.pdf}.
 \bibitem[Jurafsky \& Martin (2019)]{Jurafsky} Jurafsky, D., Martin, J. H. (2019). Speech and Language Processing (3rd ed. draft). Prentice Hall. \url{https://web.stanford.edu/~jurafsky/slp3/edbook_oct162019.pdf}.
 \bibitem[Levy \& Golberg (2015)]{Levy} Levy, O., Golberg, Y. (2015). Neural Word Embedding as Implicit Matrix Factorization.
@@ -804,3 +859,5 @@ avec $q_{1-\frac{\alpha}{2}}$ le quantile d'ordre $1-\frac{\alpha}{2}$ d'une loi
 \bibitem[Rubenstein \& Goodenough (1965)]{Rubenstein} Rubenstein, H.,  Goodenough, J. B. (1965). Contextual Correlates of Synonymy. Commun. ACM, 8 (10), 627–633. \url{https://dl.acm.org/doi/10.1145/365628.365657}.
 \bibitem[Schakel \& Wilson (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significance using Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
 \end{thebibliography}
+
+

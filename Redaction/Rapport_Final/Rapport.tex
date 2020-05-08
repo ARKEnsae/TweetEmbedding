@@ -985,11 +985,10 @@ Les mots en vert correspondent à ceux présents dans l'opération, le mot en ro
 \emph{word-embeddings}}{Prédire le sentiment d'un tweet à partir des word-embeddings}}\label{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}
 
 Nous cherchons dans cette partie à prédire le sentiment associé à un
-tweet. Nous nous intéresserons ici à 2 sentiments possibles : +1 quand
-le tweet est jugé positif, -1 quand il est jugé négatif. D'une manière
-générale, on se demande comment, à partir des mots d'un tweet, on peut
-prédire son sentiment. À partir de la base de tweets de la SNCF, nous
-allons donc chercher à construire le meilleur modèle de prédiction de
+tweet, à partir des mots qui le composent. Nous nous intéresserons ici à
+2 sentiments possibles : +1 quand le tweet est jugé positif, -1 quand il
+est jugé négatif. À partir de la base de tweets de la SNCF, nous allons
+donc chercher à construire le meilleur modèle de prédiction de
 sentiments. Nous comparerons alors deux approches : un première basée
 sur les sentiments moyens de chaque mot des tweets et l'autre basée sur
 les \emph{word-embeddings}.
@@ -1012,8 +1011,8 @@ composé des mots \(\{ mot_1 , \dots , mot_n \}\) alors
 est la prédiction du sentiment du tweet, où \(\alpha_i\) est le
 sentiment moyen du \(mot_i\).
 
-Afin d'étudier l'ajustement du modèle, nous séparons le corpus en une
-base de \emph{train} composée de 16 004 tweets et une base de
+Afin d'étudier l'ajustement du modèle, nous séparons le corpus en deux :
+une base de \emph{train} composée de 16 004 tweets et une base de
 \emph{test} composée de 6 858 tweets. Nous entraînons le modèle sur la
 base de \emph{train}, c'est-à-dire que l'on calcule les sentiments
 moyens des mots de cette base, puis nous estimons le modèle sur la base
@@ -1055,22 +1054,21 @@ basé sur les \emph{word-embeddings} soit meilleur que celui-ci.
 
 Nous nous intéressons maintenant à un modèle basé sur l'utilisation de
 nos \emph{word-embeddings}. Afin d'exploiter nos vecteurs, l'idée est
-d'utiliser un modèle de régression binaire de estimé sur notre corpus,
-en considérant comme prédicteurs chacune des dimensions des vecteurs.
-Pour réaliser cette régression, il faut toutefois pouvoir attribuer à
-chaque tweet un vecteur et effectuer une forme de \emph{sentence
-embedding}. Pour cela, nous décidons d'attribuer à chaque tweet la
-moyenne des vecteurs de l'ensemble des mots du tweet. Nous pouvons
-ensuite réaliser la régression sur ce vecteur.
+d'utiliser un modèle de régression binaire estimé sur notre corpus, en
+considérant comme prédicteurs chacune des dimensions des vecteurs (nous
+en aurons donc ici \(n=100\)). Pour réaliser cette régression, il faut
+toutefois pouvoir attribuer à chaque tweet un vecteur et effectuer une
+forme de \emph{sentence embedding}. Pour cela, nous décidons d'attribuer
+à chaque tweet la moyenne des vecteurs de l'ensemble des mots du tweet.
+Nous pouvons ensuite réaliser la régression sur ce vecteur.
 
 Si on note \(Y_i\) le sentiment du tweet \(i\) et
 \(X_{i,1}, \dots, X_{i,n}\) chacune des coordonnées du \emph{sentence
-embedding} associé au tweet (nous avons ici \(n=100\)), alors on
-s'intéresse au modèle
+embedding} associé au tweet, alors on s'intéresse au modèle
 \(Y_i = 1\{ \sum\limits_{i = 1}^n \beta_i X_{i,j} + \epsilon_i \geq 0 \}\)
-où \(\epsilon_i\) est le résidu de notre modèle. Nous allons chercher à
-estimer, en notant \(F_{\epsilon}\) la fonction de répartition des
-résidus :
+où \(\epsilon_i\) est le résidu de notre modèle. En notant
+\(F_{\epsilon}\) la fonction de répartition des résidus, nous allons
+chercher à estimer :
 
 \begin{equation*}
 \mathbb{P}(Y_i = 1 | X_{i,j}) = \mathbb{P}(\sum\limits_{i = 1}^n \beta_i X_{i,j} + \epsilon_i \geq 0 | X_{i,j})
@@ -1091,16 +1089,36 @@ Deux modèles binaires peuvent être utilisés, selon la choix de
 
 Nous avons donc deux choix de spécification à estimer sur notre corpus,
 afin de déterminer la meilleure. En réalité, nous pouvons également nous
-interroger sur d'autres paramètres à intégrer au modèle :
+interroger sur d'autres critères à propos du modèle :
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Les \emph{stop words} : également appelé \og mots vides \fg, ce sont
-  des mots communs dont l'analyse est en général inutile car leur
-  présence n'apporte pas d'information. Dans notre cas, on peut donc
-  penser à estimer le modèle en enlevant du corpus ces
-  \emph{stop-words}.
+  Les \emph{stop words}\footnote{La liste des \emph{stop wods} utilisés
+    ici est la suivante : `ai', `aie', `aient', `aies', `ait', `as',
+    `au', `aura', `aurai', `auraient', `aurais', `aurait', `auras',
+    `aurez', `auriez', `aurions', `aurons', `auront', `aux', `avaient',
+    `avais', `avait', `avec', `avez', `aviez', `avions', `avons',
+    `ayant', `ayante', `ayantes', `ayants', `ayez', `ayons', `c', `ce',
+    `ces', `d', `dans', `de', `des', `du', `elle', `en', `es', `est',
+    `et', `eu', `eue', `eues', `eurent', `eus', `eusse', `eussent',
+    `eusses', `eussiez', `eussions', `eut', `eux', `eûmes', `eût',
+    `eûtes', `furent', `fus', `fusse', `fussent', `fusses', `fussiez',
+    `fussions', `fut', `fûmes', `fût', `fûtes', `il', `ils', `j', `je',
+    `l', `la', `le', `les', `leur', `lui', `m', `ma', `mais', `me',
+    `mes', `moi', `mon', `même', `n', `ne', `nos', `notre', `nous',
+    `on', `ont', `ou', `par', `pas', `pour', `qu', `que', `qui', `s',
+    `sa', `se', `sera', `serai', `seraient', `serais', `serait',
+    `seras', `serez', `seriez', `serions', `serons', `seront', `ses',
+    `soient', `sois', `soit', `sommes', `son', `sont', `soyez',
+    `soyons', `suis', `sur', `t', `ta', `te', `tes', `toi', `ton', `tu',
+    `un', `une', `vos', `votre', `vous', `y', `à', `étaient', `étais',
+    `était', `étant', `étante', `étantes', `étants', `étiez', `étions',
+    `été', `étée', `étées', `étés', `êtes'} : également appelé \og mots
+  vides \fg, ce sont des mots communs dont l'analyse est en général
+  inutile car leur présence n'apporte pas d'information. Dans notre cas,
+  on peut donc penser qu'estimer le modèle en enlevant du corpus ces
+  \emph{stop-words} peut améliorer les résultats.
 \item
   Les mots inconnus : la base qui a servi à entraîner le modèle des
   \emph{word-embeddings} est différente de celle que l'on utilise pour
@@ -1110,10 +1128,10 @@ interroger sur d'autres paramètres à intégrer au modèle :
   le vecteur nul. Cependant, lorsqu'on a entraîné le modèle
   \emph{Word2Vec} un pré-processing a permis de regrouper les mots très
   peu fréquents au sein d'un même mot clé et le modèle a alors calculé
-  une représentation vectorielle commune à tous ces mots. On peut donc
-  décider d'attribuer ce vecteur aux mots inconnus, en estimant que
-  s'ils sont absents du corpus d'entraînement du modèle \emph{Word2Vec},
-  ce sont bien des mots très peu fréquents.
+  un vecteur commun à tous ces mots. On peut donc décider d'attribuer ce
+  vecteur aux mots inconnus, en estimant que s'ils sont absents du
+  corpus d'entraînement du modèle \emph{Word2Vec}, ce sont bien des mots
+  très peu fréquents.
 \end{enumerate}
 
 Afin de mener une analyse la plus complète possible, nous avons décidé
@@ -1124,8 +1142,8 @@ d'estimer tous les modèles possibles selon que l'on choisisse :
 \item
   D'inclure ou non les \emph{stop-words} ;
 \item
-  Le vecteur nul ou le vecteur des mots très peu fréquents estimé pour
-  les mots inconnus ;
+  Le vecteur nul ou le vecteur des mots très peu fréquents estimé par
+  \emph{Word2Vec} pour les mots inconnus ;
 \item
   Le modèle probit ou logit.
 \end{enumerate}
@@ -1154,7 +1172,7 @@ Nous obtenons alors les résultats suivants :
   \fg est un \emph{stop-word} mais renseigne plutôt sur des tweets
   négatifs (son sentiment moyen dans le corpus est de -0.25). De même,
   on peut penser que les phrases contenant du futur ou du conditionnel
-  renvoie à des sentiments différents.
+  renvoient à des sentiments différents.
 \item
   Il apparaît meilleur d'affecter aux mots inconnus le vecteur des mots
   peu fréquents estimé par le modèle \emph{Word2Vec} que de leur
@@ -1180,13 +1198,42 @@ Finalement, nous utiliserons donc par la suite le modèle estimé par une
 \emph{Word2Vec} le \textbf{vecteur des mots très peu fréquents} estimé
 par ce dernier.
 
-L'application de ce modèle à la même base \emph{test} que le modèle basé
-sur les sentiments moyens des mots donne une \emph{accuracy} de
-\(68,71\%\). Nous obtenons de moins bons résultats en utilisant le
-modèle basé sur les \emph{word-embeddings}. Nous allons maintenant
-essayer d'analyser ces résultats.
+\subsubsection{Comparaison entre les deux
+modèles}\label{comparaison-entre-les-deux-moduxe8les}
 
-\subsubsection{\texorpdfstring{Une cause des mauvaises prédictions : le
+L'application du modèle basé sur les \emph{word-embeddings} à la même
+base \emph{test} que le modèle basé sur les sentiments moyens des mots
+donne une \emph{accuracy} de \(68,71\%\), contre les \(89,08\%\) que
+l'on avait obtenu. Nous obtenons donc de moins bons résultats en
+utilisant le modèle basé sur les \emph{word-embeddings}, nous allons
+essayer de comprendre pourquoi.
+
+\paragraph{Influence des mots
+inconnus}\label{influence-des-mots-inconnus}
+
+Intuitivement, on peut penser que la prédiction du sentiment est
+biaisée, dans les deux modèles, par la présence de mots inconnus. En
+effet, pour le modèle basé sur les sentiments moyens, il y a un problème
+de mots inconnus entre la bae \emph{test} et la base \emph{train} et
+pour le modèle basé sur les \emph{Word2Vec}, il y a un problème de mots
+inconnus entre la base SNCF et la base d'entraînement du
+\emph{Word2Vec}. Pour vérifier si l'intuition se vérifie, nous regardons
+la distribution des mots connus et inconnus entre les tweets bien
+prédits, mal prédits et en général (figure \ref{fig:mots_inconnus}).
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{img/mots_inconnus.png}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Part des mots inconnus dans les tweets}\label{fig:mots_inconnus}
+\end{center}
+\end{figure}
+
+On remarque que la distribution des mots inconnus semble comparable dans
+les tweets bien prédits et mal prédits, cela ne semble donc pas être
+l'explication principale des résultats.
+
+\paragraph{\texorpdfstring{Une cause des mauvaises prédictions : le
 \emph{domain
 shift}}{Une cause des mauvaises prédictions : le domain shift}}\label{une-cause-des-mauvaises-pruxe9dictions-le-domain-shift}
 

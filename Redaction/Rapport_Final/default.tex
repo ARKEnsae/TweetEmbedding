@@ -206,10 +206,10 @@ $endfor$
 \renewcommand\thecomptEncadre{%\thesection.
 \arabic{comptEncadre}}
 \definecolor{processblue}{cmyk}{0.96,0,0,0}
-\newenvironment{encadre}[1][]{\refstepcounter{comptEncadre}
+\newenvironment{encadre}[2][false]{\refstepcounter{comptEncadre}
       %\addcontentsline{exp}{encadres}{\protect\numberline{\thecomptEncadre}#1}%
 \begin{bclogo}[couleur=processblue!5,arrondi=0.1,
-logo=\bcloupe,barre=none,couleurBord=blue!60!green]{ {\sc \textbf{Encadré \thecomptEncadre}} -  #1}
+logo=\bcloupe,barre=none,couleurBord=blue!60!green,nobreak = #1]{ {\sc \textbf{Encadré \thecomptEncadre}} -  #2}
 \smallskip
 }{\end{bclogo}}
 

@@ -200,6 +200,19 @@ $for(header-includes)$
 $header-includes$
 $endfor$
 
+
+\usepackage[tikz]{bclogo}
+\newcounter{comptEncadre}
+\renewcommand\thecomptEncadre{%\thesection.
+\arabic{comptEncadre}}
+\definecolor{processblue}{cmyk}{0.96,0,0,0}
+\newenvironment{encadre}[1][]{\refstepcounter{comptEncadre}
+      %\addcontentsline{exp}{encadres}{\protect\numberline{\thecomptEncadre}#1}%
+\begin{bclogo}[couleur=processblue!5,arrondi=0.1,
+logo=\bcloupe,barre=none,couleurBord=blue!60!green]{ {\sc \textbf{Encadré \thecomptEncadre}} -  #1}
+\smallskip
+}{\end{bclogo}}
+
 \begin{document}
 
 $if(title)$

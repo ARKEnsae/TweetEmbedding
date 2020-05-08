@@ -396,10 +396,10 @@ L'objectif du modèle Skip-Gram est, étant donné un mot focus, de prévoir
 quels sont les mots voisins contextes dans une certaine fenêtre \(w\).
 Mathématiquement, on cherche à maximiser la quantité :
 
-\begin{equation*}
+\begin{equation}
 \frac 1 T\sum_{t=1}^T\sum_{-w\leq j \leq w,\,j\ne 0} \log \mathbb P(w_{t+j}\vert w_{t})
 \label{eq:objSoftMax}
-\end{equation*}
+\end{equation}
 
 où :
 
@@ -560,9 +560,9 @@ contexte et de trois mots bruits, tous tirés aléatoirement.
 Nous avons ensuite mis en œuvre les différentes techniques
 d'évaluation\footnote{À l'exception de la méthode par \og jugement
   humain \fg{} puisque le corpus est ici créé fictivement par ordinateur
-  sans prêter attention au réel sens des mots.} présentées en partie
-\ref{sec:commentEvaluer} sur les \emph{word-embeddings} obtenus grâce à
-ce corpus fictif.
+  sans prêter attention au réel sens des mots.} présentées dans l'annexe
+\ref{annexe:commentEvaluer} sur les \emph{word-embeddings} obtenus grâce
+à ce corpus fictif.
 
 \begin{table}
 \begin{center}

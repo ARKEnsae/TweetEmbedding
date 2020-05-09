@@ -10,7 +10,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
-                      fig.height=6,fig.width=10)
+                      fig.height=6,fig.width=10, cache = TRUE)
 library(highcharter)
 library(ggplot2)
 library(AQLTools)
@@ -27,29 +27,65 @@ source("test_sa_jo.R")
 J'ai ici appliqué les algorithmes Dynamic Time Warping (DTW) qui permettent de calculer des distances entre deux séries temporelles qui n'ont pas la même longueur. Je pense que ça ne s'adapte pas vraiment dans noter cas mais je voulais tester. L'idée de cet algorithme est de regarder les similarités entre les séries temporelles en prenant en compte les éventuels décalages temporels (i.e. : $X_t$ et $X_{t-1}$ représente la même série, juste décalée dans le temps, non pris en compte par distance euclidienne) et les différences de longueur (deux coureurs qui courent de la même façon mais pas à la même vitesse). En plus ça n'a pas trop l'air de marcher puisqu'il faut que les deux séries soient de même longueur j'ai l'impression
 
 ```{r}
-modeles <- ts(read.csv("../../data/modeles.csv", sep=";")[,-1],
+modeles <- ts(read.csv("../../data_bis/modeles.csv", sep=";")[,-1],
               start = 2011,frequency = 12)
-data <- readRDS("../../data/donnes_cam.RDS")
+data <- readRDS("../../data_bis/donnes_cam.RDS")
+indices_mensuels_baseline <- read.csv("../../data_bis/indices_mensuels_baseline.csv",
+                                      sep=";")[,-c(1:2)]
+indices_mensuels_baseline <- ts(indices_mensuels_baseline, start = 2011, frequency = 12)
+modeles <- ts.union(modeles,indices_mensuels_baseline)
+colnames(modeles) <- gsub(".*\\.", "", colnames(modeles))
+
 data[,"Indicateur synthétique"] <- scale(data[,"Indicateur synthétique"] )
 data_lag <- lag(data, -1)
 
 library(dtw)
 distance_brut <- sapply(1:ncol(modeles), function(i){
     dtw((modeles[,i]),
-        window(data[,"ind_synt_brut"], start = start(modeles), end = end(modeles)),keep=TRUE)$distance
+        window(data[,"ind_synt_brut"], start = start(modeles), end = end(modeles)),
+        keep=TRUE)$distance
 }
 )
 
 distance_cvs <- sapply(1:ncol(modeles), function(i){
     dtw((modeles[,i]),
-        window(data[,"Indicateur synthétique"], start = start(modeles), end = end(modeles)),keep=TRUE)$distance
+        window(data[,"Indicateur synthétique"], start = start(modeles), end = end(modeles)),
+        keep=TRUE)$distance
 }
 )
 data.frame(distance_brut, distance_cvs,
            row.names = colnames(modeles))
 ```
 
-Notre indicateur n'est pas forcément celui qui minimise la distance mais toutes les distances sont proches : on voit en fait que tous les indicateurs sont proches.
+
+Et si on renormalise :
+
+```{r}
+distance_brut_norm <- sapply(1:ncol(modeles), function(i){
+    dtw(scale(modeles[,i]),
+        scale(window(data[,"ind_synt_brut"],
+               start = start(modeles), end = end(modeles))),
+        keep=TRUE)$distance
+}
+)
+
+distance_cvs_norm <- sapply(1:ncol(modeles), function(i){
+    dtw(scale(modeles[,i]),
+        scale(window(data[,"Indicateur synthétique"],
+               start = start(modeles), end = end(modeles))),
+        keep=TRUE)$distance
+}
+)
+data.frame(distance_brut_norm, distance_cvs_norm,
+           row.names = colnames(modeles))
+```
+
+Pour rappel, on retient l'indicateur `reg_log_nrmsw_lf`.
+```{r}
+ind_retenu <- "reg_log_nrmsw_lf"
+```
+
+Notre indicateur n'est pas forcément celui qui minimise la distance mais toutes les distances sont proches : on voit en fait que tous les indicateurs sont proches, sauf la baseline SNCF.
 
 Voir : http://dtw.r-forge.r-project.org
 
@@ -58,7 +94,6 @@ https://en.wikipedia.org/wiki/Dynamic_time_warping
 https://towardsdatascience.com/dynamic-time-warping-3933f25fcdd
 
 
-**Bilan** : je propose de ne pas en parler.
 
 
 # Test 2 : renormaliser or not renormaliser ? That is the question
@@ -75,10 +110,7 @@ En revanche quand on renormalise toutes les séries sont extrêmement proches, o
 AQLTools::hc_stocks(scale(modeles),digits = 2)
 ```
 
-Nous on retient l'indicateur `reg_log_nrmsw_lf`.
-```{r}
-ind_retenu <- "reg_log_nrmsw_lf"
-```
+La baseline de la sncf est quand même à part
 
 # Test 3 : saisonnalité et JO
 
@@ -177,17 +209,18 @@ AQLTools::hc_stocks(scale(data[,1:2]),digits = 2)
 
 
 ```{r}
-donnes_calcul <- scale(ts.intersect(modeles[,ind_retenu], data))
-donnes_calcul_lag <- scale(ts.intersect(modeles[,ind_retenu], data_lag))
+donnes_calcul <- scale(ts.intersect(modeles[,c(ind_retenu, "git", "sncf")], data))
+donnes_calcul_lag <- scale(ts.intersect(modeles[,c(ind_retenu, "git", "sncf")], data_lag))
 colnames(donnes_calcul) <- 
     colnames(donnes_calcul_lag) <- 
-    c("Ind_sent", "ind_synt_brut", "ind_synt_cvs",
+    c("Ind_sent","Baseline_git","Baseline_sncf", "ind_synt_brut", "ind_synt_cvs",
       "niv_vie_pas", "niv_vie_fut",
       "chom_evol","oppor_achat", "epargne_actuelle",
       "sit_fin_pas", "sit_fin_fut","cap_fut"
     )
-dataGraph <- ts.intersect(modeles[,ind_retenu], data[,1:2], data_lag[,1:2])
+dataGraph <- ts.intersect(modeles[,c(ind_retenu, "git", "sncf")], data[,1:2], data_lag[,1:2])
 colnames(dataGraph) <- c("Indicateur sentiment",
+                         "Baseline Git", "Baseline SNCF", 
                          "Camme_Brut", "Camme_CVS",
                          "Camme_Brut retardé", "Camme_CVS retardé")
 AQLTools::hc_stocks(scale(dataGraph),digits = 2)
@@ -246,6 +279,42 @@ grangertest(diff(donnes_calcul_lag[, "ind_synt_brut"]), diff(donnes_calcul_lag[,
 
 **Bilan ** notre indicateur de sentiment permettrait de prévoir l'enquête Camme
 
+### Test sur baseline git
+
+Pas de causalité au sens de Granger :
+
+```{r}
+grangertest(diff(donnes_calcul[, "Baseline_git"]), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(donnes_calcul[, "Baseline_git"]), order = 1)
+grangertest(diff(donnes_calcul[, "Baseline_git"]), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(donnes_calcul[, "Baseline_git"]), order = 1)
+```
+
+Ni de cointégration :
+
+```{r}
+aTSA::coint.test(donnes_calcul_lag[,"Baseline_git"], donnes_calcul_lag[,"ind_synt_brut"],d = 0)
+aTSA::coint.test(donnes_calcul_lag[,"Baseline_git"], donnes_calcul_lag[,"ind_synt_cvs"],d = 0)
+```
+
+### Test sur baseline sncf
+
+Pas de causalité au sens de Granger :
+
+
+```{r}
+grangertest(diff(donnes_calcul[, "Baseline_sncf"]), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(donnes_calcul[, "Baseline_sncf"]), order = 1)
+grangertest(diff(donnes_calcul[, "Baseline_sncf"]), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(donnes_calcul[, "Baseline_sncf"]), order = 1)
+```
+
+Ni de cointégration :
+
+```{r}
+aTSA::coint.test(donnes_calcul_lag[,"Baseline_sncf"], donnes_calcul_lag[,"ind_synt_brut"],d = 0)
+aTSA::coint.test(donnes_calcul_lag[,"Baseline_sncf"], donnes_calcul_lag[,"ind_synt_cvs"],d = 0)
+```
 ## Etude des corrélations
 
 **Spoiler alert** aucune corrélation significative. Pas de différence quand on regarde les séries retardées.
@@ -262,10 +331,17 @@ M_lag <- rcorr(diff(donnes_calcul), type = "pearson")
 Les p-values des corrélation avec notre indicateur de sentiment
 
 ```{r}
-round(M$P[-1,1],3)
-round(M_lag$P[-1,1],3)
+table_pval <- cbind(M$P[, "Ind_sent"],
+                    M_lag$P[, "Ind_sent"],
+                    M$P[, "Baseline_git"],
+                    M_lag$P[, "Baseline_git"],
+                    M$P[, "Baseline_sncf"],
+                    M_lag$P[, "Baseline_sncf"])
+colnames(table_pval) <- c("Ind_sent", "Ind_sent_avance",
+                          "Baseline_git", "Baseline_git_avance",
+                          "Baseline_sncf", "Baseline_sncf_avance")
+round(table_pval,3)
 ```
-
 
 Série sans retard :
 ```{r,fig.height=6,fig.width=10}
@@ -290,8 +366,16 @@ M_lag <- rcorr(diff(donnes_calcul), type = "spearman")
 Les p-values des corrélation avec notre indicateur de sentiment
 
 ```{r}
-round(M$P[-1,1],3)
-round(M_lag$P[-1,1],3)
+table_pval <- cbind(M$P[, "Ind_sent"],
+                    M_lag$P[, "Ind_sent"],
+                    M$P[, "Baseline_git"],
+                    M_lag$P[, "Baseline_git"],
+                    M$P[, "Baseline_sncf"],
+                    M_lag$P[, "Baseline_sncf"])
+colnames(table_pval) <- c("Ind_sent", "Ind_sent_avance",
+                          "Baseline_git", "Baseline_git_avance",
+                          "Baseline_sncf", "Baseline_sncf_avance")
+round(table_pval,3)
 ```
 
 
@@ -324,8 +408,16 @@ M_lag <- rcorr(donnes_calcul, type = "pearson")
 Les p-values des corrélation avec notre indicateur de sentiment
 
 ```{r}
-round(M$P[-1,1],3)
-round(M_lag$P[-1,1],3)
+table_pval <- cbind(M$P[, "Ind_sent"],
+                    M_lag$P[, "Ind_sent"],
+                    M$P[, "Baseline_git"],
+                    M_lag$P[, "Baseline_git"],
+                    M$P[, "Baseline_sncf"],
+                    M_lag$P[, "Baseline_sncf"])
+colnames(table_pval) <- c("Ind_sent", "Ind_sent_avance",
+                          "Baseline_git", "Baseline_git_avance",
+                          "Baseline_sncf", "Baseline_sncf_avance")
+round(table_pval,3)
 ```
 
 
@@ -352,8 +444,16 @@ M_lag <- rcorr(donnes_calcul, type = "spearman")
 Les p-values des corrélation avec notre indicateur de sentiment
 
 ```{r}
-round(M$P[-1,1],3)
-round(M_lag$P[-1,1],3)
+table_pval <- cbind(M$P[, "Ind_sent"],
+                    M_lag$P[, "Ind_sent"],
+                    M$P[, "Baseline_git"],
+                    M_lag$P[, "Baseline_git"],
+                    M$P[, "Baseline_sncf"],
+                    M_lag$P[, "Baseline_sncf"])
+colnames(table_pval) <- c("Ind_sent", "Ind_sent_avance",
+                          "Baseline_git", "Baseline_git_avance",
+                          "Baseline_sncf", "Baseline_sncf_avance")
+round(table_pval,3)
 ```
 
 
@@ -375,7 +475,7 @@ corrplot(M_lag$r, method = "ellipse")
 Pour essayer de comprendre les évolutions de l'enquête Camme, on peut regarder les contributions de chaque solde à son évolution. C'est pas très lisible mais au cas où :
 
 ```{r, echo = FALSE}
-result <- readRDS("facteurstatiqueCamme.RDS")
+result <- readRDS("../../data_bis/facteurstatiqueCamme.RDS")
 contrib <- window(result$contributions, start = 2011, end = c(2018,12))
 climat <- window(result$facteur, start = 2011, end = c(2018,12))
 moy <- mean(climat)

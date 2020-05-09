@@ -709,7 +709,9 @@ Une première explication est la différence entre les deux modèles en termes d
 <!-- si on prend en compte les deux pour WOrd2Vec : on a alors 36.19% des mots du voc qui sont absents, soit 4.62% des mots. -->
 
 
-<!-- A caser si utile dans l'argumentaire ici et si change les proportions : Nous avons donc testé notre modèle sur une nouvelle base de test de tweets annotés indépendante des autres bases^[]. Cette expérimentation confirme le biais attendu puisque, avec cette nouvelle base, l'accuracy du modèle basé sur les *word-embedding* est supérieure à celle de l'approche de référence ($68,7 \%$ contre $55,9 \%$) 
+<!-- A caser si utile dans l'argumentaire ici et si change les proportions : Nous avons donc testé notre modèle sur une nouvelle base de test de tweets annotés indépendante des autres bases^[$52,04 \%$ des mots du vocabulaire dec cette base sont absents de la base d'entraînement, soit $12.73\%$ des mots du corpus. Pour le modèle *Word2Vec*, en ajoutant les mots n'ayant pas de représentations vectorielles, on arrive à $52,76\%$ du vocabulaire soit $12,96\%$ des mots du corpus]. Cette expérimentation confirme le biais attendu puisque, avec cette nouvelle base, l'accuracy du modèle basé sur les *word-embedding* est supérieure à celle de l'approche de référence ($68,7 \%$ contre $55,9 \%$) 
+
+
 
 BASE GIT :
 BASELINE : 52.04% des mots du voc de la base test GIT ne sont pas dans la base train, soit 12,73% des mots

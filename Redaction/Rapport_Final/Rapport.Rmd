@@ -31,8 +31,9 @@ header-includes:
 - \usepackage{fontawesome}
 - \DeclareMathOperator{\arctanh}{arctanh}
 - \usepackage{subcaption}
-- \usepackage{microtype}
-- \usepackage{amsmath,amssymb}
+- \usepackage{amsfonts}
+- \usepackage{dsfont}
+
 ---
 
 ```{r setup, include=FALSE}
@@ -146,6 +147,8 @@ est ensuite *tokénisée* par la chaîne de caractère correspondant à un espac
 \LARGE \textbf{``}\normalsize \emph{Que pensez-vous de CE projet?(i.e. : qu'avez-vous retenu en 10min ?)} \LARGE \textbf{''}\normalsize
 \end{quote}
 est décomposée en 14 mots `[que, pensez, vous, de, ce, projet, i, e, qu, avez, vous, retenu, en, 10min]`.
+
+Nous effectuons enfin un traitement sur les mots rares. Si un mot apparaît strictement moins de 10 fois, nous lui affectons la valeur « lowfrequency »^[Dans le corpus de tweets que nous utiliserons ultérieurement, un mot rare apparaît moins de 10 fois sur les 31 400 000 mots utilisés dans le corpus. Rassembler les mots rares permettra de passer d'un vocabulaire d'environ 635 000 mots à 70 000 mots en réduisant le nombre de mots de seulement $3,0 \%$.].
 
 Comme décrit dans la partie \@ref(subsec:word2vec), les couples `[focus, contexte]` dépendent d'un hyperparamètre : la fenêtre $w$. Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pronoms personnels), soient sur-entraînés, deux traitements sont effectués :
 
@@ -358,12 +361,12 @@ Les clusters apparaissent de manière plus évidente avec t-SNE.
 
 
 
-## Choix des meilleurs hyperparamètres pour le modèle 
+## Choix des meilleurs hyperparamètres pour le modèle {#sec:hyperparametres}
 
 Une fois nous être assurés de la bonne implémentation du modèle (partie \@ref(sec:corpusFictif)) grâce au corpus fictif, nous nous sommes attachés à identifier les hyperparamètres les plus pertinents au regard des données dont nous disposons.  
 
 Ces données correspondent à un ensemble de 1,3 million de tweets^[Ces tweets, achetés à twitter, sont la propriété de l'Inria.] 
-postés en France entre 2014 et 2017, supposés être représentatifs de l'ensemble de tweets nationaux publiés durant cette période. 
+postés en France entre 2013 et 2017, supposés être représentatifs de l'ensemble de tweets nationaux publiés durant cette période. 
 
 Le modèle *Word2Vec* version Skip-gram, décrit en partie \@ref(sec:word2vec), fait en effet intervenir un certain nombre d'hyperparamètres parmi lesquels : 
 \begin{itemize}
@@ -598,55 +601,54 @@ Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions da
 Les mots en vert correspondent à ceux présents dans l'opération, le mot en rouge le mot que l'on serait supposé trouver et les mots en orange les 10 mots les plus proches du résultat de l'opération vectorielle.}
 \end{figure}
 
-# Analyse des sentiments {#sec:sentimentalAnalysis}
+# Construction d'un indice mensuel de sentiments moyens des tweets {#sec:sentimentalAnalysis}
 
-<!-- LAISSER EN COMMENTAIRES :  -->
-<!-- A évoquer (ordre à l’appréciation du rédacteur avec sous parties éventuelles) :  -->
-<!-- - objectif de la partie : en gros construire un indicateur mensuel de tweets de sentiments des Français que l’on comparerait à l’indicateur de la statistique publique Camme en mobilisant données SNCF pour qualifier le sentiment d’un tweet  -->
-<!-- * décrire ce qu’est Camme.  -->
-<!-- * évoquer les données de tweets utilisées avec la nuance 2011-2018 par rapport à ce qui a été dit avant.  -->
-<!-- * décrire la base SNCF (demander à Benji plus de précisions dessus).  -->
+Afin de créer un indice mensuel de sentiments moyens des tweets, nous allons utiliser les vecteurs-mots en sortie du modèle *Word2Vec* couplé avec une base de tweets de la SNCF qualifiés de positifs ou négatifs.
+Nous comparerons enfin cet indicateur avec indicateur synthétique de confiance des ménages (Camme, Insee). L'ensemble de ces données sont décrites dans l'encadré \@ref(enc:encadre1).
+
+\begin{encadre}[true]{Données utilisées}\label{enc:encadre1}
+
+\small
+
+\textbf{Tweets mensuels}
+
+Il s'agit de la base des tweets postés en France utilisée précédemment (cf. partie  \ref{sec:hyperparametres}) mais couvrant un horizon temporel plus large (2011-2018).
+Nous disposons de 4000 tweets pour tous les mois de la période. \colorbox{BurntOrange}{préciser après précisions Benji} 
+
+\textbf{Tweets annotés par la SNCF}
+
+Cette base est composée d'un ensemble d'environ 23 000 tweets fournis par la SNCF qui sont annotés par la valeur $+1$ s'ils sont considérés positifs et $-1$ s'ils sont considérés négatifs en termes de sentiment. \colorbox{BurntOrange}{préciser après précisions Benji} 
+
+
+\textbf{Indicateur synthétique de confiance des ménages}
+
+L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee.
+Il décrit, en une variable unique, la composante commune de 8 soldes d’opinion qui correspondent à la différence entre les pourcentages de réponses positives et négatives sur différents sujets (niveau de vie passé et futur en France, situation financière personnelle passée et future, perspective de chômage, opportunité de faire des achats importants, capacité à épargner actuelle et dans les mois à venir).
+Il est calculé par analyse factorielle dont l’objectif est de résumer l’évolution concomitante de ces soldes aux évolutions très corrélées.
+L’indicateur est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10 et doit donc s’interpréter en évolution. 
+
+\end{encadre}
+
 
 ## Prédire le sentiment d’un tweet à partir des *word-embeddings*
 
-<!-- LAISSER EN COMMENTAIRES :  -->
-<!-- A évoquer (ordre à l’appréciation du rédacteur avec sous parties éventuelles) :  -->
-<!-- Cette partie consiste à articuler deux approches -->
-<!-- * celle qui n’utilise pas les word-embedding : la baseline2 -->
-<!-- * celle qui utilise les word-embedding : logit sur les vecteurs-mots -->
-<!-- Il s’agit donc dans l’ordre qui semble le plus évident de :  -->
-<!-- - décrire les méthodos. En revenant sur les bases de tests et d’entraînement utilisées.  -->
-<!-- - pour la méthode logit sur vecteurs mots : faire une partie sur la sélection de modèle et évoquer le choix sur  -->
-<!-- * lf VS z -->
-<!-- * rmsw VS nrmsw -->
-<!-- * logit VS probit -->
+Nous cherchons dans cette partie à construire un modèle de prédiction permettant de prédire le sentiment ($+1$ ou $-1$) associé à un tweet à partir des mots qui le composent.
+Nous utilisons pour cela la base annotée de la SNCF (encadré \@ref(enc:encadre1)).
+Nous comparerons deux approches : une première basée sur les sentiments moyens de chaque mot des tweets (partie  \@ref(sec:sentiments)) qui servira de référence (*baseline*) pour évaluer l'efficacité de la seconde approche basée sur les *word-embeddings* (partie \@ref(sec:wordembeddings)) .
 
-<!-- - comparer les résultats (en gros dire que word-embedding n’améliore pas vraiment la base-line).  -->
-<!-- - une interprétation de cette nonamélioration malgré une méthode des word-embedding qui semble plus élaborée que la baseline : le domain-shift.  -->
+### Prédiction à partir du sentiment moyen des mots {#sec:sentiments}
 
-Nous cherchons dans cette partie à prédire le sentiment associé à un tweet, à partir des mots qui le composent.
-Nous nous intéresserons ici à 2 sentiments possibles : +1 quand le tweet est jugé positif, -1 quand il est jugé négatif.
-À partir de la base de tweets de la SNCF, nous allons donc chercher à construire le meilleur modèle de prédiction de sentiments.
-<!-- - suppose que la base est décrite en intro de la partie  -->
-Nous comparerons alors deux approches : un première basée sur les sentiments moyens de chaque mot des tweets et l'autre basée sur les *word-embeddings*.
-
-### Prédiction à partir du sentiment moyen des mots
-
-Un premier modèle de prédiction du sentiment peut être imaginé en utilisant l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
-En effet, dans un premier temps, on peut regarder pour chaque mot du vocabulaire du corpus le nombre de tweets positifs ($nb_+$) et négatifs ($nb_-$) dans lesquels il apparaît et lui associer un sentiment moyen $\frac{nb_+ - nb_-}{nb_+ + nb_-}$, compris entre -1 et 1.
-Dans un second temps, on peut alors calculer la moyenne des sentiments des mots d'un tweet, et décider du label du tweet en fonction : si la moyenne est positive, le tweet sera jugé positif, sinon, il sera négatif.
-Autrement dit, considérons un tweet $t$ composé des mots $\{ mot_1 , \dots , mot_n \}$ alors $S(t) = 2 \times 1\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq 0\} - 1$ est la prédiction du sentiment du tweet, où $\alpha_i$ est le sentiment moyen du $mot_i$.
+Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
+Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera :
 
 
-Afin d'étudier l'ajustement du modèle, nous séparons le corpus en deux : une base de *train* composée de 16 004 tweets et une base de *test* composée de 6 858 tweets.
-Nous entraînons le modèle sur la base de *train*, c'est-à-dire que l'on calcule les sentiments moyens des mots de cette base, puis nous estimons le modèle sur la base de *test*, c'est-à-dire que l'on prédit pour chaque tweet de cette base un sentiment, que l'on compare au vrai sentiment.
-Il peut exister des mots présents dans la base de *test* qui ne le sont pas dans la base de *train*, pour ces mots-là on met donc le sentiment moyen à 0.
-L'application de cette méthode permet d'obtenir une *accuracy*, c'est-à-dire un taux de tweets dont le sentiment est bien prédit, de $70,52\%$.
+$$S_{1,\gamma}(t) = 2 \times \mathds{1}\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\} - 1 \qquad \in [0,1]$$
 
+ avec $\gamma \in [-1,1]$ un seuil fixé, $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  le sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît.
 
-Ce modèle peut cependant être amélioré.
-En effet, pour l'instant on compare la moyenne des sentiments des mots de la phrase à un seuil qui vaut 0.
-Toutefois, on pourrait essayer d'optimiser ce seuil : $\forall \gamma \in [-1;1]$, on définit $S_{\gamma}(t) = 2 \times 1\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\} - 1$ que l'on utilise pour effectuer une prédiction du sentiment, puis on sélectionne le $\gamma$ qui maximise l'*accuracy* sur la base de *test*. 
+Afin d'évaluer l'efficacité du modèle et de sélectionner le $\gamma$ qui présente les meilleures performances, nous séparons le corpus de la SNCF en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots^[$13 \%$ des mots du vocabulaires et $1 \%$ des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen $\alpha_i$ est fixé à 0.], et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
+
+On choisit $\gamma$ tel que l'*accuracy* sur la base de test -- c'est-à-dire le taux de tweets dont le sentiment est bien prédit -- soit maximale (figure \ref{fig:max_baseline}). L'*accuracy* maximale vaut $89,1 \%$ pour $\gamma^* = -0.14$. On constate une nette amélioration par rapport au cas où $\gamma = 0$ ($70,5 \%$), qui correspond au seuil « naturel » puisqu'il se situe au centre de l'intervalle des valeurs possibles pour $\alpha_i$. 
 
 \begin{figure}
 \begin{center}
@@ -656,88 +658,54 @@ Toutefois, on pourrait essayer d'optimiser ce seuil : $\forall \gamma \in [-1;1]
 \end{center}
 \end{figure}
 
-On effectue cette optimisation (figure \ref{fig:max_baseline}) et on trouve alors que le $\gamma$ qui maximise l'*accuracy* est $\gamma^* = -0.14$, pour une *accuracy* de $89,08\%$.
-On constate donc une nette amélioration par rapport au cas où $\gamma = 0$.
-Nous avons donc ici une premier modèle qui peut servir de référence pour la suite.
-Idéalement, nous souhaiterions que le modèle basé sur les *word-embeddings* soit meilleur que celui-ci.
-
-### Prédiction à partir des *word-embeddings*
+### Prédiction à partir des *word-embeddings* {#sec:wordembeddings}
 
 Nous nous intéressons maintenant à un modèle basé sur l'utilisation de nos *word-embeddings*.
-Afin d'exploiter nos vecteurs, l'idée est d'utiliser un modèle de régression binaire estimé sur notre corpus, en considérant comme prédicteurs chacune des dimensions des vecteurs (nous en aurons donc ici $n=100$).
-Pour réaliser cette régression, il faut toutefois pouvoir attribuer à chaque tweet un vecteur et effectuer une forme de *sentence embedding*.
-Pour cela, nous décidons d'attribuer à chaque tweet la moyenne des vecteurs de l'ensemble des mots du tweet.
-Nous pouvons ensuite réaliser la régression sur ce vecteur.
+Nous souhaiterions idéalement que ce modèle présente de meilleures performances que celui présenté en partie \@ref(sec:sentiments).
 
-Si on note $Y_i$ le sentiment du tweet $i$ et $X_{i,1}, \dots, X_{i,n}$ chacune des coordonnées du *sentence embedding* associé au tweet, alors on s'intéresse au modèle $Y_i = 1\{ \sum\limits_{i = 1}^n \beta_i X_{i,j} + \epsilon_i \geq 0 \}$ où $\epsilon_i$ est le résidu de notre modèle.
-En notant $F_{\epsilon}$ la fonction de répartition des résidus, nous allons chercher à estimer :
-\begin{equation*}
-\mathbb{P}(Y_i = 1 | X_{i,j}) = \mathbb{P}(\sum\limits_{i = 1}^n \beta_i X_{i,j} + \epsilon_i \geq 0 | X_{i,j})
-= \mathbb{P}(\sum\limits_{i = 1}^n \beta_i X_{i,j}\geq - \epsilon_i  | X_{i,j}) = F_{\epsilon}(\sum\limits_{i = 1}^n \beta_i X_{i,j})
-\end{equation*}
-
-Deux modèles binaires peuvent être utilisés, selon la choix de $F_{\epsilon}$ : 
-
-1. Le modèle logit : $F_{\epsilon}(x) = \frac{1}{1 + e^{-x}}$.
-
-2. Le modèle probit : $F_{\epsilon}$ est la fonction de répartition d'une loi gaussienne centrée et réduite.
+Pour cela, nous utilisons un modèle de régression binaire avec comme prédicteurs chacune des 100 dimensions des vecteurs-mots. 
+Toutefois, comme il s'agit ici de prévoir le sentiment des tweets et non de mots, une première étape préalable est de transformer pour chaque tweet l'ensemble des *word-embeddings* des mots qui le composent en une  « *sentence-embedding* » qui correspondra à la moyenne des vecteurs-mots.
 
 
-Nous avons donc deux choix de spécification à estimer sur notre corpus, afin de déterminer la meilleure.
-En réalité, nous pouvons également nous interroger sur d'autres critères à propos du modèle :
+Le modèle prédictif binaire est de la forme : 
+$$Y_i = \mathds{1}\{ \sum\limits_{i = 1}^n \beta_i X_{i,j} + \epsilon_i \geq 0 \} \quad \text{et nous prédisons} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\epsilon}(\sum\limits_{i = 1}^n \beta_i X_{i,j})$$
 
-1. Les *stop words*^[La liste des *stop wods* utilisés ici est la suivante : 'ai', 'aie', 'aient', 'aies', 'ait', 'as', 'au', 'aura', 'aurai', 'auraient', 'aurais', 'aurait', 'auras', 'aurez', 'auriez', 'aurions', 'aurons', 'auront', 'aux', 'avaient', 'avais', 'avait', 'avec', 'avez', 'aviez', 'avions', 'avons', 'ayant', 'ayante', 'ayantes', 'ayants', 'ayez', 'ayons', 'c', 'ce', 'ces', 'd', 'dans', 'de', 'des', 'du', 'elle', 'en', 'es', 'est', 'et', 'eu', 'eue', 'eues', 'eurent', 'eus', 'eusse', 'eussent', 'eusses', 'eussiez', 'eussions', 'eut', 'eux', 'eûmes', 'eût', 'eûtes', 'furent', 'fus', 'fusse', 'fussent', 'fusses', 'fussiez', 'fussions', 'fut', 'fûmes', 'fût', 'fûtes', 'il', 'ils', 'j', 'je', 'l', 'la', 'le', 'les', 'leur', 'lui', 'm', 'ma', 'mais', 'me', 'mes', 'moi', 'mon', 'même', 'n', 'ne', 'nos', 'notre', 'nous', 'on', 'ont', 'ou', 'par', 'pas', 'pour', 'qu', 'que', 'qui', 's', 'sa', 'se', 'sera', 'serai', 'seraient', 'serais', 'serait', 'seras', 'serez', 'seriez', 'serions', 'serons', 'seront', 'ses', 'soient', 'sois', 'soit', 'sommes', 'son', 'sont', 'soyez', 'soyons', 'suis', 'sur', 't', 'ta', 'te', 'tes', 'toi', 'ton', 'tu', 'un', 'une', 'vos', 'votre', 'vous', 'y', 'à', 'étaient', 'étais', 'était', 'étant', 'étante', 'étantes', 'étants', 'étiez', 'étions', 'été', 'étée', 'étées', 'étés', 'êtes'] : également appelé \og mots vides \fg, ce sont des mots communs dont l'analyse est en général inutile car leur présence n'apporte pas d'information.
-<!-- à voir si la liste est utile -->
-Dans notre cas, on peut donc penser qu'estimer le modèle en enlevant du corpus ces *stop-words* peut améliorer les résultats.
+Avec : 
+\begin{itemize}
+\item $Y_i$ le sentiment du tweet $i$ ;
+\item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
+\item $\epsilon_i$ le résidu de notre modèle de fonction de répartition $F_{\epsilon}$ qui vaudra $F_{\epsilon}(x) = \frac{1}{1 + e^{-x}}$ dans le cas d'un modèle logit et $F_{\epsilon}(x) = \Phi(x)$ (fonction de répartition d'une loi $\mathcal{N}(0, 1)$) dans le cas d'un modèle probit. 
+\end{itemize}
 
-2. Les mots inconnus : la base qui a servi à entraîner le modèle des *word-embeddings* est différente de celle que l'on utilise pour la prédiction des sentiments. 
-Ainsi, il y a des mots de ce corpus pour lesquels on ne connaît pas la représentation vectorielle.
-On peut alors décider que la représentation vectorielle des mots inconnus est le vecteur nul.
-Cependant, lorsqu'on a entraîné le modèle *Word2Vec* un pré-processing a permis de regrouper les mots très peu fréquents au sein d'un même mot clé et le modèle a alors calculé un vecteur commun à tous ces mots.
-On peut donc décider d'attribuer ce vecteur aux mots inconnus, en estimant que s'ils sont absents du corpus d'entraînement du modèle *Word2Vec*, ce sont bien des mots très peu fréquents.
+Puis nous appliquons le critère de classification suivant pour prédire le sentiment $S_{2,\gamma}(t) \in \{0,1\}$ du tweet $t$ avec le seuil $\gamma \in [0,1]$ :
 
-Afin de mener une analyse la plus complète possible, nous avons décidé d'estimer tous les modèles possibles selon que l'on choisisse :
+$$\begin{cases}
+S_{2,\gamma}(t) = 0 \qquad \qquad \text{si} \quad \mathbb{P}(Y_i = 1 | X_{i}) < \gamma = 0,5 \\
+S_{2,\gamma}(t) = 1 \qquad \qquad \text{si} \quad \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma = 0,5
+\end{cases}
+$$
 
-1. D'inclure ou non les *stop-words* ;
+Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC^[La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.]) par validation croisée^[Nous avons réalisé une *k-fold cross validation* qui est une technique permettant de limiter le surapprentissage sur la base d'entraînement. Le principe est de découper la base en $k = 10$ échantillons puis de considérer tour à tour chaque échantillon comme base de test, en entraînant le modèle sur les $k-1$ échantillons restants. On calcule alors l'AUC dans chaque cas, puis on en calcule la moyenne. ]. Les différences spécifications testées sont les suivantes : 
 
-2. Le vecteur nul ou le vecteur des mots très peu fréquents estimé par *Word2Vec* pour les mots inconnus ;
+\begin{enumerate}
+\item \textbf{L’inclusion ou non des \emph{stop words}} (mots-vides). Ces mots sont des mots communs qui, en général, n’apportent pas d’information cruciale dans l’analyse textuelle. Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériorent même légèrement. Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot-vide « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de -0.25).
 
-3. Le modèle probit ou logit.
+\item \textbf{Le traitement des mots inconnus}. La base qui a servi à entraîner le modèle des *word-embeddings* est différente de celle que l'on utilise pour la prédiction des sentiments. Ainsi, il existe des mots pour lesquels on ne connaît pas la représentation vectorielle. Deux options ont été retenues pour traiter ces mots. La première est de retirer ces mots des tweets analysés afin qu'ils n’influent pas sur la décision du sentiment. La seconde est de leur attribuer la valeur du vecteur correspondant aux mots rares (vecteur « lowfrequency », voir partie \@ref(subsec:baseentrainemen)) en partant du principe que s'ils sont absents du corpus d'entraînement du modèle \emph{Word2Vec}, ce sont bien des mots très peu fréquents. C’est cette deuxième option qui semble donner des résultats légèrement meilleurs, ce qui peut signifier que l’on capte alors le fait que les mots peu fréquents ne sont en moyenne pas neutres (plutôt positifs ou négatifs\footnote{En utilisant le modèle logit retenu, la prévision d'une \emph{sentence-embedding} composée uniquement du mot « lowfrequency » donne $\hat{\mathbb{P}}(Y_i = 1 | X_{lowfrequency}) = 0,76$, ce qui laisse supposer que les mots-rares ont une consonance davantage positive.}). 
 
+\item \textbf{La modélisation probit ou logit}. En plus de comparer leurs AUC, on compare ces deux spécifications avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les mêmes résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
+\end{enumerate}
 
-Nous obtenons ainsi 8 modèles à estimer.
-Pour comparer ces modèles entre eux, nous avons décidé d'utiliser l'AUC, *Area Under the Curve*, c'est-à-dire l'aire sous la courbe ROC, *receiver operating characteristic*. ^[La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. 
-L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1 (le modèle qui prédirait de façon aléatoire 1 ou -1 a un AUC de 0,5).]
-Nous effectuons alors une validation croisée, pour chacun de nos 8 modèles, en se basant sur l'AUC.
-Nous nous intéressons également à des critères économétriques afin de déterminer la meilleure représentation entre le modèle logit et le modèle probit.
+Finalement, nous retenons le modèle estimé par une **régression logit** sur la base en **gardant les mots-vides ** et en affectant aux mots inconnus le **vecteur des mots très peu fréquents**. L'*accuracy* de ce modèle est de $68,7\%$^[Cette valeur de l'*accuracy* correspond au seuil $\gamma = 0,5$. Comme dans la partie précédente, nous avons déterminé le seuil obtimal et comme celui-ci était très proche de 0,5 ($\gamma^* = 0,051$), pour une *accuracy* de seulement $68,8 \%$, nous avons conservé le seuil médian de $0,5$.], valeur inférieure au modèle de référence de la partie \@ref(sec:sentiments) ($89,1\%$). 
 
-Nous obtenons alors les résultats suivants :
+### Les limites des modèles utilisés 
 
-1. Il ne semble pas utile d'enlever les *stop words* pour améliorer les résultats.
-Ceci peut s'expliquer car certains *stop-words* peuvent peut-être renseigner sur un sentiment.
-Ainsi, le mot \og pas \fg est un *stop-word* mais renseigne plutôt sur des tweets négatifs (son sentiment moyen dans le corpus est de -0.25).
-De même, on peut penser que les phrases contenant du futur ou du conditionnel renvoient à des sentiments différents.
+La performance exceptionnellement bonne du modèle de référence (sentiments moyens des mots par tweets) par rapport au modèle mobilisant les *word-embedding* peut s'expliquer par plusieurs facteurs. 
 
-2. Il apparaît meilleur d'affecter aux mots inconnus le vecteur des mots peu fréquents estimé par le modèle *Word2Vec* que de leur attribuer le vecteur nul.
-On aurait pu intuitivement penser qu'en l'absence d'information sur un mot, il est préférable de lui attribuer un vecteur nul afin qu'il n'influe pas sur la décision du sentiment.
-Cependant, cela ne se vérifie pas empiriquement.
-Cela veut peut-être signifier que le vecteur associé aux mots très peu fréquents estimé par notre modèle *Word2Vec* capture bien la rareté du mot et que les mots peu fréquents ont peut-être tendance à être plus positifs ou plus négatifs et non neutres. 
+#### Les mots inconnus 
+ 
+Une première explication est la différence entre les deux modèles en termes de mots inconnus. Nous l'avons vu, pour le modèle de référence, 1,4 \% des mots utilisés dans les tweets de la base test SNCF (13,2 \% du vocabulaire) sont absents de la base d'entraînement SNCF. Pour le modèle basé sur les *word-embedding*, il faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent 4,6 \% des mots (36,2 \% du vocabulaire). 
 
-3. Utiliser un modèle logit permet d'obtenir de meilleurs résultats qu'en utilisant un modèle probit.
-En effet, à la fois les AUC et les critères économétriques sont meilleurs pour les modèles logit, quels que soient les choix faits par ailleurs sur les *stop words* et les mots inconnus.
-
-Finalement, nous utiliserons donc par la suite le modèle estimé par une **régression logit** sur la base en **gardant les *stop-words* ** et en affectant aux mots inconnus dans le modèle *Word2Vec* le **vecteur des mots très peu fréquents** estimé par ce dernier.
-
-### Comparaison entre les deux modèles
-
-L'application du modèle basé sur les *word-embeddings* à la même base *test* que le modèle basé sur les sentiments moyens des mots donne une *accuracy* de $68,71\%$, contre les $89,08\%$ que l'on avait obtenu.
-Nous obtenons donc de moins bons résultats en utilisant le modèle basé sur les *word-embeddings*, nous allons essayer de comprendre pourquoi.
-
-#### Influence des mots inconnus
-
-Intuitivement, on peut penser que la prédiction du sentiment est biaisée, dans les deux modèles, par la présence de mots inconnus.
-En effet, pour le modèle basé sur les sentiments moyens, il y a un problème de mots inconnus entre la bae *test* et la base *train* et pour le modèle basé sur les *Word2Vec*, il y a un problème de mots inconnus entre la base SNCF et la base d'entraînement du *Word2Vec*.
-Pour vérifier si l'intuition se vérifie, nous regardons la distribution des mots connus et inconnus entre les tweets bien prédits, mal prédits et en général (figure \ref{fig:mots_inconnus}).
+Toutefois, la présence de mots inconnus ne semble pas beaucoup biaiser fortement la prédiction du sentiment d'un tweet. En effet, la distribution de la part des mots inconnus est étonnamment similaire selon si on se restreint aux tweets bien prédits ou à ceux mal prédits (figure \ref{fig:mots_inconnus})
 
 \begin{figure}[ht]
 \begin{center}
@@ -747,20 +715,42 @@ Pour vérifier si l'intuition se vérifie, nous regardons la distribution des mo
 \end{center}
 \end{figure}
 
-On remarque que la distribution des mots inconnus semble comparable dans les tweets bien prédits et mal prédits, cela ne semble donc pas être l'explication principale des résultats.
+#### Le processus d'annotation utilisé par la SNCF
 
-#### Une cause des mauvaises prédictions : le *domain shift*
+L'éventualité que la méthode de référence reproduise en partie le processus qui a été utilisé pour générer les sentiments de la base SNCF pourrait également être une explication de la surperformance du modèle de référence. En effet, nous ne disposons pas de la méthodologie qui a permis à la SNCF d'annoter ses tweets et nous avons pu relever quelques incohérences dans les sentiments attribués à certains tweets, ce qui peut laisser supposer que l'annotation n'a pas été purement manuelle et qu'ils ont pu utiliser, par exemple, un dictionnaire de sentiments par mots pour annoter leurs tweets. Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a en effet été qualifié de positif. 
 
-Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le « *dataset shift* »^[Les éléments en lien avec le *dataset shift* proviennent de \cite{Candela}].
-Bien que des solutions comme la correction de biais de sélection des échantillons, ou encore celle des données déséquilibrées, soient étudiées depuis de nombreuses décennies dans le monde de la statistique, certains autres problèmes, comme celui du changement de domaine (*domain shift*) émergent depuis plus récemment suite à l’utilisation croissante des méthodes de *machine learning*. 
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{C'est cool de payer un abonnement de 180 euros par mois pour attendre 1h le bus.} \LARGE \textbf{''}\normalsize
+\end{quote}
+
+
+#### Le domain-shift
+
+Une dernière explication possible pourrait être du à ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}.
+
+Bien que des solutions comme la correction de biais de sélection des échantillons, ou encore celle des données déséquilibrées, soient étudiées depuis de nombreuses décennies dans le monde de la statistique, certains autres problèmes, comme celui du changement de domaine (\emph{domain shift}) émergent depuis plus récemment suite à l’utilisation croissante des méthodes de \emph{machine learning}. 
 
 Le changement de domaine se caractérise par un changement de la nature, du « domaine » des données utilisées.
-Dans le cas de *deep-learning* sur des données de photographie, il pourrait par exemple s’agir de traiter de corpus de photos prises par des appareil photo calibrés de manière différentes (contraste, luminosité…) .
+Dans le cas de \emph{deep-learning} sur des données de photographie, il pourrait par exemple s’agir de traiter de corpus de photos prises par des appareil photo calibrés de manière différentes (contraste, luminosité…) .
 Dans notre cas précis, il s’agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets de la SNCF, qui portent sur un sujet très spécifique et pour lesquels certains mots ont peut-être une interprétation spécifique en termes de sentiments. 
-Modéliser le « domain shift » implique donc d’estimer le passage d’une représentation à une autre en utilisant des informations de distribution. ^[La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le « domain shift » lié à l’utilisation d’appareil photos différents.]
-Dans ce qui suit, l’idée n’est pas de modéliser mathématiquement^[ Pour modéliser mathématiquement de manière relativement « grossière » un *domain shift*, il s’agirait de considérer par exemple une variable latente « idéale » $x_0$ (une base de tweets de référence), jamais observée mais qui influerait sur $y$ (l’indice mensuel). Nous observons uniquement $x$ telle $x=F(x_0)$ avec $F$ qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données $x$ utilisée. La distribution $P(y|x_0)$ (de  l’indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base « sncf » et base de tweets postés en France entre 2013 et 2017). En revanche, cette distribution est modifiée si F est modifiée.] le *domain shift* des deux bases de tweets mais de présenter quelques statistiques descriptives illustrant ce phénomène. 
+Modéliser le « domain shift » implique donc d’estimer le passage d’une représentation à une autre en utilisant des informations de distribution\footnote{La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le « domain shift » lié à l’utilisation d’appareil photos différents.}.
 
-Pour ce faire, ...
+L’idée n’est pas ici de modéliser mathématiquement^[ Pour modéliser mathématiquement de manière relativement « grossière » un *domain shift*, il s’agirait de considérer par exemple une variable latente « idéale » $x_0$ (une base de tweets de référence), jamais observée mais qui influerait sur $y$ (l’indice mensuel). Nous observons uniquement $x$ telle $x=F(x_0)$ avec $F$ qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données $x$ utilisée. La distribution $P(y|x_0)$ (de  l’indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base « sncf » et base de tweets postés en France entre 2013 et 2017). En revanche, cette distribution est modifiée si F est modifiée.] le *domain shift* mais de remarquer que la base de tweets de la SNCF semble en effet qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé^[Les mots « bus » (3800 occurrences),  « métro » (820), « sncf » (781), , « retard » (411), « ratp » (237), « gare » (195), « chauffeur » (160), … sont parmi les plus employés dans les tweets de la base test.] mais également de part le ton particulièrement ironique de nombreux tweets^[ Comme en témoignent ces deux tweets « 1h de retard la sncf, vous savez pas l’amour que je vous porte » et « J’ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas ». Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal prédits, 5 peuvent être utilisés pour manier l’ironie (espère, ptdr, cool, mdrr, mdrrr).].
+
+
+#### Test d'une modification de la source de la base de test 
+
+Nous testé les deux modèles sur une nouvelle base de test de tweets annotés^[Cette base disponible sur github https://github.com/gamebusterz/French-Sentiment-Analysis-Dataset  correspond à 1,5 million de tweets initialement en anglais associés à un sentiment. Son désavantage est que la traduction est de mauvaise qualité et sûrement effectuée depuis un logiciel de traduction automatique.] indépendante des autres bases. 
+Avec cette nouvelle base, l'*accuracy* du modèle basé sur les *word-embedding* est cette fois-ci supérieure à celle de l'approche de référence (68,7 \% contre 55,9 \%).  
+
+Cette nouvelle base test permet certainement de corriger une partie des biais évoqués plus haut qui pouvaient expliquer la surperformance du modèle de référence par rapport au modèle utilisant les vecteurs mots : 
+
+- La base de test de « github », bien qu’assez mal traduite, ne semble pas à notre connaissance avoir été annotée par des techniques d’analyse de sentiments similaires à la méthode de référence ;
+
+- Ses tweets sont nombreux et semblent traiter de sujets divers contrairement aux tweets de la SNCF, plus ciblés ;
+
+- Le modèle de *word-embeddings* semble mieux réagir à la présence de mots inconnus, ici plus nombreux que précédemment^[52.0 \% des mots du vocabulaire et 12.7 \% des mots de la base test de github ne sont pas dans la base d’entraînement SNCF et 52,8  \% des mots du vocabulaire et 13,0 \% des mots ne sont ni dans la base d’entraînement SNCF ni dans le vocabulaire des \emph{word-embeddings}. Ainsi, les mots de la base test « github » qui ne sont pas dans la base d’entraînement « sncf » sont rarement dans les vecteurs-mots de \emph{Word2Vec}.], que le modèle de référence. Comme il présente une efficacité similaire à lorsqu’il était évalué sur une autre base de test, il semble être plus général et s’adapter à des tweets aux contenus plus variés. 
+
 
 ## Sentiments des tweets et enquête de conjoncture auprès des ménages [Alain]
 

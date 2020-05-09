@@ -1,5 +1,6 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
+\providecommand\zref@newlabel[2]{}
 \bbl@cs{beforestart}
 \providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
 \HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
@@ -59,7 +60,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Évaluation sur un corpus fictif}{8}{subsection.2.1}\protected@file@percent }
 \newlabel{sec:corpusFictif}{{2.1}{8}{Évaluation sur un corpus fictif}{subsection.2.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Choix des meilleurs hyperparamètres pour le modèle}{8}{subsection.2.2}\protected@file@percent }
-\newlabel{choix-des-meilleurs-hyperparamuxe8tres-pour-le-moduxe8le}{{2.2}{8}{Choix des meilleurs hyperparamètres pour le modèle}{subsection.2.2}{}}
+\newlabel{sec:hyperparametres}{{2.2}{8}{Choix des meilleurs hyperparamètres pour le modèle}{subsection.2.2}{}}
 \citation{Hutter}
 \citation{Rehurek}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Évaluation du modèle sur données fictives\relax }}{9}{figure.caption.5}\protected@file@percent }
@@ -102,45 +103,51 @@
 \newlabel{fig:acp_reine}{{8}{15}{\ $\protect \overrightarrow {Roi} - \protect \overrightarrow {Homme} + \protect \overrightarrow {Femme} = $ ?\relax }{figure.caption.12}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces \ $\overrightarrow {Paris} - \overrightarrow {France} + \overrightarrow {Italie} = $ ?\relax }}{15}{figure.caption.12}\protected@file@percent }
 \newlabel{fig:acp_rome}{{9}{15}{\ $\protect \overrightarrow {Paris} - \protect \overrightarrow {France} + \protect \overrightarrow {Italie} = $ ?\relax }{figure.caption.12}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Analyse des sentiments}{15}{section.3}\protected@file@percent }
-\newlabel{sec:sentimentalAnalysis}{{3}{15}{Analyse des sentiments}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Prédire le sentiment d'un tweet à partir des \emph  {word-embeddings}}{15}{subsection.3.1}\protected@file@percent }
-\newlabel{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}{{3.1}{15}{\texorpdfstring {Prédire le sentiment d'un tweet à partir des \emph {word-embeddings}}{Prédire le sentiment d'un tweet à partir des word-embeddings}}{subsection.3.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Prédiction à partir du sentiment moyen des mots}{15}{subsubsection.3.1.1}\protected@file@percent }
-\newlabel{pruxe9diction-uxe0-partir-du-sentiment-moyen-des-mots}{{3.1.1}{15}{Prédiction à partir du sentiment moyen des mots}{subsubsection.3.1.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Construction d'un indice mensuel de sentiments moyens des tweets}{15}{section.3}\protected@file@percent }
+\newlabel{sec:sentimentalAnalysis}{{3}{15}{Construction d'un indice mensuel de sentiments moyens des tweets}{section.3}{}}
+\newlabel{enc:encadre1}{{1}{15}{Construction d'un indice mensuel de sentiments moyens des tweets}{bclogocompteur.1}{}}
+\@writefile{bcl}{\contentsline {bclogo}{ {\sc  \textbf  {Encadré 1}} - Données utilisées}{15}{bclogocompteur.1}\protected@file@percent }
+\pgfsyspdfmark {pgfid1}{4499457}{4499457}
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Optimisation du seuil $\gamma $ pour le modèle à partir des sentiments moyens des mots\relax }}{16}{figure.caption.13}\protected@file@percent }
 \newlabel{fig:max_baseline}{{10}{16}{Optimisation du seuil $\gamma $ pour le modèle à partir des sentiments moyens des mots\relax }{figure.caption.13}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Prédiction à partir des \emph  {word-embeddings}}{16}{subsubsection.3.1.2}\protected@file@percent }
-\newlabel{pruxe9diction-uxe0-partir-des-word-embeddings}{{3.1.2}{16}{\texorpdfstring {Prédiction à partir des \emph {word-embeddings}}{Prédiction à partir des word-embeddings}}{subsubsection.3.1.2}{}}
-\citation{Candela}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Comparaison entre les deux modèles}{18}{subsubsection.3.1.3}\protected@file@percent }
-\newlabel{comparaison-entre-les-deux-moduxe8les}{{3.1.3}{18}{Comparaison entre les deux modèles}{subsubsection.3.1.3}{}}
-\newlabel{influence-des-mots-inconnus}{{3.1.3.1}{18}{Influence des mots inconnus}{paragraph.3.1.3.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {3.1.3.1}Influence des mots inconnus}{18}{paragraph.3.1.3.1}\protected@file@percent }
-\newlabel{une-cause-des-mauvaises-pruxe9dictions-le-domain-shift}{{3.1.3.2}{18}{\texorpdfstring {Une cause des mauvaises prédictions : le \emph {domain shift}}{Une cause des mauvaises prédictions : le domain shift}}{paragraph.3.1.3.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {3.1.3.2}Une cause des mauvaises prédictions : le \emph  {domain shift}}{18}{paragraph.3.1.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Prédire le sentiment d'un tweet à partir des \emph  {word-embeddings}}{16}{subsection.3.1}\protected@file@percent }
+\newlabel{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}{{3.1}{16}{\texorpdfstring {Prédire le sentiment d'un tweet à partir des \emph {word-embeddings}}{Prédire le sentiment d'un tweet à partir des word-embeddings}}{subsection.3.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Prédiction à partir du sentiment moyen des mots}{16}{subsubsection.3.1.1}\protected@file@percent }
+\newlabel{sec:sentiments}{{3.1.1}{16}{Prédiction à partir du sentiment moyen des mots}{subsubsection.3.1.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Prédiction à partir des \emph  {word-embeddings}}{17}{subsubsection.3.1.2}\protected@file@percent }
+\newlabel{sec:wordembeddings}{{3.1.2}{17}{\texorpdfstring {Prédiction à partir des \emph {word-embeddings}}{Prédiction à partir des word-embeddings}}{subsubsection.3.1.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Les limites des modèles utilisés}{18}{subsubsection.3.1.3}\protected@file@percent }
+\newlabel{les-limites-des-moduxe8les-utilisuxe9s}{{3.1.3}{18}{Les limites des modèles utilisés}{subsubsection.3.1.3}{}}
+\newlabel{les-mots-inconnus}{{3.1.3.1}{18}{Les mots inconnus}{paragraph.3.1.3.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {3.1.3.1}Les mots inconnus}{18}{paragraph.3.1.3.1}\protected@file@percent }
+\newlabel{le-processus-dannotation-utilisuxe9-par-la-sncf}{{3.1.3.2}{18}{Le processus d'annotation utilisé par la SNCF}{paragraph.3.1.3.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {3.1.3.2}Le processus d'annotation utilisé par la SNCF}{18}{paragraph.3.1.3.2}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Part des mots inconnus dans les tweets\relax }}{19}{figure.caption.14}\protected@file@percent }
 \newlabel{fig:mots_inconnus}{{11}{19}{Part des mots inconnus dans les tweets\relax }{figure.caption.14}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Sentiments des tweets et enquête de conjoncture auprès des ménages {[}Alain{]}}{19}{subsection.3.2}\protected@file@percent }
-\newlabel{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages-alain}{{3.2}{19}{Sentiments des tweets et enquête de conjoncture auprès des ménages {[}Alain{]}}{subsection.3.2}{}}
-\newlabel{conclusion-suxfbrement-kim}{{3.2}{19}{Conclusion {[}sûrement Kim{]}}{section*.15}{}}
-\@writefile{toc}{\contentsline {section}{Conclusion {[}sûrement Kim{]}}{19}{section*.15}\protected@file@percent }
+\newlabel{le-domain-shift}{{3.1.3.3}{19}{Le domain-shift}{paragraph.3.1.3.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {3.1.3.3}Le domain-shift}{19}{paragraph.3.1.3.3}\protected@file@percent }
+\newlabel{test-dune-modification-de-la-source-de-la-base-de-test}{{3.1.3.4}{20}{Test d'une modification de la source de la base de test}{paragraph.3.1.3.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {3.1.3.4}Test d'une modification de la source de la base de test}{20}{paragraph.3.1.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Sentiments des tweets et enquête de conjoncture auprès des ménages {[}Alain{]}}{20}{subsection.3.2}\protected@file@percent }
+\newlabel{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages-alain}{{3.2}{20}{Sentiments des tweets et enquête de conjoncture auprès des ménages {[}Alain{]}}{subsection.3.2}{}}
+\newlabel{conclusion-suxfbrement-kim}{{3.2}{20}{Conclusion {[}sûrement Kim{]}}{section*.15}{}}
+\@writefile{toc}{\contentsline {section}{Conclusion {[}sûrement Kim{]}}{20}{section*.15}\protected@file@percent }
 \citation{Schakel}
 \citation{Mikolov}
 \citation{Mikolov}
 \citation{Levy}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{20}{appendix.A}\protected@file@percent }
-\newlabel{annexe:commentEvaluer}{{A}{20}{Comment évaluer le modèle ?}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Distance entre deux mots}{20}{subsection.A.1}\protected@file@percent }
-\newlabel{distance-entre-deux-mots}{{A.1}{20}{Distance entre deux mots}{subsection.A.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{20}{subsection.A.2}\protected@file@percent }
-\newlabel{analyse-en-composantes-principales}{{A.2}{20}{Analyse en Composantes Principales}{subsection.A.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Algorithme \emph  {t-distributed Stochastic Neighbor Embedding}}{22}{subsection.A.3}\protected@file@percent }
-\newlabel{algorithme-t-distributed-stochastic-neighbor-embedding}{{A.3}{22}{\texorpdfstring {Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{Algorithme t-distributed Stochastic Neighbor Embedding}}{subsection.A.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{21}{appendix.A}\protected@file@percent }
+\newlabel{annexe:commentEvaluer}{{A}{21}{Comment évaluer le modèle ?}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Distance entre deux mots}{21}{subsection.A.1}\protected@file@percent }
+\newlabel{distance-entre-deux-mots}{{A.1}{21}{Distance entre deux mots}{subsection.A.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{21}{subsection.A.2}\protected@file@percent }
+\newlabel{analyse-en-composantes-principales}{{A.2}{21}{Analyse en Composantes Principales}{subsection.A.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Algorithme \emph  {t-distributed Stochastic Neighbor Embedding}}{23}{subsection.A.3}\protected@file@percent }
+\newlabel{algorithme-t-distributed-stochastic-neighbor-embedding}{{A.3}{23}{\texorpdfstring {Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{Algorithme t-distributed Stochastic Neighbor Embedding}}{subsection.A.3}{}}
 \citation{Rubenstein}
 \citation{Boumedyen}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{23}{subsubsection.A.3.1}\protected@file@percent }
-\newlabel{sec:jugementHumain}{{A.3.1}{23}{Jugement humain}{subsubsection.A.3.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{24}{subsubsection.A.3.1}\protected@file@percent }
+\newlabel{sec:jugementHumain}{{A.3.1}{24}{Jugement humain}{subsubsection.A.3.1}{}}
 \citation{*}
 \bibcite{Bengio}{{1}{2003}{{Bengio \emph  {et al} }}{{}}}
 \bibcite{Boumedyen}{{2}{2017}{{Boumedyen Billami \& Gala }}{{}}}
@@ -155,5 +162,5 @@
 \bibcite{Rehurek}{{11}{2010}{{{\v R}eh{\r u}{\v r}ek \& Sojka }}{{}}}
 \bibcite{Rubenstein}{{12}{1965}{{Rubenstein \& Goodenough }}{{}}}
 \bibcite{Schakel}{{13}{2015}{{Schakel \& Wilson }}{{}}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Base de données de jugement humain\relax }}{24}{table.caption.16}\protected@file@percent }
-\newlabel{table:human_judgement}{{4}{24}{Base de données de jugement humain\relax }{table.caption.16}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Base de données de jugement humain\relax }}{25}{table.caption.16}\protected@file@percent }
+\newlabel{table:human_judgement}{{4}{25}{Base de données de jugement humain\relax }{table.caption.16}{}}

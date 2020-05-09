@@ -277,7 +277,14 @@ grangertest(diff(donnes_calcul_lag[, "ind_synt_brut"]), diff(donnes_calcul_lag[,
 ```
 
 
-**Bilan ** notre indicateur de sentiment permettrait de prévoir l'enquête Camme
+**Bilan ** notre indicateur de sentiment permettrait de prévoir l'enquête Camme. 
+
+Quand on regarde les séries en différence on ne remarque... rien. On ne comprend pas pourquoi les baselines semblent plus proches selon les corrélations (voir plus bas).
+
+```{r}
+AQLTools::hc_stocks(diff(donnes_calcul_lag[,1:5]),digits = 2)
+```
+
 
 ### Test sur baseline git
 

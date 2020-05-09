@@ -20,17 +20,18 @@
 \contentsline {subsection}{\numberline {2.3}Évaluation sur le corpus final}{12}{subsection.2.3}%
 \contentsline {subsubsection}{\numberline {2.3.1}Avec \FB@og notre \FB@fg \relax {} modèle}{12}{subsubsection.2.3.1}%
 \contentsline {subsubsection}{\numberline {2.3.2}Avec le modèle \texttt {Gensim}}{13}{subsubsection.2.3.2}%
-\contentsline {section}{\numberline {3}Analyse des sentiments}{15}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Prédire le sentiment d'un tweet à partir des \emph {word-embeddings}}{15}{subsection.3.1}%
-\contentsline {subsubsection}{\numberline {3.1.1}Prédiction à partir du sentiment moyen des mots}{15}{subsubsection.3.1.1}%
-\contentsline {subsubsection}{\numberline {3.1.2}Prédiction à partir des \emph {word-embeddings}}{16}{subsubsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.3}Comparaison entre les deux modèles}{18}{subsubsection.3.1.3}%
-\contentsline {paragraph}{\numberline {3.1.3.1}Influence des mots inconnus}{18}{paragraph.3.1.3.1}%
-\contentsline {paragraph}{\numberline {3.1.3.2}Une cause des mauvaises prédictions : le \emph {domain shift}}{18}{paragraph.3.1.3.2}%
-\contentsline {subsection}{\numberline {3.2}Sentiments des tweets et enquête de conjoncture auprès des ménages {[}Alain{]}}{19}{subsection.3.2}%
-\contentsline {section}{Conclusion {[}sûrement Kim{]}}{19}{section*.15}%
-\contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{20}{appendix.A}%
-\contentsline {subsection}{\numberline {A.1}Distance entre deux mots}{20}{subsection.A.1}%
-\contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{20}{subsection.A.2}%
-\contentsline {subsection}{\numberline {A.3}Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{22}{subsection.A.3}%
-\contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{23}{subsubsection.A.3.1}%
+\contentsline {section}{\numberline {3}Construction d'un indice mensuel de sentiments moyens des tweets}{15}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Prédire le sentiment d'un tweet à partir des \emph {word-embeddings}}{16}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Prédiction à partir du sentiment moyen des mots}{16}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Prédiction à partir des \emph {word-embeddings}}{17}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Les limites des modèles utilisés}{18}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {3.1.4}Les mots inconnus}{18}{subsubsection.3.1.4}%
+\contentsline {subsubsection}{\numberline {3.1.5}Le processus d'annotation utilisé par la SNCF}{18}{subsubsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.6}Le domain-shift}{19}{subsubsection.3.1.6}%
+\contentsline {subsection}{\numberline {3.2}Sentiments des tweets et enquête de conjoncture auprès des ménages {[}Alain{]}}{20}{subsection.3.2}%
+\contentsline {section}{Conclusion {[}sûrement Kim{]}}{20}{section*.15}%
+\contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{21}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Distance entre deux mots}{21}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{21}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{23}{subsection.A.3}%
+\contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{24}{subsubsection.A.3.1}%

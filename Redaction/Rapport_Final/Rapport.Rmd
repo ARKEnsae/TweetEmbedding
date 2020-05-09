@@ -603,7 +603,8 @@ Les mots en vert correspondent à ceux présents dans l'opération, le mot en ro
 
 # Construction d'un indice mensuel de sentiments moyens des tweets {#sec:sentimentalAnalysis}
 
-Afin de créer un indice mensuel de sentiments moyens des tweets, nous allons utiliser les vecteurs-mots en sortie du modèle *Word2Vec* couplé avec une base de tweets de la SNCF qualifiés de positifs ou négatifs. Nous comparerons enfin cet indicateur avec indicateur synthétique de confiance des ménages (Camme, Insee). L'ensemble de ces données sont décrites dans l'encadré \@ref(enc:encadre1).
+Afin de créer un indice mensuel de sentiments moyens des tweets, nous allons utiliser les vecteurs-mots en sortie du modèle *Word2Vec* couplé avec une base de tweets de la SNCF qualifiés de positifs ou négatifs.
+Nous comparerons enfin cet indicateur avec indicateur synthétique de confiance des ménages (Camme, Insee). L'ensemble de ces données sont décrites dans l'encadré \@ref(enc:encadre1).
 
 \begin{encadre}[true]{Données utilisées}\label{enc:encadre1}
 
@@ -611,7 +612,8 @@ Afin de créer un indice mensuel de sentiments moyens des tweets, nous allons ut
 
 \textbf{Tweets mensuels}
 
-Il s'agit de la base des tweets postés en France utilisée précédemment (cf. partie  \ref{sec:hyperparametres}) mais couvrant un horizon temporel plus large (2011-2018). Nous disposons de 4000 tweets pour tous les mois de la période. \colorbox{BurntOrange}{préciser après précisions Benji} 
+Il s'agit de la base des tweets postés en France utilisée précédemment (cf. partie  \ref{sec:hyperparametres}) mais couvrant un horizon temporel plus large (2011-2018).
+Nous disposons de 4000 tweets pour tous les mois de la période. \colorbox{BurntOrange}{préciser après précisions Benji} 
 
 \textbf{Tweets annotés par la SNCF}
 
@@ -620,7 +622,10 @@ Cette base est composée d'un ensemble d'environ 23 000 tweets fournis par la SN
 
 \textbf{Indicateur synthétique de confiance des ménages}
 
-L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee. Il décrit, en une variable unique, la composante commune de 8 soldes d’opinion qui correspondent à la différence entre les pourcentages de réponses positives et négatives sur différents sujets (niveau de vie passé et futur en France, situation financière personnelle passée et future, perspective de chômage, opportunité de faire des achats importants, capacité à épargner actuelle et dans les mois à venir). Il est calculé par analyse factorielle dont l’objectif est de résumer l’évolution concomitante de ces soldes aux évolutions très corrélées. L’indicateur est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10 et doit donc s’interpréter en évolution. 
+L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee.
+Il décrit, en une variable unique, la composante commune de 8 soldes d’opinion qui correspondent à la différence entre les pourcentages de réponses positives et négatives sur différents sujets (niveau de vie passé et futur en France, situation financière personnelle passée et future, perspective de chômage, opportunité de faire des achats importants, capacité à épargner actuelle et dans les mois à venir).
+Il est calculé par analyse factorielle dont l’objectif est de résumer l’évolution concomitante de ces soldes aux évolutions très corrélées.
+L’indicateur est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10 et doit donc s’interpréter en évolution. 
 
 \end{encadre}
 
@@ -633,15 +638,15 @@ Nous comparerons deux approches : une première basée sur les sentiments moyens
 
 ### Prédiction à partir du sentiment moyen des mots {#sec:sentiments}
 
-Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot. Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera :
-
+Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
+Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera :
 
 
 $$S_{1,\gamma}(t) = 2 \times \mathds{1}\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\} - 1 \qquad \in [0,1]$$
 
  avec $\gamma \in [-1,1]$ un seuil fixé, $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  le sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît.
 
-Afin d'évaluer l'efficacité du modèle et de sélectionner le $\gamma$ qui présente les meilleures performances, nous séparons le corpus de la SNCF en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots^[$13 \%$ des mots du vocabulaires et [$1 \%$ des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen $\alpha_i$ est fixé à 0.], et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
+Afin d'évaluer l'efficacité du modèle et de sélectionner le $\gamma$ qui présente les meilleures performances, nous séparons le corpus de la SNCF en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots^[$13 \%$ des mots du vocabulaires et $1 \%$ des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen $\alpha_i$ est fixé à 0.], et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
 
 On choisit $\gamma$ tel que l'*accuracy* sur la base de test -- c'est-à-dire le taux de tweets dont le sentiment est bien prédit -- soit maximale (figure \ref{fig:max_baseline}). L'*accuracy* maximale vaut $89,1 \%$ pour $\gamma^* = -0.14$. On constate une nette amélioration par rapport au cas où $\gamma = 0$ ($70,5 \%$), qui correspond au seuil « naturel » puisqu'il se situe au centre de l'intervalle des valeurs possibles pour $\alpha_i$. 
 
@@ -668,7 +673,7 @@ $$Y_i = \mathds{1}\{ \sum\limits_{i = 1}^n \beta_i X_{i,j} + \epsilon_i \geq 0 \
 Avec : 
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
-\item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet ;
+\item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
 \item $\epsilon_i$ le résidu de notre modèle de fonction de répartition $F_{\epsilon}$ qui vaudra $F_{\epsilon}(x) = \frac{1}{1 + e^{-x}}$ dans le cas d'un modèle logit et $F_{\epsilon}(x) = \Phi(x)$ (fonction de répartition d'une loi $\mathcal{N}(0, 1)$) dans le cas d'un modèle probit. 
 \end{itemize}
 
@@ -680,7 +685,7 @@ S_{2,\gamma}(t) = 1 \qquad \qquad \text{si} \quad \mathbb{P}(Y_i = 1 | X_{i}) \g
 \end{cases}
 $$
 
-Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC^[La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.]) par validation croisée^[Détailler]. Les différences spécifications testées sont les suivantes : 
+Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC^[La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.]) par validation croisée^[Nous avons utilisé un principe de *k-fold cross validation*. Le principe est de découper la base en $k$ échantillons puis de considérer tour à tour chaque échantillon comme base de test, en entraînant le modèle sur les $k-1$ échantillons restants. On calcule alors l'AUC dans chaque cas, puis on renvoie la moyenne. Classiquement, on prend $k=10$.]. Les différences spécifications testées sont les suivantes : 
 
 \begin{enumerate}
 \item \textbf{L’inclusion ou non des \emph{stop words}} (mots-vides). Ces mots sont des mots communs qui, en général, n’apportent pas d’information cruciale dans l’analyse textuelle. Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériorent même légèrement. Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot-vide « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de -0.25).
@@ -701,9 +706,16 @@ La performance exceptionnellement bonne du modèle de référence (sentiments mo
 \ 
 
 Une première explication est la différence entre les deux modèles en termes de mots inconnus. Nous l'avons vu, pour le modèle de référence, $1,0 \%$ des mots utilisés dans les tweets de la base test SNCF ($13 \%$ du vocabulaire) sont absents de la base d'entraînement SNCF. Pour le modèle basé sur les *word-embedding*, il faut ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent $4,0 \%$ des mots ($30 \%$ du vocabulaire). 
+<!-- si on prend en compte les deux pour WOrd2Vec : on a alors 36.19% des mots du voc qui sont absents, soit 4.62% des mots. -->
 
 
-<!-- A caser si utile dans l'argumentaire ici et si change les proportions : Nous avons donc testé notre modèle sur une nouvelle base de test de tweets annotés indépendante des autres bases^[]. Cette expérimentation confirme le biais attendu puisque, avec cette nouvelle base, l'accuracy du modèle basé sur les *word-embedding* est supérieure à celle de l'approche de référence ($68,7 \%$ contre $55,9 \%$) -->
+<!-- A caser si utile dans l'argumentaire ici et si change les proportions : Nous avons donc testé notre modèle sur une nouvelle base de test de tweets annotés indépendante des autres bases^[]. Cette expérimentation confirme le biais attendu puisque, avec cette nouvelle base, l'accuracy du modèle basé sur les *word-embedding* est supérieure à celle de l'approche de référence ($68,7 \%$ contre $55,9 \%$) 
+
+BASE GIT :
+BASELINE : 52.04% des mots du voc de la base test GIT ne sont pas dans la base train, soit 12,73% des mots
+WORD2VEC : 29.00% des mots de la base test GIT ne sont pas dans WORD2VEC, soit 6.15% des mots, auxquels il faut ajouter comme pour l'autre modèle les mots
+de la base test GIT qui ne sont pas dans la base train, donc on arrive à 52.76% des mots du voc, soit 12.96% des mots du corpus
+(donc beaucoup de mot de la base test qui sont pas dans train sont pas non plus das WOrd2VEC) -->
 
 Toutefois, la présence de mots inconnus ne semble pas biaiser fortement la prédiction du sentiment d'un tweet qui en comporte beaucoup. En effet, la distribution de la part des mots inconnus est étonnamment similaire selon si on se restreint aux tweets bien prédits ou à ceux mal prédits (figure \ref{fig:mots_inconnus})
 

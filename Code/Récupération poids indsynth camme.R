@@ -915,6 +915,7 @@ cam <- structure(c(100.033956093764, 100.311504114855, 99.6180957725837,
                         "Capacité d'épargne future")), .Tsp = c(1987, 2020, 12), class = c("mts", 
                                                                                            "ts", "matrix"))
 result <- AQLTools::facteurStatique(window(cam[,-1],start = 1987, end = c(2019,12)),normalise = F)
+# saveRDS(result,"code/Etude indicateur Camme/facteurstatiqueCamme.RDS")
 round(result$facteur-cam[,1],2) # parait bon
 # cam[,1] c'est l'indicateur Camme
 mean(result$facteur)
@@ -929,3 +930,17 @@ coefs_facteurs <- c(`Capacité d'épargne actuelle` = 0.00865302938775478, `Capa
                     `Niveau de vie passé en France` = 0.364039156233512, `Opportunité de faire des achats importants` = 0.0732391553495626, 
                     `Situation financière future` = 0.153813946269992, `Situation financière passée` = 0.201587945289932
 )
+
+# Pour étudier les contributions :
+#AQLTools::hc_stocks(window(result$contributions,start = 2014), type = "column")
+# 
+# contrib <- window(result$contributions, start = 2011, end = c(2018,12))
+# climat <- window(result$facteur, start = 2011, end = c(2018,12))
+# moy <- mean(climat)
+# et <- sd(climat)
+# contrib <- (contrib)/et
+# etude_climat <- ts.intersect(diff((climat-moy)/et),contrib)
+# colnames(etude_climat) <- c("Indic Synth Camme normalisé en différence", colnames(result$contributions))
+# 
+# AQLTools::hc_stocks(etude_climat, type = c("line", rep("column", ncol(contrib))))
+

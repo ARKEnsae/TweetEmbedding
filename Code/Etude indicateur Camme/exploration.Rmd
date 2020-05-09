@@ -1,0 +1,450 @@
+---
+title: "Recherche exploratoire"
+date: "5/9/2020"
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.height=6,fig.width=10)
+library(highcharter)
+library(ggplot2)
+library(AQLTools)
+library(dtw)
+library(zoo)
+```
+
+```{r, include=FALSE}
+source("test_sa_jo.R")
+```
+
+# Test 1 : utilisation des algorithmes de Déformation Temporelle Dynamique 
+
+J'ai ici appliqué les algorithmes Dynamic Time Warping (DTW) qui permettent de calculer des distances entre deux séries temporelles qui n'ont pas la même longueur. Je pense que ça ne s'adapte pas vraiment dans noter cas mais je voulais tester. L'idée de cet algorithme est de regarder les similarités entre les séries temporelles en prenant en compte les éventuels décalages temporels (i.e. : $X_t$ et $X_{t-1}$ représente la même série, juste décalée dans le temps, non pris en compte par distance euclidienne) et les différences de longueur (deux coureurs qui courent de la même façon mais pas à la même vitesse). En plus ça n'a pas trop l'air de marcher puisqu'il faut que les deux séries soient de même longueur j'ai l'impression
+
+```{r}
+modeles <- ts(read.csv("../../data/modeles.csv", sep=";")[,-1],
+              start = 2011,frequency = 12)
+data <- readRDS("../../data/donnes_cam.RDS")
+data[,"Indicateur synthétique"] <- scale(data[,"Indicateur synthétique"] )
+data_lag <- lag(data, -1)
+
+library(dtw)
+distance_brut <- sapply(1:ncol(modeles), function(i){
+    dtw((modeles[,i]),
+        window(data[,"ind_synt_brut"], start = start(modeles), end = end(modeles)),keep=TRUE)$distance
+}
+)
+
+distance_cvs <- sapply(1:ncol(modeles), function(i){
+    dtw((modeles[,i]),
+        window(data[,"Indicateur synthétique"], start = start(modeles), end = end(modeles)),keep=TRUE)$distance
+}
+)
+data.frame(distance_brut, distance_cvs,
+           row.names = colnames(modeles))
+```
+
+Notre indicateur n'est pas forcément celui qui minimise la distance mais toutes les distances sont proches : on voit en fait que tous les indicateurs sont proches.
+
+Voir : http://dtw.r-forge.r-project.org
+
+https://en.wikipedia.org/wiki/Dynamic_time_warping
+
+https://towardsdatascience.com/dynamic-time-warping-3933f25fcdd
+
+
+**Bilan** : je propose de ne pas en parler.
+
+
+# Test 2 : renormaliser or not renormaliser ? That is the question
+
+Quand on regarde nos indicateurs de sentiment bruts, il est clair qu'il y a des différences en niveau. Ce qui est étonnant c'est que pour la majorité des indicateurs on a toujours des tweets qui sont globalement positifs (ici c'est bien entre -1 et 1).
+
+```{r}
+AQLTools::hc_stocks(2*(modeles)-1,digits = 2)
+```
+
+En revanche quand on renormalise toutes les séries sont extrêmement proches, on retrouve ce qu'on a vu dans la partie précédente. Je trouve que ça milite pour **renormaliser les séries** : la moyenne et l'écart-type de l'indicateur Camme n'a pas de sens (série calculée à partir des soldes d'opinion renormalisés, on force l'indicateur à être de moyenne 100 et d'écart-type 10) et nos différents modèles représentent les mêmes phénomènes économiques. Si vous préférez on peut toujours faire une moyenne de 100 et d'écart-type 10 pour tout.
+
+```{r}
+AQLTools::hc_stocks(scale(modeles),digits = 2)
+```
+
+Nous on retient l'indicateur `reg_log_nrmsw_lf`.
+```{r}
+ind_retenu <- "reg_log_nrmsw_lf"
+```
+
+# Test 3 : saisonnalité et JO
+
+Quand on parle d'effets jours-ouvrables on distingue trois type d'effet :
+
+- un effet longueur de mois (les mois n'ont pas la même longueur)
+
+- un effet type de jour : les ventes sont généralement plus importantes le samedi que le lundi. Pour simplifier le modèle on considère parfois parfois un effet jour de la semaine vs week-end (sous entendu un lundi a le même effet qu'un mardi... jusqu'à vendredi mais pas le même effet qu'un samedi, qui a le même effet qu'un dimanche et qu'un jour ferié) : c'est ce qu'on appelle *working days*. Dans le cas où on distingue tous les jours de la semaine on parle de *trading days*.
+
+- un effet "fêtes mobiles", souvent ce qu'on appel un effet "graduel de Pâques". En fait Pâques ne tombe pas le même jour chaque année et Pâques a un effet certain sur la vente de chocolat. En revanche les achats de chocolat ne se font pas le jour de mais les jours avant : c'est l'effet graduel. En fonction du jour de Pâques cet effet graduel peut être sur deux mois. Pour les autres fêtes comme Noël cet effet graduel est pris en compte dans la saisonnalité
+
+Dans notre cas on n'aura **pas d'effet longueur de mois**, sûrement **pas d'effet fête mobile** mais on **peut avoir un effet type de jour**. 
+
+
+On pourrait avoir un effet saisonnier : les tweets sont plus négatifs en hiver qu'en été. Pour tester la saisonnalité on peut faire plusieurs tests (voir  https://jdemetradocumentation.github.io/JDemetra-documentation/pages/theory/Tests.html).
+
+```{r}
+serie <- modeles[,ind_retenu]
+serie <- ts(scale(serie),
+            start = start(serie),
+            frequency = 12)
+jd2_seasonality_Friedman(serie) # test s'il y a une saisonnalité stable
+jd2_seasonality_KruskalWallis(serie) # pas de saisonnalité
+jd2_seasonality_FTest(serie) # présence de saisonnalité
+jd2_seasonality_QSTest(serie) # pas de saisonnalité
+```
+
+ Ici les résultats sont mitigés :
+ 
+- le test de Friedman nous dit que si il y a une saisonnalité alors il y a une saisonnalité stable. S'il n'y a pas de saisonnalité alors ce test va conclure à une saisonnalité stable (tout le temps égal à 0)
+ 
+- Kruskal-Wallis et QS concluent à pas de saisonnalité
+
+- le Ftest conclue à une saisonnalité : de manière schématique, pour ce test on fait une régression en ajoutant une indicatrice pour chaque mois et on teste si l'ensemble des coefficients sont nuls.
+
+Cependant plusieurs indicateurs nous semblent indiquer qu'il n'y a pas de saisonnalité marquée. Tout d'abord quand on trace les séries par mois on ne voit pas de d'évolution différente entre les mois.
+
+```{r,fig.height=6,fig.width=10}
+AQLTools::graph_ts(serie,
+                   diviserParPeriode = TRUE,
+                   n_ylabel = 4, y_lab = NULL)
+```
+
+Quand on fait une désaisonnalisation, le modèle ARIMA qui est retenu est $ARIMA(0,1,1)(0,0,0)$ avec aucun ordre saisonnier :
+
+```{r}
+mod <- x13(serie)
+mod$regarima
+```
+
+Par ailleurs, même si il y a une saisonnalité identifiable, c'est la composante saisonnière qui contribue le moins à la variance de la série.
+
+```{r}
+mod$diagnostics$combined_test
+mod$diagnostics$variance_decomposition
+```
+
+Si on trace les coefficients saisonniers par mois, même si on voit des différences c'est très faible et il y a beaucoup de bruit.
+
+```{r,fig.height=6,fig.width=10}
+plot(mod$decomposition)
+```
+
+
+On n'observe pas d'effet jours ouvrables (on n'observe pas de régresseur), que ce soit en trading days :
+```{r}
+spec <- x13_spec("RSA5c",
+                 easter.enabled = FALSE,
+                 tradingdays.leapyear = "None")
+mod <- x13(serie, spec = spec)
+mod$regarima
+```
+
+Qu'en working days :
+
+```{r}
+spec <- x13_spec("RSA4c",
+                 easter.enabled = FALSE,
+                 tradingdays.leapyear = "None")
+mod <- x13(serie, spec = spec)
+mod$regarima
+```
+
+
+*Bilan* : pas d'effet JO, éventuellement une saisonnalité mais je ne suis pas convaincu.
+
+Sur l'enquête Camme on voit aussi qu'il y a très peu de différences entre l'indicateur brut et CVS :
+
+```{r}
+AQLTools::hc_stocks(scale(data[,1:2]),digits = 2)
+```
+
+# Etude des corrélations
+
+## En niveau ou en différence
+
+
+```{r}
+donnes_calcul <- scale(ts.intersect(modeles[,ind_retenu], data))
+donnes_calcul_lag <- scale(ts.intersect(modeles[,ind_retenu], data_lag))
+colnames(donnes_calcul) <- 
+    colnames(donnes_calcul_lag) <- 
+    c("Ind_sent", "ind_synt_brut", "ind_synt_cvs",
+      "niv_vie_pas", "niv_vie_fut",
+      "chom_evol","oppor_achat", "epargne_actuelle",
+      "sit_fin_pas", "sit_fin_fut","cap_fut"
+    )
+dataGraph <- ts.intersect(modeles[,ind_retenu], data[,1:2], data_lag[,1:2])
+colnames(dataGraph) <- c("Indicateur sentiment",
+                         "Camme_Brut", "Camme_CVS",
+                         "Camme_Brut retardé", "Camme_CVS retardé")
+AQLTools::hc_stocks(scale(dataGraph),digits = 2)
+```
+
+On va plutôt étudier l'indicateur retardé. Il y a une tendance dans les deux séries : quand on regarde les corrélations il y a donc une corrélation falacieuse (on trouve une corrélation significative). La présence d'une racine unitaire est confirmée par le test de Philips-Perron et le test KPSS :
+
+
+```{r}
+PP.test(donnes_calcul_lag[,"Ind_sent"])
+tseries::kpss.test(donnes_calcul_lag[,"Ind_sent"])
+PP.test(diff(donnes_calcul_lag[,"Ind_sent"],1))
+tseries::kpss.test(diff(donnes_calcul_lag[,"Ind_sent"],1))
+PP.test(donnes_calcul_lag[,"ind_synt_brut"])
+tseries::kpss.test(donnes_calcul_lag[,"ind_synt_brut"])
+PP.test(diff(donnes_calcul_lag[,"ind_synt_brut"],1))
+tseries::kpss.test(diff(donnes_calcul_lag[,"ind_synt_brut"],1))
+PP.test(donnes_calcul_lag[,"ind_synt_cvs"])
+tseries::kpss.test(donnes_calcul_lag[,"ind_synt_cvs"])
+PP.test(diff(donnes_calcul_lag[,"ind_synt_cvs"],1))
+tseries::kpss.test(diff(donnes_calcul_lag[,"ind_synt_cvs"],1))
+```
+
+Il y a donc présence d'une tendance stochastique. On peut faire un test de cointégration pour voir si les séries partagent la même tendance stochastique : ce n'est pas le cas.
+
+```{r}
+aTSA::coint.test(donnes_calcul_lag[,"Ind_sent"], donnes_calcul_lag[,"ind_synt_brut"],d = 0)
+aTSA::coint.test(donnes_calcul_lag[,"Ind_sent"], donnes_calcul_lag[,"ind_synt_cvs"],d = 0)
+```
+
+Il n'y a aucune des deux séries qui Granger Cause, je pense qu'il faut uniquement regarder le test en différence mais je laisse en niveau quand même pour info. En comparant à l'indicateur Camme CVS pas de causalité au sens de Granger
+```{r}
+library(lmtest)
+grangertest(donnes_calcul[, "Ind_sent"], donnes_calcul[, "ind_synt_cvs"], order = 1)
+grangertest(donnes_calcul[, "ind_synt_cvs"], donnes_calcul[, "Ind_sent"], order = 1)
+
+grangertest(diff(donnes_calcul[, "Ind_sent"]), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(donnes_calcul[, "Ind_sent"]), order = 1)
+```
+
+En comparant à l'indicateur Camme brut, on observe une causalité à 5 % : note indicateur cause instannément au sens de Granger l'indicateur Brut de l'enquête Camme (non retardé).
+```{r}
+grangertest(donnes_calcul[, "Ind_sent"], donnes_calcul[, "ind_synt_brut"], order = 1)
+grangertest(donnes_calcul[, "ind_synt_brut"], donnes_calcul[, "Ind_sent"], order = 1)
+
+grangertest(diff(donnes_calcul[, "Ind_sent"]), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(donnes_calcul[, "Ind_sent"]), order = 1)
+```
+
+Quand on prend l'indicateur Camme retardé, on trouve que l'indicateur Camme brut granger cause notre indicateur au seuil de 10 %.
+
+```{r}
+grangertest(diff(donnes_calcul_lag[, "ind_synt_brut"]), diff(donnes_calcul_lag[, "Ind_sent"]), order = 1)
+```
+
+
+**Bilan ** notre indicateur de sentiment permettrait de prévoir l'enquête Camme
+
+## Etude des corrélations
+
+**Spoiler alert** aucune corrélation significative. Pas de différence quand on regarde les séries retardées.
+
+### Pearson
+
+```{r}
+library(corrplot)
+library(Hmisc)
+M <- rcorr(diff(donnes_calcul), type = "pearson")
+M_lag <- rcorr(diff(donnes_calcul), type = "pearson")
+```
+
+Les p-values des corrélation avec notre indicateur de sentiment
+
+```{r}
+round(M$P[-1,1],3)
+round(M_lag$P[-1,1],3)
+```
+
+
+Série sans retard :
+```{r,fig.height=6,fig.width=10}
+corrplot(M$r, method = "number")
+corrplot(M$r, method = "ellipse")
+```
+
+Séries retardées :
+
+```{r,fig.height=6,fig.width=10}
+corrplot(M_lag$r, method = "number")
+corrplot(M_lag$r, method = "ellipse")
+```
+
+### Spearman
+
+```{r}
+M <- rcorr(diff(donnes_calcul), type = "spearman")
+M_lag <- rcorr(diff(donnes_calcul), type = "spearman")
+```
+
+Les p-values des corrélation avec notre indicateur de sentiment
+
+```{r}
+round(M$P[-1,1],3)
+round(M_lag$P[-1,1],3)
+```
+
+
+Série sans retard :
+```{r,fig.height=6,fig.width=10}
+corrplot(M$r, method = "number")
+corrplot(M$r, method = "ellipse")
+```
+
+Séries retardées :
+
+```{r,fig.height=6,fig.width=10}
+corrplot(M_lag$r, method = "number")
+corrplot(M_lag$r, method = "ellipse")
+```
+
+
+
+## Etude des corrélations (séries non différenciées)
+
+Je fais la même chose sur les séries non différenciées mais je pense qu'il ne faut pas regarder les résultats
+
+### Pearson
+
+```{r}
+M <- rcorr(donnes_calcul, type = "pearson")
+M_lag <- rcorr(donnes_calcul, type = "pearson")
+```
+
+Les p-values des corrélation avec notre indicateur de sentiment
+
+```{r}
+round(M$P[-1,1],3)
+round(M_lag$P[-1,1],3)
+```
+
+
+Série sans retard :
+```{r,fig.height=6,fig.width=10}
+corrplot(M$r, method = "number")
+corrplot(M$r, method = "ellipse")
+```
+
+Séries retardées :
+
+```{r,fig.height=6,fig.width=10}
+corrplot(M_lag$r, method = "number")
+corrplot(M_lag$r, method = "ellipse")
+```
+
+### Spearman
+
+```{r}
+M <- rcorr(donnes_calcul, type = "spearman")
+M_lag <- rcorr(donnes_calcul, type = "spearman")
+```
+
+Les p-values des corrélation avec notre indicateur de sentiment
+
+```{r}
+round(M$P[-1,1],3)
+round(M_lag$P[-1,1],3)
+```
+
+
+Série sans retard :
+```{r,fig.height=6,fig.width=10}
+corrplot(M$r, method = "number")
+corrplot(M$r, method = "ellipse")
+```
+
+Séries retardées :
+
+```{r,fig.height=6,fig.width=10}
+corrplot(M_lag$r, method = "number")
+corrplot(M_lag$r, method = "ellipse")
+```
+
+# Etude de l'indicateur Camme
+
+Pour essayer de comprendre les évolutions de l'enquête Camme, on peut regarder les contributions de chaque solde à son évolution. C'est pas très lisible mais au cas où :
+
+```{r, echo = FALSE}
+result <- readRDS("facteurstatiqueCamme.RDS")
+contrib <- window(result$contributions, start = 2011, end = c(2018,12))
+climat <- window(result$facteur, start = 2011, end = c(2018,12))
+moy <- mean(climat)
+et <- sd(climat)
+contrib <- (contrib)/et
+etude_climat <- ts.intersect(diff((climat-moy)/et),contrib)
+colnames(etude_climat) <- c("Indic Synth Camme normalisé en différence", colnames(result$contributions))
+AQLTools::hc_stocks(etude_climat, type = c("line", rep("column", ncol(contrib))),digits = 2)
+```
+
+
+# Recherche des événements
+
+J'ai rien trouvé mais j'ai pas tout cherché, j'ai fait une petite recherche des événements. Ma méthodologie : si il y a quelque choses que je pense venir d'un événement, je regarde les tweets, ctrl+F pour voir si je trouve beaucoup d'occurences. Généralement rien. Je n'ai pas mis tous les événements sportifs.
+
+
+```{r, echo = FALSE}
+convDate2ts <- function(liste, freq = 12){
+    sapply(liste,function(x) x[[1]][1] + (x[[1]][2]-1)/freq)
+}
+
+evnments <- list(list(date = c(2011,4), title = "E", text = "Elections cantonales"),
+     list(date = c(2011,9), title = "E", text = "Elections sénatoriales"),
+     list(date = c(2012,4), title = "E", text = "Elections présentielles (avril/mai)"),
+     list(date = c(2012,6), title = "E", text = "Elections legislatives"),
+     list(date = c(2014,3), title = "E", text = "Elections municipales"),
+     list(date = c(2014,5), title = "E", text = "Elections européennes"),
+     list(date = c(2014,9), title = "E", text = "Elections sénatoriale"),
+     list(date = c(2015,3), title = "E", text = "Elections départementales"),
+     list(date = c(2015,12), title = "E", text = "Elections régionales"),
+     list(date = c(2017,4), title = "E", text = "Elections présentielles (avril/mai)"),
+     list(date = c(2017,6), title = "E", text = "Elections legislatives"),
+     list(date = c(2017,9), title = "E", text = "Elections sénatoriales"),
+     list(date = c(2011,4), title = "FD", text = "Affaire Dupont de Ligonnès"),
+     list(date = c(2011,5), title = "FD", text = "DSK"),
+     list(date = c(2012,4), title = "A", text = "Mohammed Merah + Policier mis en examen pour homicide sur jeune délinquant"),
+     list(date = c(2013,1), title = "FD", text = "Affaire viande de cheval"),
+     list(date = c(2013,3), title = "FD", text = "Affaire Cahuzac + vague de froid"),
+     list(date = c(2013,6), title = "S", text = "Tour de France"),
+     list(date = c(2014,1), title = "S+FD", text = "Tournois des 6 nations+JO+Bygmalion"),
+     list(date = c(2014,6), title = "S", text = "Tour de France"),
+     list(date = c(2014,10), title = "FD", text = "Rémi Fraisse"),
+     list(date = c(2015,1), title = "A", text = "Charlie Hebdo+Hyper Cacher"),
+     list(date = c(2015,6), title = "A", text = "Attentat de Saint-Quentin-Fallavie"),
+     list(date = c(2016,3), title = "FD", text = "Loi du travail"),
+     list(date = c(2016,6), title = "A", text = "Nice+Saint-Étienne-du-Rouvray"),
+     list(date = c(2016,10), title = "FD", text = "Debut évacuation jungle calais"),
+     list(date = c(2017,1), title = "FD", text = "Fillon Gate"),
+     list(date = c(2017,2), title = "A", text = "Attentat au Louvre"),
+     list(date = c(2017,3), title = "A", text = "Attentat à Ormy"),
+     list(date = c(2017,4), title = "A", text = "Attentat aux Champs"),
+     list(date = c(2017,8), title = "A", text = "Attentat contre des militaires à Levallois-Perret"),
+     list(date = c(2017,10), title = "A", text = "Attentat gare Marseille"),
+     list(date = c(2017,12), title = "FD", text = "Mort de Johnny"),
+     list(date = c(2018,5), title = "A", text = "Attaque couteau Paris"),
+     list(date = c(2018,7), title = "FD+S", text = "Affaire Benalla+Mondial Foot"),
+     list(date = c(2018,12), title = "A", text = "Attaque marché Noël Strasbourg")
+     )
+
+data_flags <- data.frame(date = convDate2ts(evnments),
+           title = sapply(evnments,function(x)x$title),
+           text = sapply(evnments,function(x)x$text), stringsAsFactors = FALSE)
+data_flags$date <- as.Date(as.yearmon(data_flags$date))
+AQLTools::hc_stocks(round(scale(donnes_calcul[,1:3]),2)) %>% 
+    hc_add_series(data_flags[grep("E",data_flags$title),], hcaes(x = date),
+                  type = "flags", onSeries = "id1",name = "elections")%>% 
+    hc_add_series(data_flags[grep("FD",data_flags$title),], hcaes(x = date),
+                  type = "flags", onSeries = "id1",name = "Fais divers")%>% 
+    hc_add_series(data_flags[grep("S",data_flags$title),], hcaes(x = date),
+                  type = "flags", onSeries = "id1",name = "Sport")
+```
+

@@ -685,7 +685,7 @@ S_{2,\gamma}(t) = 1 \qquad \qquad \text{si} \quad \mathbb{P}(Y_i = 1 | X_{i}) \g
 \end{cases}
 $$
 
-Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC^[La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.]) par validation croisée^[Nous avons utilisé un principe de *k-fold cross validation*. Le principe est de découper la base en $k$ échantillons puis de considérer tour à tour chaque échantillon comme base de test, en entraînant le modèle sur les $k-1$ échantillons restants. On calcule alors l'AUC dans chaque cas, puis on renvoie la moyenne. Classiquement, on prend $k=10$.]. Les différences spécifications testées sont les suivantes : 
+Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC^[La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.]) par validation croisée^[Nous avons réalisé une *k-fold cross validation* qui est une technique permettant de limiter le surapprentissage sur la base d'entraînement. Le principe est de découper la base en $k = 10$ échantillons puis de considérer tour à tour chaque échantillon comme base de test, en entraînant le modèle sur les $k-1$ échantillons restants. On calcule alors l'AUC dans chaque cas, puis on en calcule la moyenne. ]. Les différences spécifications testées sont les suivantes : 
 
 \begin{enumerate}
 \item \textbf{L’inclusion ou non des \emph{stop words}} (mots-vides). Ces mots sont des mots communs qui, en général, n’apportent pas d’information cruciale dans l’analyse textuelle. Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériorent même légèrement. Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot-vide « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de -0.25).
@@ -701,25 +701,11 @@ Finalement, nous retenons le modèle estimé par une **régression logit** sur l
 
 La performance exceptionnellement bonne du modèle de référence (sentiments moyens des mots par tweets) par rapport au modèle mobilisant les *word-embedding* peut s'expliquer par plusieurs facteurs. 
 
-### Les mots inconnus 
+#### Les mots inconnus 
+ 
+Une première explication est la différence entre les deux modèles en termes de mots inconnus. Nous l'avons vu, pour le modèle de référence, 1,4 \% des mots utilisés dans les tweets de la base test SNCF (13,2 \% du vocabulaire) sont absents de la base d'entraînement SNCF. Pour le modèle basé sur les *word-embedding*, il faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent 4,6 \% des mots (36,2 \% du vocabulaire). 
 
-\ 
-
-Une première explication est la différence entre les deux modèles en termes de mots inconnus. Nous l'avons vu, pour le modèle de référence, $1,0 \%$ des mots utilisés dans les tweets de la base test SNCF ($13 \%$ du vocabulaire) sont absents de la base d'entraînement SNCF. Pour le modèle basé sur les *word-embedding*, il faut ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent $4,0 \%$ des mots ($30 \%$ du vocabulaire). 
-<!-- si on prend en compte les deux pour WOrd2Vec : on a alors 36.19% des mots du voc qui sont absents, soit 4.62% des mots. -->
-
-
-<!-- A caser si utile dans l'argumentaire ici et si change les proportions : Nous avons donc testé notre modèle sur une nouvelle base de test de tweets annotés indépendante des autres bases^[$52,04 \%$ des mots du vocabulaire dec cette base sont absents de la base d'entraînement, soit $12.73\%$ des mots du corpus. Pour le modèle *Word2Vec*, en ajoutant les mots n'ayant pas de représentations vectorielles, on arrive à $52,76\%$ du vocabulaire soit $12,96\%$ des mots du corpus]. Cette expérimentation confirme le biais attendu puisque, avec cette nouvelle base, l'accuracy du modèle basé sur les *word-embedding* est supérieure à celle de l'approche de référence ($68,7 \%$ contre $55,9 \%$) 
-
-
-
-BASE GIT :
-BASELINE : 52.04% des mots du voc de la base test GIT ne sont pas dans la base train, soit 12,73% des mots
-WORD2VEC : 29.00% des mots de la base test GIT ne sont pas dans WORD2VEC, soit 6.15% des mots, auxquels il faut ajouter comme pour l'autre modèle les mots
-de la base test GIT qui ne sont pas dans la base train, donc on arrive à 52.76% des mots du voc, soit 12.96% des mots du corpus
-(donc beaucoup de mot de la base test qui sont pas dans train sont pas non plus das WOrd2VEC) -->
-
-Toutefois, la présence de mots inconnus ne semble pas biaiser fortement la prédiction du sentiment d'un tweet qui en comporte beaucoup. En effet, la distribution de la part des mots inconnus est étonnamment similaire selon si on se restreint aux tweets bien prédits ou à ceux mal prédits (figure \ref{fig:mots_inconnus})
+Toutefois, la présence de mots inconnus ne semble pas beaucoup biaiser fortement la prédiction du sentiment d'un tweet. En effet, la distribution de la part des mots inconnus est étonnamment similaire selon si on se restreint aux tweets bien prédits ou à ceux mal prédits (figure \ref{fig:mots_inconnus})
 
 \begin{figure}[ht]
 \begin{center}
@@ -729,26 +715,18 @@ Toutefois, la présence de mots inconnus ne semble pas biaiser fortement la pré
 \end{center}
 \end{figure}
 
-### Le processus d'annotation utilisé par la SNCF
+#### Le processus d'annotation utilisé par la SNCF
 
-\ 
+L'éventualité que la méthode de référence reproduise en partie le processus qui a été utilisé pour générer les sentiments de la base SNCF pourrait également être une explication de la surperformance du modèle de référence. En effet, nous ne disposons pas de la méthodologie qui a permis à la SNCF d'annoter ses tweets et nous avons pu relever quelques incohérences dans les sentiments attribués à certains tweets, ce qui peut laisser supposer que l'annotation n'a pas été purement manuelle et qu'ils ont pu utiliser, par exemple, un dictionnaire de sentiments par mots pour annoter leurs tweets. Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a en effet été qualifié de positif. 
 
-Un autre problème probable est l'éventualité que la méthode de référence reproduise le processus qui a été utilisé pour générer les sentiments de la base SNCF. En effet, nous ne disposons pas de la méthodologie qui a permis à la SNCF d'annoter ses tweets et il est envisageable que cette dernière utilise une méthode similaire à la méthode 1 en complément d'une annotation manuelle. Certains tweets comme celui-ci semble en effet avoir été mal annotés.  
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{C'est cool de payer un abonnement de 180 euros par mois pour attendre 1h le bus.} \LARGE \textbf{''}\normalsize
+\end{quote}
 
-\colorbox{BurntOrange}{à compléter}
 
+#### Le domain-shift
 
-### Le domain-shift 
-
-\ 
-
-Une dernière explication possible est ce qui est appelé en *data-science* le domain-shift. 
-
-<!-- \begin{encadre}[true]{Le \emph{domain shift} : une explication des erreurs de prédiction\footnote{Les éléments en lien avec le \emph{dataset shift} proviennent de \cite{Candela}}}\label{enc:encadre2} -->
-
-<!-- \small -->
-
-Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}.
+Une dernière explication possible pourrait être du à ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}.
 
 Bien que des solutions comme la correction de biais de sélection des échantillons, ou encore celle des données déséquilibrées, soient étudiées depuis de nombreuses décennies dans le monde de la statistique, certains autres problèmes, comme celui du changement de domaine (\emph{domain shift}) émergent depuis plus récemment suite à l’utilisation croissante des méthodes de \emph{machine learning}. 
 
@@ -757,17 +735,21 @@ Dans le cas de \emph{deep-learning} sur des données de photographie, il pourrai
 Dans notre cas précis, il s’agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets de la SNCF, qui portent sur un sujet très spécifique et pour lesquels certains mots ont peut-être une interprétation spécifique en termes de sentiments. 
 Modéliser le « domain shift » implique donc d’estimer le passage d’une représentation à une autre en utilisant des informations de distribution\footnote{La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le « domain shift » lié à l’utilisation d’appareil photos différents.}.
 
-Pour modéliser mathématiquement de manière relativement « grossière » un \emph{domain shift}, il s’agirait de considérer par exemple une variable latente « idéale » $x_0$ (une base de tweets de référence), jamais observée mais qui influerait sur $y$ (l’indice mensuel). Nous observons uniquement $x$ telle $x=F(x_0)$ avec $F$ qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données $x$ utilisée. La distribution $P(y|x_0)$ (de  l’indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base « sncf » et base de tweets postés en France entre 2013 et 2017). En revanche, cette distribution est modifiée si F est modifiée.
-
-Dans ce qui suit, l’idée n’est pas de modéliser mathématiquement le \emph{domain shift} des deux bases de tweets, mais de présenter quelques statistiques descriptives illustrant ce phénomène. 
+L’idée n’est pas ici de modéliser mathématiquement^[ Pour modéliser mathématiquement de manière relativement « grossière » un *domain shift*, il s’agirait de considérer par exemple une variable latente « idéale » $x_0$ (une base de tweets de référence), jamais observée mais qui influerait sur $y$ (l’indice mensuel). Nous observons uniquement $x$ telle $x=F(x_0)$ avec $F$ qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données $x$ utilisée. La distribution $P(y|x_0)$ (de  l’indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base « sncf » et base de tweets postés en France entre 2013 et 2017). En revanche, cette distribution est modifiée si F est modifiée.] le *domain shift* mais de remarquer que la base de tweets de la SNCF semble en effet qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé^[Les mots « bus » (3800 occurrences),  « métro » (820), « sncf » (781), , « retard » (411), « ratp » (237), « gare » (195), « chauffeur » (160), … sont parmi les plus employés dans les tweets de la base test.] mais également de part le ton particulièrement ironique de nombreux tweets^[ Comme en témoignent ces deux tweets « 1h de retard la sncf, vous savez pas l’amour que je vous porte » et « J’ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas ». Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal prédits, 5 peuvent être utilisés pour manier l’ironie (espère, ptdr, cool, mdrr, mdrrr).].
 
 
+#### Test d'une modification de la source de la base de test 
 
-<!-- \end{encadre} -->
+Nous testé les deux modèles sur une nouvelle base de test de tweets annotés^[Cette base disponible sur github https://github.com/gamebusterz/French-Sentiment-Analysis-Dataset  correspond à 1,5 million de tweets initialement en anglais associés à un sentiment. Son désavantage est que la traduction est de mauvaise qualité et sûrement effectuée depuis un logiciel de traduction automatique.] indépendante des autres bases. 
+Avec cette nouvelle base, l'*accuracy* du modèle basé sur les *word-embedding* est cette fois-ci supérieure à celle de l'approche de référence (68,7 \% contre 55,9 \%).  
 
+Cette nouvelle base test permet certainement de corriger une partie des biais évoqués plus haut qui pouvaient expliquer la surperformance du modèle de référence par rapport au modèle utilisant les vecteurs mots : 
 
+- La base de test de « github », bien qu’assez mal traduite, ne semble pas à notre connaissance avoir été annotée par des techniques d’analyse de sentiments similaires à la méthode de référence ;
 
+- Ses tweets sont nombreux et semblent traiter de sujets divers contrairement aux tweets de la SNCF, plus ciblés ;
 
+- Le modèle de *word-embeddings* semble mieux réagir à la présence de mots inconnus, ici plus nombreux que précédemment^[52.0 \% des mots du vocabulaire et 12.7 \% des mots de la base test de github ne sont pas dans la base d’entraînement SNCF et 52,8  \% des mots du vocabulaire et 13,0 \% des mots ne sont ni dans la base d’entraînement SNCF ni dans le vocabulaire des \emph{word-embeddings}. Ainsi, les mots de la base test « github » qui ne sont pas dans la base d’entraînement « sncf » sont rarement dans les vecteurs-mots de \emph{Word2Vec}.], que le modèle de référence. Comme il présente une efficacité similaire à lorsqu’il était évalué sur une autre base de test, il semble être plus général et s’adapter à des tweets aux contenus plus variés. 
 
 
 ## Sentiments des tweets et enquête de conjoncture auprès des ménages [Alain]

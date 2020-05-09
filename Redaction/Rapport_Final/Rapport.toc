@@ -25,9 +25,10 @@
 \contentsline {subsubsection}{\numberline {3.1.1}Prédiction à partir du sentiment moyen des mots}{16}{subsubsection.3.1.1}%
 \contentsline {subsubsection}{\numberline {3.1.2}Prédiction à partir des \emph {word-embeddings}}{17}{subsubsection.3.1.2}%
 \contentsline {subsubsection}{\numberline {3.1.3}Les limites des modèles utilisés}{18}{subsubsection.3.1.3}%
-\contentsline {subsubsection}{\numberline {3.1.4}Les mots inconnus}{18}{subsubsection.3.1.4}%
-\contentsline {subsubsection}{\numberline {3.1.5}Le processus d'annotation utilisé par la SNCF}{18}{subsubsection.3.1.5}%
-\contentsline {subsubsection}{\numberline {3.1.6}Le domain-shift}{19}{subsubsection.3.1.6}%
+\contentsline {paragraph}{\numberline {3.1.3.1}Les mots inconnus}{18}{paragraph.3.1.3.1}%
+\contentsline {paragraph}{\numberline {3.1.3.2}Le processus d'annotation utilisé par la SNCF}{18}{paragraph.3.1.3.2}%
+\contentsline {paragraph}{\numberline {3.1.3.3}Le domain-shift}{19}{paragraph.3.1.3.3}%
+\contentsline {paragraph}{\numberline {3.1.3.4}Test d'une modification de la source de la base de test}{20}{paragraph.3.1.3.4}%
 \contentsline {subsection}{\numberline {3.2}Sentiments des tweets et enquête de conjoncture auprès des ménages {[}Alain{]}}{20}{subsection.3.2}%
 \contentsline {section}{Conclusion {[}sûrement Kim{]}}{20}{section*.15}%
 \contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{21}{appendix.A}%

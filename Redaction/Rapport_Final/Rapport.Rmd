@@ -613,11 +613,11 @@ Nous comparerons enfin cet indicateur avec indicateur synthétique de confiance 
 \textbf{Tweets mensuels}
 
 Il s'agit de la base des tweets postés en France utilisée précédemment (cf. partie  \ref{sec:hyperparametres}) mais couvrant un horizon temporel plus large (2011-2018).
-Nous disposons de 4000 tweets pour tous les mois de la période. \colorbox{BurntOrange}{préciser après précisions Benji} 
+Nous disposons de 4000 tweets pour tous les mois de la période sous-échantillonnés de manière à avoir autant de tweets pour certains jours (les 1, 5, 10, 15, 20, 25 et 28 de chaque mois) et heures (0h, 6h, 12h 15h 18h et 21h) fixés. 
 
 \textbf{Tweets annotés par la SNCF}
 
-Cette base est composée d'un ensemble d'environ 23 000 tweets fournis par la SNCF qui sont annotés par la valeur $+1$ s'ils sont considérés positifs et $-1$ s'ils sont considérés négatifs en termes de sentiment. \colorbox{BurntOrange}{préciser après précisions Benji} 
+Cette base est composée d'un ensemble d'environ 23 000 tweets fournis par la SNCF qui sont annotés par la valeur $+1$ s'ils sont considérés positifs et $-1$ s'ils sont considérés négatifs en termes de sentiment.
 
 
 \textbf{Indicateur synthétique de confiance des ménages}
@@ -752,8 +752,7 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 - Le modèle de *word-embeddings* semble mieux réagir à la présence de mots inconnus, ici plus nombreux que précédemment^[52.0 \% des mots du vocabulaire et 12.7 \% des mots de la base test de github ne sont pas dans la base d’entraînement SNCF et 52,8  \% des mots du vocabulaire et 13,0 \% des mots ne sont ni dans la base d’entraînement SNCF ni dans le vocabulaire des \emph{word-embeddings}. Ainsi, les mots de la base test « github » qui ne sont pas dans la base d’entraînement « sncf » sont rarement dans les vecteurs-mots de \emph{Word2Vec}.], que le modèle de référence. Comme il présente une efficacité similaire à lorsqu’il était évalué sur une autre base de test, il semble être plus général et s’adapter à des tweets aux contenus plus variés. 
 
 
-## Sentiments des tweets et enquête de conjoncture auprès des ménages [Alain]
-
+## Sentiments des tweets et enquête de conjoncture auprès des ménages 
 <!-- LAISSER EN COMMENTAIRES :  -->
 <!-- A évoquer (ordre à l’appréciation du rédacteur avec sous parties éventuelles) :  -->
 
@@ -768,19 +767,19 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 <!-- - Si temps suffisant et pas trop compliqué (à mon avis on le fera pas) : optique prédiction : Regarder si Xt (Indice_mensuel) granger cause Yt (Camme) ? Pour ça il faut vérifier si Xt est stationnaire (ADF...)  -->
 
 
-# Conclusion [sûrement Kim] {.unnumbered} 
+# Conclusion {.unnumbered} 
 
-<!-- LAISSER EN COMMENTAIRES :  -->
-<!-- - Résumer la démarche et conclure sur le fait qu’on obtient un truc et qu’en gros on peut pas en faire grand-chose pour plusieurs raisons, la plupart certainement « quali » : -->
-<!-- 1) on en a parlé : le domain shift.   -->
-<!-- 2) le sentence embedding : est-ce que c’est pertinent pour mesurer le sentiment de la phrase (faire référence à l’ACP sur un dictionnaire de sentiment français).   -->
-<!-- 3) Pas facile de savoir quel « sentiment » résume un tweet. - Approche annuelle en ouverture avec le baromètre. Montrer que les courbes sont très différentes selon l’indicateur d’opinion choisi ce qui montre la complexité d’approché un indice subjectif uniquement avec des tweets. Solutions : filtrer sur un domaine précis grâce à un hashtag etc.  -->
-<!-- - Ouverture : prolongements existants de word2vec (sous entendu, la science ne fait que de s’améliorer etc.). -->
+Ce projet très riche nous a permis de partir à la découverte des méthodes d’apprentissage par réseaux de neurones, via le modèle *Word2Vec*. Nous nous sommes imprégnés de son fonctionnement et l’avons implémenté dans son ensemble grâce à la librairie `Pytorch` de Python (partie 1). Au-delà de la compréhension et de l’implémentation du modèle, nous nous sommes également initiés aux tests d’hyperparamètres et à son évaluation sur un corpus fictif (partie 2) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et T-SNE et jugement humain). Il a été fascinant d’observer à quel point le modèle présente d’excellents résultats en termes de capture sémantiques des mots dans un texte.
 
 
-<!-- Ouverture : prolongement de word2vec (sous entendu, la science ne fait que de s’améliorer etc.).  voir par ex ici : https://web.stanford.edu/~jurafsky/slp3/edbook_oct162019.pdf -->
-<!-- Les études sur les plongements incluent des résultats montrant une relation mathématique élégante entre les plongements clairsemés et denses (Levy et Goldberg, 2014c), ainsi que de nombreuses enquêtes sur les plongements et leurs paramétrisations. (Bullinaria et Levy 2007, Bullinaria et Levy 2012, Lapesa et Evert 2014, Kiela et Clark 2014, Levy et al.2015) .Le modèle d'intégration le plus utilisé en plus de word2vec est GloVe (Penning-ton et al., 2014). Le nom signifie Global Vectors, car le modèle est basé sur la capture de statistiques globales de corpus. GloVe est basé sur des ratios de probabilités de la matrice de cooccurrence mot-mot, combinant les intuitions de modèles basés sur le comptage comme PPMI tout en capturant les structures linéaires utilisées par des méthodes comme word2vec.Une extension de word2vec, fasttext (Bojanowski et al., 2017 ), traite des mots peu connus et de la rareté dans les langues à morphologie riche, en utilisant des sous-modèles. Chaque mot en texte rapide est représenté comme lui-même, plus un sac de n-grammes constitutifs, avec des symboles de délimitation spéciaux <et> ajoutés à chaque mot. Par exemple, avec n = 3 le mot WHERE serait représenté par le caractère n-grammes: <wh, whe, her, ere, re> ainsi que la séquence <where>.  -->
-<!-- Ensuite, un enchaînement de skipgram est appris pour chaque n-gramme constitutif, et le mot est représenté par la somme de tous les plongements de ses n-grammes constitutifs. Une bibliothèque open source fasttext, comprenant des incorporations pré-formées pour 157 langues, est disponible à l'adresse http://fasttext.cc.Il existe de nombreux autres algorithmes d'intégration, utilisant des méthodes telles que la factorisation non négative de la matrice (Fyshe et al., 2015), ou en convertissant intégration PPMI clairsemée à des vecteurs denses en utilisant SVD (Levy et Goldberg, 2014c) .Dans le chapitre 10, nous introduisons des incorporations contextuelles comme ELMo (Peters et al., 2018) et BERT (Devlin et al., 2019) dans lesquelles la représentation d'un mot est contextuelle, fonction de la phrase d'entrée entière. Voir Manning et al. (2008) pour une compréhension plus approfondie du rôle des vecteurs dans la recherche d'informations, y compris comment comparer les requêtes avec des documents, plus de détails sur tf-idf et les problèmes de mise à l'échelle vers de très grands ensembles de données. Cruse (2004) est une introduction linguistique utile texte sur la sémantique lexicale. -->
+Dans la partie 3 dédiée à l’analyse de sentiments, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant ce second semestre 2020 (modèles de prédiction binaire, analyses de séries temporelles, minimisation du risque empirique / cross-validation …). L’entraînement et le test du modèle logit dont les prédicteurs correspondent aux dimensions des *word-embedding* nous a permis d’observer qu’en plus de représenter la proximité entre mots, le modèle *Word2Vec* permet de capter dans une certaine mesure le sentiment de phrases. 
+
+
+Bien sûr, la comparaison de l’indice mensuel de sentiments moyens des tweets que nous avons construit avec l’indicateur synthétique de confiance des ménages peu à première vue paraître « décevante » \colorbox{BurntOrange}{(préciser ce qu’on fait dans la partie après rédaction ALAIN)} mais la possibilité d’obtenir deux indicateurs très proches était assez utopique. D’une part pour des raisons évoquées liées aux limites bases d’entraînement et de test (*domain-shift*, processus d’annotation, mots inconnus) mais également car au-delà de la positivité ou négativité d’un tweet, il demeure important d’également déceler le sujet sur lesquel le tweet porte pour créer un indice qui corresponde à une opinion sur un sujet précis (). En effet, la figure X.X montre l’évolution de l’opinion des Français entre 2011 et 2018) concernant un certain nombre de sujets sociaux et nous pouvons voir que les évolutions sont différentes selon les sujets.  Un prolongement serait peut-être de se focaliser sur des sujets plus précis en mobilisant les hashtags présents dans les tweets. 
+
+
+Les méthodes d’apprentissage étant en perpétuelle évolution, le modèle *Word2Vec* mis en exergue en 2013, connaît déjà des prolongements. Par exemple, son extension *fasttext*^[La bibliothèque open-source https://fasttext.cc/ permet de télécharger des modèles pré-entraînés dans 157 langues différentes.] (Bojanowski et al., 2017 ), traite de la rareté des mots en représentant le mot non seulement comme lui-même mais grâce à des sacs de n-grammes constitutifs. Par exemple, si n = 3, « WHERE » est représenté par <where> mais également <wh, whe, her, ere, re>. *Word2Vec* connaît également des modèles « concurrents », le plus connu étant certainement GloVe pour « Global Vectors » (Penning-ton et al., 2014). Alors que *Word2Vec* privilégie l’utilisation de « n-grammes » (avec l’utilisation des mots contextes qui se situent autour d’une fenêtre du mot focus), GloVe se base sur l’ensemble les statistiques d'occurrence des mots du corpus (matrice de cooccurrence mot-mot) et prétend permettre alors, par construction, de capturer des statistiques plus générales liées au corpus. 
+
 
 
 \newpage

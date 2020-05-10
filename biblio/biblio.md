@@ -43,3 +43,6 @@ TSNE : Page wiki en anglais
 
 The norm of the vector is linked with both the frequency and the variance of the contexts on which occurs. See http://arxiv.org/abs/1510.02675 for a study on this. Article de Roro : https://arxiv.org/pdf/1508.02297v1.pdf
 
+# Soutenance 
+
+https://miro.medium.com/max/1632/1*3Eh6afALesGJ_1fkmBxxnQ.png     (schema)

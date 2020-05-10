@@ -753,18 +753,25 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 
 
 ## Sentiments des tweets et enquête de conjoncture auprès des ménages 
-<!-- LAISSER EN COMMENTAIRES :  -->
-<!-- A évoquer (ordre à l’appréciation du rédacteur avec sous parties éventuelles) :  -->
+<!-- - (Re)Dire rapidement comment on passe du modèle logit à la construction de l’indicateur mensuel (en gros on fait la moyenne des sentiments des tweets par mois).  Et parler du fait que l’on retarde Camme pour la cohérence temporelles entre les deux. -->
+<!-- - Graphique : superposer les séries : baseline SNCF, logit, Camme sur un graphique renormalisé par moyenne et écart-type (0,1).  -->
+<!-- [- tests de racine unitaire nous indique que nos séries doivent davantage être utilisées en différences pour être analysées ? Faire le graphique des séries différenciées ? Si sert plus tard dans l’argumentaire…] -->
 
-<!-- - Décrire rapidement comment on passe du modèle logit à la construction de l’indicateur mensuel (en gros on fait la moyenne des sentiments des tweets par mois).  -->
+### Comparaison entre les séries
 
-<!-- - Superposer les trois séries : baseline, logit, Camme sur un graphique renormalisées de la manière la plus pertinente -->
+<!-- - Analyse des proximités entre séries.  -->
+<!-- * Algorithme de distance « élaboré » (Kendall je crois) indique que les deux séries (baseline SNCF et notre indicateur word2vec) sont tout aussi loin de Camme -->
+<!-- * les séries Camme et Reg_log ne sont pas cointégrées et ne semblent donc pas avoir d’informations communes (faire la même chose entre Camme et baseline SNCF ?) -->
+<!-- [* Corrélation de pearson / spearman des séries différenciées : je n’en parlerais pas forcément car n’ai pas retenu de message essentiel qui irait dans le sens de l’axe de nos parties] -->
+<!-- - Analyse de la saisonnalité de la série logit : très peu de saisonnalité (dire que c’est la même chose pour Camme). Pas d’effet longueur de mois, type de jour et effet pâques (tester la même chose sur CAMME et baseline pour voir si on arrive aux  même conclusions ? ). Si vraiment on voulait voir un effet, on pourrait dire que les mois les plus optimistes sont avril et octobres et le plus pessimiste : septembre.  -->
 
-<!-- - Faire des interprétations sur les différences.  -->
-<!-- * [si pertinent, sinon supprimer la représentation de la baseline éventuellement]. Analyse de quand est-ce que baseline suit mieux la courbe Camme que notre indice. -->
-<!-- * Analyse de quand est-ce que Camme et notre indice diffèrent en évolution et trouver une interprétation sur les dates : ou il y a des pics chez nous et pas dans CAMME et expliquer pourquoi. Tester les effets économétriquement (indicatrice qui vaut 1 à la date d'un attentat). -->
+### Et dans une optique de prévision ?
 
-<!-- - Si temps suffisant et pas trop compliqué (à mon avis on le fera pas) : optique prédiction : Regarder si Xt (Indice_mensuel) granger cause Yt (Camme) ? Pour ça il faut vérifier si Xt est stationnaire (ADF...)  -->
+<!-- - Sur les séries différenciées, notre indicateur cause (instantanément ? je crois pas, à revérifier) l’indicateur Camme (non retardé) au sens de Granger, il pourrait éventuellement aider à le prévoir.  Notre indicateur nous donne un indicateur avancé en termes de temps de l’enquête Camme, ce qui n’est pas le cas de la base git sncf.  -->
+<!-- - Indiquer les idées que tu as eu concernant le PIB et pourquoi cela n’a pas abouti.  -->
+<!-- - Conclusion de la partie : pas de proximité apparente et difficile d’en dire plus mais résultat surprenant en termes de prévision.  -->
+<!-- * ouverture (éventuelle) sur le lien avec les événements d’actualité : dire ce qu’on a tenté et conclure qu’il est très difficile d’analyser les différences entre nos indicateurs et l’indicateur Camme.  -->
+<!-- * ouverture (encore plus éventuelle) : sur si on observe un message intéressant sur une des 8 composantes de Camme.  -->
 
 
 # Conclusion {.unnumbered} 

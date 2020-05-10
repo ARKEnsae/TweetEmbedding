@@ -40,44 +40,46 @@ data[,"Indicateur synthétique"] <- scale(data[,"Indicateur synthétique"] )
 data_lag <- lag(data, -1)
 
 library(dtw)
-distance_brut <- sapply(1:ncol(modeles), function(i){
-    dtw((modeles[,i]),
-        window(data[,"ind_synt_brut"], start = start(modeles), end = end(modeles)),
-        keep=TRUE)$distance
+distance <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  dtw_b <- dtw((modeles[,i]),
+      window(data[,"ind_synt_brut"], start = start(modeles), end = end(modeles)),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw((modeles[,i]),
+                 window(data[,"Indicateur synthétique"], start = start(modeles), end = end(modeles)),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <- c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
 }
-)
-
-distance_cvs <- sapply(1:ncol(modeles), function(i){
-    dtw((modeles[,i]),
-        window(data[,"Indicateur synthétique"], start = start(modeles), end = end(modeles)),
-        keep=TRUE)$distance
-}
-)
-data.frame(distance_brut, distance_cvs,
-           row.names = colnames(modeles))
+))
+round(distance, 3)
 ```
 
 
 Et si on renormalise :
 
 ```{r}
-distance_brut_norm <- sapply(1:ncol(modeles), function(i){
-    dtw(scale(modeles[,i]),
-        scale(window(data[,"ind_synt_brut"],
-               start = start(modeles), end = end(modeles))),
-        keep=TRUE)$distance
+distance_norm <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  dtw_b <- dtw(scale(modeles[,i]),
+      scale(window(data[,"ind_synt_brut"], 
+             start = start(modeles), end = end(modeles))),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw(scale(modeles[,i]),
+                 scale(window(data[,"Indicateur synthétique"],
+                        start = start(modeles), end = end(modeles))),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <-  c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
 }
-)
-
-distance_cvs_norm <- sapply(1:ncol(modeles), function(i){
-    dtw(scale(modeles[,i]),
-        scale(window(data[,"Indicateur synthétique"],
-               start = start(modeles), end = end(modeles))),
-        keep=TRUE)$distance
-}
-)
-data.frame(distance_brut_norm, distance_cvs_norm,
-           row.names = colnames(modeles))
+))
+round(distance_norm, 3)
 ```
 
 Pour rappel, on retient l'indicateur `reg_log_nrmsw_lf`.

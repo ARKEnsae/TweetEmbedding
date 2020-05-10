@@ -215,7 +215,7 @@ est ensuite \emph{tokénisée} par la chaîne de caractère correspondant à un 
 
 est décomposée en 14 mots \texttt{{[}que,\ pensez,\ vous,\ de,\ ce,\ projet,\ i,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}.
 
-Nous effectuons enfin un traitement sur les mots rares. Si un mot apparaît strictement moins de 10 fois, nous lui affectons la valeur «~lowfrequency~»\footnote{Dans le corpus de tweets que nous utiliserons ultérieurement, un mot rare apparaît moins de 10 fois sur les 31 400 000 mots utilisés dans le corpus. Rassembler les mots rares permettra de passer d'un vocabulaire d'environ 635 000 mots à 70 000 mots en réduisant le nombre de mots de seulement \(3,0 \%\).}.
+Nous effectuons enfin un traitement sur les mots rares. Si un mot apparaît strictement moins de 10 fois, nous lui affectons la valeur «~lowfrequency~»\footnote{Dans le corpus de tweets que nous utiliserons ultérieurement, un mot rare apparaît moins de 10 fois sur les 31 400 000 mots utilisés dans le corpus. Rassembler les mots rares permettra de passer d'un vocabulaire d'environ 635 000 mots à 70 000 mots en réduisant le nombre de mots de seulement 3,0 \%.}.
 
 Comme décrit dans la partie \ref{subsec:word2vec}, les couples \texttt{{[}focus,\ contexte{]}} dépendent d'un hyperparamètre : la fenêtre \(w\). Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pronoms personnels), soient sur-entraînés, deux traitements sont effectués :
 
@@ -632,7 +632,7 @@ La similarité cosinus de chaque paire de mots est renseignée entre les parenth
 
 Enfin, nous avons réalisé des opérations sur les mots-vecteurs.
 Si l'opération \(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} = \overrightarrow{Reine}\) (figure \ref{fig:acp_reine}) semble fonctionner
-\footnote{Les similarités cosinus obtenues sont les suivantes : \(corr(\overrightarrow{Roi}, \overrightarrow{Homme}) = 0,34\), \(corr(\overrightarrow{Homme}, \overrightarrow{Femme}) = 0,35\) et \(corr(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} , \overrightarrow{Reine}) = 0,67\). \(\overrightarrow{Reine}\) est bien le mot le plus proche de la somme vectorielle calculée.}, l'opération \(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie}\) (figure \ref{fig:acp_rome}) n'identifie pas \og Rome \fg{}(similarité cosinus de 0,18 seulement) dans les mots les plus proches mais d'autres villes comme \og Lyon \fg{} (similarité cosinus de 0,62).
+\footnote{Les similarités cosinus obtenues sont les suivantes : \(corr(\overrightarrow{Roi}, \overrightarrow{Homme}) = 0,34\), \(corr(\overrightarrow{Homme}, \overrightarrow{Femme}) = 0,35\) et \(corr(\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} , \overrightarrow{Reine}) = 0,67\). \(\overrightarrow{Reine}\) est bien le mot le plus proche de la somme vectorielle calculée.}, l'opération \(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie}\) (figure \ref{fig:acp_rome}) n'identifie pas \og Rome \fg{} (similarité cosinus de 0,18 seulement) dans les mots les plus proches mais d'autres villes comme \og Lyon \fg{} (similarité cosinus de 0,62).
 \og Rome \fg{} semble effectivement située \og trop en haut\fg{} dans le plan de l'ACP par rapport aux autres villes.
 Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions dans les tweets contre 46 433 pour Lyon par exemple) pour que le vecteur-mot obtenu soit pertinent, ou peut-être que, dans les tweets mobilisés, le mot \og Rome \fg{} s'utilise dans un contexte différent de l'article de Mikolov.
 
@@ -667,18 +667,20 @@ Nous comparerons enfin cet indicateur avec indicateur synthétique de confiance 
 \textbf{Tweets mensuels}
 
 Il s'agit de la base des tweets postés en France utilisée précédemment (cf. partie  \ref{sec:hyperparametres}) mais couvrant un horizon temporel plus large (2011-2018).
-Nous disposons de 4000 tweets pour tous les mois de la période sous-échantillonnés de manière à avoir autant de tweets pour certains jours (les 1, 5, 10, 15, 20, 25 et 28 de chaque mois) et heures (0h, 6h, 12h 15h 18h et 21h) fixés. 
+Nous disposons de 4 000 tweets pour tous les mois de la période sous-échantillonnés de manière à avoir autant de tweets pour certains jours (les 1, 5, 10, 15, 20, 25 et 28 de chaque mois) et heures (0h, 6h, 12h 15h 18h et 21h) fixés. 
 
 \textbf{Tweets annotés par la SNCF}
 
-Cette base est composée d'un ensemble d'environ 23 000 tweets fournis par la SNCF qui sont annotés par la valeur $+1$ s'ils sont considérés positifs et $-1$ s'ils sont considérés négatifs en termes de sentiment.
+Cette base est composée d'un ensemble d'environ 23 000 tweets fournis par la SNCF annotés en termes de sentiment.
+%Nous avons transformé cette annotation de façon à ce que si elle est égale à $+1$ alors le tweet est considéré comme positif, si elle est égale à $-1$ alors le tweet est considéré comme négatif.
+Nous avons transformé cette annotation de façon à ce qu'une valeur de $+1$ est associée à un tweet considéré comme positif et $-1$ à un tweet considéré comme négatif.
 
 
 \textbf{Indicateur synthétique de confiance des ménages}
 
 L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee.
 Il décrit, en une variable unique, la composante commune de 8 soldes d’opinion qui correspondent à la différence entre les pourcentages de réponses positives et négatives sur différents sujets (niveau de vie passé et futur en France, situation financière personnelle passée et future, perspective de chômage, opportunité de faire des achats importants, capacité à épargner actuelle et dans les mois à venir).
-Il est calculé par analyse factorielle dont l’objectif est de résumer l’évolution concomitante de ces soldes aux évolutions très corrélées.
+Il est calculé par analyse factorielle statique, dont l’objectif est de résumer l’évolution concomitante de ces soldes aux évolutions très corrélées.
 L’indicateur est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10 et doit donc s’interpréter en évolution. 
 
 \end{encadre}
@@ -695,14 +697,13 @@ Nous comparerons deux approches : une première basée sur les sentiments moyens
 
 Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
 Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
-
-\[S_{1,\gamma}(t) = 2 \times \mathds{1}\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\} - 1 \qquad \in [0,1]\]
-
+\[S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\} - 1 \qquad \in [0,1]\]
 avec \(\gamma \in [-1,1]\) un seuil fixé, \(\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]\) le sentiment moyen du mot \(i\) calculé à partir du nombre de tweets positifs (\(nb_+(i)\)) et négatifs (\(nb_-(i)\)) dans lesquels il apparaît.
 
-Afin d'évaluer l'efficacité du modèle et de sélectionner le \(\gamma\) qui présente les meilleures performances, nous séparons le corpus de la SNCF en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots\footnote{\(13 \%\) des mots du vocabulaires et \(1 \%\) des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen \(\alpha_i\) est fixé à 0.}, et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
+Afin d'évaluer l'efficacité du modèle et de sélectionner le \(\gamma\) qui présente les meilleures performances, nous séparons le corpus de la SNCF en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots\footnote{13 \% des mots du vocabulaires et 1 \% des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen \(\alpha_i\) est fixé à 0.}, et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
 
-On choisit \(\gamma\) tel que l'\emph{accuracy} sur la base de test -- c'est-à-dire le taux de tweets dont le sentiment est bien prédit -- soit maximale (figure \ref{fig:max_baseline}). L'\emph{accuracy} maximale vaut \(89,1 \%\) pour \(\gamma^* = -0.14\). On constate une nette amélioration par rapport au cas où \(\gamma = 0\) (\(70,5 \%\)), qui correspond au seuil «~naturel~» puisqu'il se situe au centre de l'intervalle des valeurs possibles pour \(\alpha_i\).
+On choisit \(\gamma\) tel que l'\emph{accuracy} sur la base de test -- c'est-à-dire le taux de tweets dont le sentiment est bien prédit -- soit maximale (figure \ref{fig:max_baseline})\footnote{Dans notre base de test la proportion de tweets positifs (1 984 mots) est proche de la proportion de tweets négatifs (1 998 mots).
+  Il n'y a donc pas de problème de déséquilibre de classe : maximiser l'\emph{accuracy} permet bien de maximiser la performance de notre algorithme.}. L'\emph{accuracy} maximale vaut 89,1 \% pour \(\gamma^* = -0,14\). On constate une nette amélioration par rapport au cas où \(\gamma = 0\) (70,5 \%), qui correspond au seuil «~naturel~» puisqu'il se situe au centre de l'intervalle des valeurs possibles pour \(\alpha_i\).
 
 \begin{figure}
 \begin{center}
@@ -722,14 +723,14 @@ Pour cela, nous utilisons un modèle de régression binaire avec comme prédicte
 Toutefois, comme il s'agit ici de prévoir le sentiment des tweets et non de mots, une première étape préalable est de transformer pour chaque tweet l'ensemble des \emph{word-embeddings} des mots qui le composent en une «~\emph{sentence-embedding}~» qui correspondra à la moyenne des vecteurs-mots.
 
 Le modèle prédictif binaire est de la forme :
-\[Y_i = \mathds{1}\{ \sum\limits_{i = 1}^n \beta_i X_{i,j} + \epsilon_i \geq 0 \} \quad \text{et nous prédisons} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\epsilon}(\sum\limits_{i = 1}^n \beta_i X_{i,j})\]
-
+\[Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} 
+\quad \text{et nous prédisons} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)\]
 Avec :
 
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
 \item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
-\item $\epsilon_i$ le résidu de notre modèle de fonction de répartition $F_{\epsilon}$ qui vaudra $F_{\epsilon}(x) = \frac{1}{1 + e^{-x}}$ dans le cas d'un modèle logit et $F_{\epsilon}(x) = \Phi(x)$ (fonction de répartition d'une loi $\mathcal{N}(0, 1)$) dans le cas d'un modèle probit. 
+\item $\varepsilon_i$ le résidu de notre modèle de fonction de répartition $F_{\varepsilon}$ qui vaudra $F_{\varepsilon}(x) = \frac{1}{1 + e^{-x}}$ dans le cas d'un modèle logit et $F_{\varepsilon}(x) = \Phi(x)$ (fonction de répartition d'une loi $\mathcal{N}(0, 1)$) dans le cas d'un modèle probit. 
 \end{itemize}
 
 Puis nous appliquons le critère de classification suivant pour prédire le sentiment \(S_{2,\gamma}(t) \in \{0,1\}\) du tweet \(t\) avec le seuil \(\gamma \in [0,1]\) :
@@ -740,17 +741,24 @@ S_{2,\gamma}(t) = 1 \qquad \qquad \text{si} \quad \mathbb{P}(Y_i = 1 | X_{i}) \g
 \end{cases}
 \]
 
-Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC\footnote{La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.}) par validation croisée\footnote{Nous avons réalisé une \emph{k-fold cross validation} qui est une technique permettant de limiter le surapprentissage sur la base d'entraînement. Le principe est de découper la base en \(k = 10\) échantillons puis de considérer tour à tour chaque échantillon comme base de test, en entraînant le modèle sur les \(k-1\) échantillons restants. On calcule alors l'AUC dans chaque cas, puis on en calcule la moyenne. }. Les différences spécifications testées sont les suivantes :
+Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC\footnote{La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs.
+  L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.}) par validation croisée\footnote{Nous avons réalisé une \emph{k-fold cross validation} qui est une technique permettant de limiter le surapprentissage sur la base d'entraînement. Le principe est de découper la base en \(k = 10\) échantillons puis de considérer tour à tour chaque échantillon comme base de test, en entraînant le modèle sur les \(k-1\) échantillons restants. On calcule alors l'AUC dans chaque cas, puis on en calcule la moyenne. }. Les différences spécifications testées sont les suivantes :
 
 \begin{enumerate}
-\item \textbf{L’inclusion ou non des \emph{stop words}} (mots-vides). Ces mots sont des mots communs qui, en général, n’apportent pas d’information cruciale dans l’analyse textuelle. Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériorent même légèrement. Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot-vide « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de -0.25).
+\item \textbf{L’inclusion ou non des \emph{stop words}} (mots-vides). 
+Ces mots sont des mots communs qui, en général, n’apportent pas d’information cruciale dans l’analyse textuelle. Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériorent même légèrement. Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot-vide « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de $-0,25$).
 
-\item \textbf{Le traitement des mots inconnus}. La base qui a servi à entraîner le modèle des *word-embeddings* est différente de celle que l'on utilise pour la prédiction des sentiments. Ainsi, il existe des mots pour lesquels on ne connaît pas la représentation vectorielle. Deux options ont été retenues pour traiter ces mots. La première est de retirer ces mots des tweets analysés afin qu'ils n’influent pas sur la décision du sentiment. La seconde est de leur attribuer la valeur du vecteur correspondant aux mots rares (vecteur « lowfrequency », voir partie \\ref{subsec:baseentrainemen}) en partant du principe que s'ils sont absents du corpus d'entraînement du modèle \emph{Word2Vec}, ce sont bien des mots très peu fréquents. C’est cette deuxième option qui semble donner des résultats légèrement meilleurs, ce qui peut signifier que l’on capte alors le fait que les mots peu fréquents ne sont en moyenne pas neutres (plutôt positifs ou négatifs\footnote{En utilisant le modèle logit retenu, la prévision d'une \emph{sentence-embedding} composée uniquement du mot « lowfrequency » donne $\hat{\mathbb{P}}(Y_i = 1 | X_{lowfrequency}) = 0,76$, ce qui laisse supposer que les mots-rares ont une consonance davantage positive.}). 
+\item \textbf{Le traitement des mots inconnus}. La base qui a servi à entraîner le modèle des \textbf{word-embeddings} est différente de celle que l'on utilise pour la prédiction des sentiments.
+Ainsi, il existe des mots pour lesquels on ne connaît pas la représentation vectorielle. 
+Deux options ont été retenues pour traiter ces mots. 
+La première est de retirer ces mots des tweets analysés afin qu'ils n’influent pas sur la décision du sentiment. 
+La seconde est de leur attribuer la valeur du vecteur correspondant aux mots rares (vecteur « lowfrequency », voir partie \\ref{subsec:baseentrainement}) en partant du principe que s'ils sont absents du corpus d'entraînement du modèle \emph{Word2Vec}, ce sont bien des mots très peu fréquents. 
+C’est cette deuxième option qui semble donner des résultats légèrement meilleurs, ce qui peut signifier que l’on capte alors le fait que les mots peu fréquents ne sont en moyenne pas neutres (plutôt positifs ou négatifs\footnote{En utilisant le modèle logit retenu, la prévision d'une \emph{sentence-embedding} composée uniquement du mot « lowfrequency » donne $\widehat{\mathbb{P}}(Y_i = 1 | X_{lowfrequency}) = 0,76$, ce qui laisse supposer que les mots-rares ont une consonance davantage positive.}). 
 
 \item \textbf{La modélisation probit ou logit}. En plus de comparer leurs AUC, on compare ces deux spécifications avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les mêmes résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
 \end{enumerate}
 
-Finalement, nous retenons le modèle estimé par une \textbf{régression logit} sur la base en \textbf{gardant les mots-vides } et en affectant aux mots inconnus le \textbf{vecteur des mots très peu fréquents}. L'\emph{accuracy} de ce modèle est de \(68,7\%\)\footnote{Cette valeur de l'\emph{accuracy} correspond au seuil \(\gamma = 0,5\). Comme dans la partie précédente, nous avons déterminé le seuil obtimal et comme celui-ci était très proche de 0,5 (\(\gamma^* = 0,051\)), pour une \emph{accuracy} de seulement \(68,8 \%\), nous avons conservé le seuil médian de \(0,5\).}, valeur inférieure au modèle de référence de la partie \ref{sec:sentiments} (\(89,1\%\)).
+Finalement, nous retenons le modèle estimé par une \textbf{régression logit} sur la base en \textbf{gardant les mots-vides} et en affectant aux mots inconnus le \textbf{vecteur des mots très peu fréquents}. L'\emph{accuracy} de ce modèle est de 68,7 \%\footnote{Cette valeur de l'\emph{accuracy} correspond au seuil \(\gamma = 0,5\). Comme dans la partie précédente, nous avons déterminé le seuil optimal et comme celui-ci était très proche de 0,5 (\(\gamma^* = 0,051\)), pour une \emph{accuracy} de seulement 68,8 \%, nous avons conservé le seuil médian de \(0,5\).}, valeur inférieure au modèle de référence de la partie \ref{sec:sentiments} (89,1 \%).
 
 \hypertarget{les-limites-des-moduxe8les-utilisuxe9s}{%
 \subsubsection{Les limites des modèles utilisés}\label{les-limites-des-moduxe8les-utilisuxe9s}}
@@ -760,9 +768,13 @@ La performance exceptionnellement bonne du modèle de référence (sentiments mo
 \hypertarget{les-mots-inconnus}{%
 \paragraph{Les mots inconnus}\label{les-mots-inconnus}}
 
-Une première explication est la différence entre les deux modèles en termes de mots inconnus. Nous l'avons vu, pour le modèle de référence, 1,4 \% des mots utilisés dans les tweets de la base test SNCF (13,2 \% du vocabulaire) sont absents de la base d'entraînement SNCF. Pour le modèle basé sur les \emph{word-embedding}, il faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent 4,6 \% des mots (36,2 \% du vocabulaire).
+Une première explication est la différence entre les deux modèles en termes de mots inconnus.
+Nous l'avons vu, pour le modèle de référence, 1,4 \% des mots utilisés dans les tweets de la base test SNCF (13,2 \% du vocabulaire) sont absents de la base d'entraînement SNCF.
+Pour le modèle basé sur les \emph{word-embedding}, il faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots.
+Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent 4,6 \% des mots (36,2 \% du vocabulaire).
 
-Toutefois, la présence de mots inconnus ne semble pas beaucoup biaiser fortement la prédiction du sentiment d'un tweet. En effet, la distribution de la part des mots inconnus est étonnamment similaire selon si on se restreint aux tweets bien prédits ou à ceux mal prédits (figure \ref{fig:mots_inconnus})
+Toutefois, la présence de mots inconnus ne semble pas biaiser la prédiction du sentiment d'un tweet.
+En effet, la distribution de la part des mots inconnus est étonnamment similaire selon si on se restreint aux tweets bien prédits ou à ceux mal prédits (figure \ref{fig:mots_inconnus}).
 
 \begin{figure}[ht]
 \begin{center}
@@ -775,7 +787,9 @@ Toutefois, la présence de mots inconnus ne semble pas beaucoup biaiser fortemen
 \hypertarget{le-processus-dannotation-utilisuxe9-par-la-sncf}{%
 \paragraph{Le processus d'annotation utilisé par la SNCF}\label{le-processus-dannotation-utilisuxe9-par-la-sncf}}
 
-L'éventualité que la méthode de référence reproduise en partie le processus qui a été utilisé pour générer les sentiments de la base SNCF pourrait également être une explication de la surperformance du modèle de référence. En effet, nous ne disposons pas de la méthodologie qui a permis à la SNCF d'annoter ses tweets et nous avons pu relever quelques incohérences dans les sentiments attribués à certains tweets, ce qui peut laisser supposer que l'annotation n'a pas été purement manuelle et qu'ils ont pu utiliser, par exemple, un dictionnaire de sentiments par mots pour annoter leurs tweets. Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a en effet été qualifié de positif.
+L'éventualité que la méthode de référence reproduise en partie le processus qui a été utilisé pour générer les sentiments de la base SNCF pourrait également être une explication de la surperformance du modèle de référence.
+En effet, nous ne disposons pas de la méthodologie qui a permis à la SNCF d'annoter ses tweets et nous avons pu relever quelques incohérences dans les sentiments attribués à certains tweets, ce qui peut laisser supposer que l'annotation n'a pas été purement manuelle et qu'ils ont pu utiliser, par exemple, un dictionnaire de sentiments par mots pour annoter leurs tweets.
+Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a en effet été qualifié de positif.
 
 \begin{quote}
 \LARGE \textbf{``}\normalsize \emph{C'est cool de payer un abonnement de 180 euros par mois pour attendre 1h le bus.} \LARGE \textbf{''}\normalsize
@@ -814,6 +828,12 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 
 \hypertarget{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}{%
 \subsection{Sentiments des tweets et enquête de conjoncture auprès des ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}}
+
+\hypertarget{comparaison-entre-les-suxe9ries}{%
+\subsubsection{Comparaison entre les séries}\label{comparaison-entre-les-suxe9ries}}
+
+\hypertarget{et-dans-une-optique-de-pruxe9vision}{%
+\subsubsection{Et dans une optique de prévision ?}\label{et-dans-une-optique-de-pruxe9vision}}
 
 \hypertarget{conclusion}{%
 \section*{Conclusion}\label{conclusion}}

@@ -24,15 +24,17 @@
 \contentsline {subsection}{\numberline {3.1}Prédire le sentiment d'un tweet à partir des \emph {word-embeddings}}{16}{subsection.3.1}%
 \contentsline {subsubsection}{\numberline {3.1.1}Prédiction à partir du sentiment moyen des mots}{16}{subsubsection.3.1.1}%
 \contentsline {subsubsection}{\numberline {3.1.2}Prédiction à partir des \emph {word-embeddings}}{17}{subsubsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.3}Les limites des modèles utilisés}{18}{subsubsection.3.1.3}%
-\contentsline {paragraph}{\numberline {3.1.3.1}Les mots inconnus}{18}{paragraph.3.1.3.1}%
-\contentsline {paragraph}{\numberline {3.1.3.2}Le processus d'annotation utilisé par la SNCF}{18}{paragraph.3.1.3.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Les limites des modèles utilisés}{19}{subsubsection.3.1.3}%
+\contentsline {paragraph}{\numberline {3.1.3.1}Les mots inconnus}{19}{paragraph.3.1.3.1}%
+\contentsline {paragraph}{\numberline {3.1.3.2}Le processus d'annotation utilisé par la SNCF}{19}{paragraph.3.1.3.2}%
 \contentsline {paragraph}{\numberline {3.1.3.3}Le domain-shift}{19}{paragraph.3.1.3.3}%
 \contentsline {paragraph}{\numberline {3.1.3.4}Test d'une modification de la source de la base de test}{20}{paragraph.3.1.3.4}%
-\contentsline {subsection}{\numberline {3.2}Sentiments des tweets et enquête de conjoncture auprès des ménages}{20}{subsection.3.2}%
-\contentsline {section}{Conclusion}{20}{section*.15}%
-\contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{22}{appendix.A}%
-\contentsline {subsection}{\numberline {A.1}Distance entre deux mots}{22}{subsection.A.1}%
-\contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{22}{subsection.A.2}%
-\contentsline {subsection}{\numberline {A.3}Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{24}{subsection.A.3}%
-\contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{25}{subsubsection.A.3.1}%
+\contentsline {subsection}{\numberline {3.2}Sentiments des tweets et enquête de conjoncture auprès des ménages}{21}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Comparaison entre les séries}{21}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Et dans une optique de prévision ?}{21}{subsubsection.3.2.2}%
+\contentsline {section}{Conclusion}{21}{section*.15}%
+\contentsline {section}{\numberline {A}Comment évaluer le modèle ?}{23}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Distance entre deux mots}{23}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{23}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{25}{subsection.A.3}%
+\contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{26}{subsubsection.A.3.1}%

@@ -58,6 +58,28 @@ distance <- do.call(rbind, lapply(1:ncol(modeles), function(i){
 round(distance, 3)
 ```
 
+```{r}
+distance_diff <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  dtw_b <- dtw(diff(modeles[,i]),
+      diff(window(data[,"ind_synt_brut"], 
+             start = start(modeles), end = end(modeles))),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw(diff(modeles[,i]),
+                 diff(window(data[,"Indicateur synthétique"],
+                        start = start(modeles), end = end(modeles))),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <-  c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
+}
+))
+round(distance_diff, 3)
+```
+
+
 
 Et si on renormalise :
 
@@ -80,6 +102,27 @@ distance_norm <- do.call(rbind, lapply(1:ncol(modeles), function(i){
 }
 ))
 round(distance_norm, 3)
+```
+
+```{r}
+distance_norm_diff <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  dtw_b <- dtw(scale(modeles[,i]),
+      scale(window(data[,"ind_synt_brut"], 
+             start = start(modeles), end = end(modeles))),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw(scale(modeles[,i]),
+                 scale(window(data[,"Indicateur synthétique"],
+                        start = start(modeles), end = end(modeles))),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <-  c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
+}
+))
+round(distance_norm_diff, 3)
 ```
 
 Pour rappel, on retient l'indicateur `reg_log_nrmsw_lf`.
@@ -557,3 +600,15 @@ AQLTools::hc_stocks(round(scale(donnes_calcul[,1:3]),2)) %>%
                   type = "flags", onSeries = "id1",name = "Sport")
 ```
 
+
+# Graphique final avec toutes les infos
+
+```{r}
+AQLTools::hc_stocks(donnes_calcul_lag,digits = 2)
+```
+
+Coefficients dans le climat :
+
+```{r, echo = FALSE}
+result$coefs
+```

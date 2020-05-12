@@ -38,6 +38,6 @@
 \contentsline {subsection}{\numberline {A.2}Analyse en Composantes Principales}{25}{subsection.A.2}%
 \contentsline {subsection}{\numberline {A.3}Algorithme \emph {t-distributed Stochastic Neighbor Embedding}}{27}{subsection.A.3}%
 \contentsline {subsubsection}{\numberline {A.3.1}Jugement humain}{28}{subsubsection.A.3.1}%
-\contentsline {section}{\numberline {B}Correction des effets saisonniers et jours-ouvrables}{30}{appendix.B}%
-\contentsline {subsection}{\numberline {B.1}Correction des effets jours ouvrables}{30}{subsection.B.1}%
-\contentsline {subsection}{\numberline {B.2}Correction des effets saisonniers}{31}{subsection.B.2}%
+\contentsline {section}{\numberline {B}Correction des effets saisonniers et jours ouvrables}{30}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}Correction des effets jours ouvrables}{31}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}Correction des effets saisonniers}{32}{subsection.B.2}%

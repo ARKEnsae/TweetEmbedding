@@ -17,7 +17,7 @@ output:
         highlight: default
         template: default.tex
         keep_tex: yes
-themeoptions: "coding=utf8,language=english"
+themeoptions: "coding=utf8,language=french"
 classoption: 'french'
 fontsize: 11pt
 geometry: margin=0.95in
@@ -1209,13 +1209,13 @@ LY_{t} = \left\{ \begin{array}{rl}
 Une spécification alternative consiste à regrouper les régresseurs du lundi au vendredi et ceux du samedi et du dimanche^[
 On a donc $\beta_1=\beta_2=\dots=\beta_5$ et $\beta_6 = 0$.
 ].
-On considère ainsi que l'effet d'un lundi lundi est le même que l'effet d'un mardi, etc. jusqu'au vendredi et que cet effet est différent le samedi et le dimanche. Le modèle \@ref(eq:eqcjo) devient :
+On considère ainsi que l'effet d'un lundi lundi est le même que l'effet d'un mardi, etc. jusqu'au vendredi et que cet effet est différent le samedi et le dimanche. Le modèle \@ref(eq:eqcjotd) devient :
 \begin{eqnarray}
 y_t=\beta_0 LY_t + \tilde\beta_1 \left(\sum_{j=1}^{5}N_{jt} - (N_{6t} + N_{7t})\right) + \varepsilon'_t
 (\#eq:eqcjowd)
 \end{eqnarray}
 
-Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettant le régresseur $LY_t$ dans \@ref(eq:eqcjo) et \@ref(eq:eqcwd). On considère qu'il y a un effet jours ouvrables significatif lorsque $\exists i\in \{1,2,\dots,6\}\::\:\beta_i\ne0$ ou lorsque $\tilde\beta_1\ne0$.
+Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettant le régresseur $LY_t$ dans \@ref(eq:eqcjotd) et \@ref(eq:eqcjowd). On considère qu'il y a un effet jours ouvrables significatif lorsque $\exists i\in \{1,2,\dots,6\}\::\:\beta_i\ne0$ ou lorsque $\tilde\beta_1\ne0$.
 
 
 ## Correction des effets saisonniers {#sec:cvs}

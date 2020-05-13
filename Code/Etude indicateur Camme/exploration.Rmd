@@ -138,6 +138,97 @@ https://en.wikipedia.org/wiki/Dynamic_time_warping
 
 https://towardsdatascience.com/dynamic-time-warping-3933f25fcdd
 
+## Sur séries CVS
+
+
+```{r}
+distance <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  
+  dtw_b <- dtw(get_indicators(jx13(modeles[,i]),"sa")[[1]],
+      window(data[,"ind_synt_brut"], start = start(modeles), end = end(modeles)),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw(get_indicators(jx13(modeles[,i]),"sa")[[1]],
+                 window(data[,"Indicateur synthétique"], start = start(modeles), end = end(modeles)),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <- c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
+}
+))
+round(distance, 3)
+```
+
+```{r}
+distance_diff <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  dtw_b <- dtw(diff(get_indicators(jx13(modeles[,i]),"sa")[[1]]),
+      diff(window(data[,"ind_synt_brut"], 
+             start = start(modeles), end = end(modeles))),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw(diff(get_indicators(jx13(modeles[,i]),"sa")[[1]]),
+                 diff(window(data[,"Indicateur synthétique"],
+                        start = start(modeles), end = end(modeles))),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <-  c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
+}
+))
+round(distance_diff, 3)
+```
+
+
+
+Et si on renormalise :
+
+```{r}
+distance_norm <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  dtw_b <- dtw(scale(get_indicators(jx13(modeles[,i]),"sa")[[1]]),
+      scale(window(data[,"ind_synt_brut"], 
+             start = start(modeles), end = end(modeles))),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw(scale(get_indicators(jx13(modeles[,i]),"sa")[[1]]),
+                 scale(window(data[,"Indicateur synthétique"],
+                        start = start(modeles), end = end(modeles))),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <-  c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
+}
+))
+round(distance_norm, 3)
+```
+
+```{r}
+distance_norm_diff <- do.call(rbind, lapply(1:ncol(modeles), function(i){
+  dtw_b <- dtw(scale(get_indicators(jx13(modeles[,i]),"sa")[[1]]),
+      scale(window(data[,"ind_synt_brut"], 
+             start = start(modeles), end = end(modeles))),
+      keep=TRUE, window.size = 2)
+  dtw_cvs <- dtw(scale(get_indicators(jx13(modeles[,i]),"sa")[[1]]),
+                 scale(window(data[,"Indicateur synthétique"],
+                        start = start(modeles), end = end(modeles))),
+                 keep=TRUE, window.size = 2)
+  res <- data.frame(dtw_b$distance, dtw_b$normalizedDistance,
+             dtw_cvs$distance, dtw_cvs$normalizedDistance,
+             row.names = colnames(modeles)[i])
+  colnames(res) <-  c("D. ind_brut", "D. norm. ind_brut",
+                     "D. ind_cvs", "D. norm. ind_cvs")
+  res
+}
+))
+round(distance_norm_diff, 3)
+```
+
+
 
 
 
@@ -275,10 +366,11 @@ On va plutôt étudier l'indicateur retardé. Il y a une tendance dans les deux 
 
 
 ```{r}
-PP.test(donnes_calcul_lag[,"Ind_sent"])
-tseries::kpss.test(donnes_calcul_lag[,"Ind_sent"])
-PP.test(diff(donnes_calcul_lag[,"Ind_sent"],1))
-tseries::kpss.test(diff(donnes_calcul_lag[,"Ind_sent"],1))
+y <- get_indicators(jx13(donnes_calcul_lag[,"Ind_sent"]),"sa")[[1]]
+PP.test(y)
+tseries::kpss.test(y)
+PP.test(diff(y,1))
+tseries::kpss.test(diff(y,1))
 PP.test(donnes_calcul_lag[,"ind_synt_brut"])
 tseries::kpss.test(donnes_calcul_lag[,"ind_synt_brut"])
 PP.test(diff(donnes_calcul_lag[,"ind_synt_brut"],1))
@@ -292,33 +384,34 @@ tseries::kpss.test(diff(donnes_calcul_lag[,"ind_synt_cvs"],1))
 Il y a donc présence d'une tendance stochastique. On peut faire un test de cointégration pour voir si les séries partagent la même tendance stochastique : ce n'est pas le cas.
 
 ```{r}
-aTSA::coint.test(donnes_calcul_lag[,"Ind_sent"], donnes_calcul_lag[,"ind_synt_brut"],d = 0)
-aTSA::coint.test(donnes_calcul_lag[,"Ind_sent"], donnes_calcul_lag[,"ind_synt_cvs"],d = 0)
+aTSA::coint.test(y, donnes_calcul_lag[,"ind_synt_brut"],d = 0)
+aTSA::coint.test(y, donnes_calcul_lag[,"ind_synt_cvs"],d = 0)
 ```
 
 Il n'y a aucune des deux séries qui Granger Cause, je pense qu'il faut uniquement regarder le test en différence mais je laisse en niveau quand même pour info. En comparant à l'indicateur Camme CVS pas de causalité au sens de Granger
 ```{r}
 library(lmtest)
-grangertest(donnes_calcul[, "Ind_sent"], donnes_calcul[, "ind_synt_cvs"], order = 1)
-grangertest(donnes_calcul[, "ind_synt_cvs"], donnes_calcul[, "Ind_sent"], order = 1)
+y <- get_indicators(jx13(donnes_calcul[, "Ind_sent"]),"sa")[[1]]
+grangertest(y, donnes_calcul[, "ind_synt_cvs"], order = 1)
+grangertest(donnes_calcul[, "ind_synt_cvs"], y, order = 1)
 
-grangertest(diff(donnes_calcul[, "Ind_sent"]), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
-grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(donnes_calcul[, "Ind_sent"]), order = 1)
+grangertest(diff(y), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(y), order = 1)
 ```
 
 En comparant à l'indicateur Camme brut, on observe une causalité à 5 % : note indicateur cause instannément au sens de Granger l'indicateur Brut de l'enquête Camme (non retardé).
 ```{r}
-grangertest(donnes_calcul[, "Ind_sent"], donnes_calcul[, "ind_synt_brut"], order = 1)
-grangertest(donnes_calcul[, "ind_synt_brut"], donnes_calcul[, "Ind_sent"], order = 1)
+grangertest(y, donnes_calcul[, "ind_synt_brut"], order = 1)
+grangertest(donnes_calcul[, "ind_synt_brut"], y, order = 1)
 
-grangertest(diff(donnes_calcul[, "Ind_sent"]), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
-grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(donnes_calcul[, "Ind_sent"]), order = 1)
+grangertest(diff(y), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(y), order = 1)
 ```
 
 Quand on prend l'indicateur Camme retardé, on trouve que l'indicateur Camme brut granger cause notre indicateur au seuil de 10 %.
 
 ```{r}
-grangertest(diff(donnes_calcul_lag[, "ind_synt_brut"]), diff(donnes_calcul_lag[, "Ind_sent"]), order = 1)
+grangertest(diff(donnes_calcul_lag[, "ind_synt_brut"]), diff(get_indicators(jx13(donnes_calcul_lag[, "Ind_sent"]),"sa")[[1]]), order = 1)
 ```
 
 
@@ -336,10 +429,11 @@ AQLTools::hc_stocks(diff(donnes_calcul_lag[,1:5]),digits = 2)
 Pas de causalité au sens de Granger :
 
 ```{r}
-grangertest(diff(donnes_calcul[, "Baseline_git"]), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
-grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(donnes_calcul[, "Baseline_git"]), order = 1)
-grangertest(diff(donnes_calcul[, "Baseline_git"]), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
-grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(donnes_calcul[, "Baseline_git"]), order = 1)
+y <- get_indicators(jx13(donnes_calcul[, "Baseline_git"]),"sa")[[1]]
+grangertest(diff(y), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(y), order = 1)
+grangertest(diff(y), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(y), order = 1)
 ```
 
 Ni de cointégration :
@@ -355,10 +449,11 @@ Pas de causalité au sens de Granger :
 
 
 ```{r}
-grangertest(diff(donnes_calcul[, "Baseline_sncf"]), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
-grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(donnes_calcul[, "Baseline_sncf"]), order = 1)
-grangertest(diff(donnes_calcul[, "Baseline_sncf"]), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
-grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(donnes_calcul[, "Baseline_sncf"]), order = 1)
+y <- get_indicators(jx13(donnes_calcul[, "Baseline_sncf"]),"sa")[[1]]
+grangertest(diff(y), diff(donnes_calcul[, "ind_synt_cvs"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_cvs"]), diff(y), order = 1)
+grangertest(diff(y), diff(donnes_calcul[, "ind_synt_brut"]), order = 1)
+grangertest(diff(donnes_calcul[, "ind_synt_brut"]), diff(y), order = 1)
 ```
 
 Ni de cointégration :
@@ -367,6 +462,7 @@ Ni de cointégration :
 aTSA::coint.test(donnes_calcul_lag[,"Baseline_sncf"], donnes_calcul_lag[,"ind_synt_brut"],d = 0)
 aTSA::coint.test(donnes_calcul_lag[,"Baseline_sncf"], donnes_calcul_lag[,"ind_synt_cvs"],d = 0)
 ```
+
 ## Etude des corrélations
 
 **Spoiler alert** aucune corrélation significative. Pas de différence quand on regarde les séries retardées.
@@ -597,7 +693,9 @@ AQLTools::hc_stocks(round(scale(donnes_calcul[,1:3]),2)) %>%
     hc_add_series(data_flags[grep("FD",data_flags$title),], hcaes(x = date),
                   type = "flags", onSeries = "id1",name = "Fais divers")%>% 
     hc_add_series(data_flags[grep("S",data_flags$title),], hcaes(x = date),
-                  type = "flags", onSeries = "id1",name = "Sport")
+                  type = "flags", onSeries = "id1",name = "Sport") %>% 
+    hc_add_series(data_flags[grep("A",data_flags$title),], hcaes(x = date),
+                  type = "flags", onSeries = "id1",name = "Attentat")
 ```
 
 

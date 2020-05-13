@@ -1243,15 +1243,15 @@ Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettant le r�
 \hypertarget{sec:cvs}{%
 \subsection{Correction des effets saisonniers}\label{sec:cvs}}
 
-L'objectif de la désaisonnaliser est de décomposer une série \(X_t\) en trois composantes inobservées :
+L'objectif de la désaisonnaliser est de décomposer une série \(X_t\) en trois composantes inobservées : la tendance-cycle,
 
 \begin{itemize}
 \item
-  \(TC_t\) la tendance-cycle
+  \(TC_t\) la tendance-cycle : combinaison de la tendance et du cycle ;
 \item
-  \(S_t\) la saisonnalité
+  \(S_t\) la saisonnalité : une fluctuation qui qui se répète d'année en année à la même période
 \item
-  \(I_t\) l'irrégulier
+  \(I_t\) l'irrégulier : une fluctuation résiduelle non comprise dans les deux composantes précédentes (chocs ponctuels, etc.)
 \end{itemize}
 
 Parler en quelques mots de la méthode de désaisonnalisation et de la décomposition.

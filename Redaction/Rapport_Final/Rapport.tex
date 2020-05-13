@@ -837,19 +837,16 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 \hypertarget{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}{%
 \subsection{Sentiments des tweets et enquête de conjoncture auprès des ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}}
 
-À partir du modèle logit décrit dans la partie \ref{sec:wordembeddings}, nous construisons un indicateur mensuel de sentiment des tweets.
-Pour cela, nous calculons une représentation vectorielle de chaque tweet en faisant la moyenne de celles de chaque mots présents dans le tweet.
-Nous prédisons ensuite le sentiment grâce à notre modèle entraîné sur les tweets de la base de la SNCF.
+Nous construisons désormais un indicateur mensuel de sentiment des tweets postés en France entre 2011 et 2018 (encadré \ref{enc:encadre1}) en appliquant le modèle logit sur les \emph{sentence-embeddings} (partie \ref{sec:wordembeddings}) et en calculant la moyenne des sentiments prévus pour ces tweets (0 si négatifs, 1 si positifs) pour chaque mois.\\
 Afin de comparer notre indicateur à l'indicateur synthétique de confiance des ménages de l'enquête Camme, plusieurs éléments sont à prendre en considération :
 
 \begin{itemize}
 \item
-  L'indicateur Camme, tout comme notre indicateur de sentiment, n'ont pas de sens en niveau : on ne cherche pas à savoir si, à un certain mois, les tweets sont plutôt positifs ou négatifs, mais plutôt à analyser l'évolution de ce sentiment.
+  L'indicateur Camme, tout comme notre indicateur de sentiment, n'ont pas de sens en niveau. On ne cherche pas à savoir si, à un certain mois, les tweets sont plutôt positifs ou négatifs, mais plutôt à analyser l'évolution de ce sentiment.
   C'est pourquoi les deux indicateurs seront centrés réduits sur la période 2011-2018.
 \item
-  L'indicateur synthétique de l'enquête Camme est un indicateur retardé.
-  En effet, les résultats publiés au mois \(m\) portent sur l'opinion des ménages au mois \(m-1\).
-  Pour le comparer à notre indicateur synthétique, il est donc nécessaire de le retarder (i.e. : de le décaler d'un mois).
+  L'indicateur synthétique de l'enquête Camme publié au mois \(m\) porte sur l'opinion des ménages au mois \(m-1\).
+  Pour le comparer à notre indicateur synthétique, il est donc nécessaire de le retarder (i.e. : de le décaler d'un mois précédent).
 \item
   Notre indicateur de sentiment est brut, il n'est donc pas corrigé des varations saisonnières et des jours ouvrables (CVS-CJO).
   \emph{A contrario}, l'indicateur synthétique issu de l'enquête Camme peut-être considéré comme CVS-CJO puisqu'il est construit à partir de soldes d'opinion CVS-CJO. Pour comparer notre indicateur à l'indicateur issu de Camme, deux solutions sont possibles :
@@ -861,75 +858,61 @@ Afin de comparer notre indicateur à l'indicateur synthétique de confiance des 
     Pour cela nous avons utilisé la méthode X-12ARIMA (annexe \ref{annexe:cvscjo}).
   \item
     Utiliser un indicateur synthétique brut issu de Camme.
-    Pour cela nous avons reproduit l'analyse factorielle utilisé pour construire l'indicateur synthétique publié par l'Insee pour extraire les poids associés à chaque variable\footnote{Faire une analyse factorielle statique revient à faire une moyenne pondérer des 8 soldes d'opinion centrés-réduits.}.
-    Nous avons ensuite construit un nouvel indicateur synthétique en appliquant ces poids aux soldes d'opinion bruts.
+    Pour cela, nous avons construit un nouvel indicateur synthétique en appliquant les poids associés à chaque variable aux soldes d'opinion bruts\footnote{Pour connaître ces poinds, nous avons reproduit l'analyse factorielle utilisée pour construire l'indicateur synthétique publié par l'Insee. Faire une analyse factorielle statique revient à faire une moyenne pondérée des 8 soldes d'opinion centrés-réduits.}.
   \end{enumerate}
 
-  Lorsque c'est possible nous privilégierons la seconde solution : supprimer la saisonnalité serait enlever une information importante pour l'analyse de l'évolution des sentiments.
-  Toutefois, les méthodes économétriques ne sont plus applicables sur des données brutes : dans ce cas nous utiliserons les séries désaisonnalisées.
+  Lorsque cela est possible, nous privilégierons la seconde solution : supprimer la saisonnalité serait enlever une information importante pour l'analyse de l'évolution des sentiments.
+  Toutefois, de nombreuses méthodes économétriques ne sont applicables que sur les séries stationnaires \colorbox{BurntOrange}{Pour Alain : le terme stationnaire est-il juste ?} et donc désaisonnalisées, c'est pourquoi nous utiliserons dans ces cas la première approche.
 \end{itemize}
 
 \hypertarget{subsec:compseries}{%
 \subsubsection{Comparaison entre les séries}\label{subsec:compseries}}
 
-Le graphique \ref{fig:bslogcam} présente les indicateurs de sentiment construits à partir de notre modèle \emph{word2vec}, celui construit à partir du modèle de référence et l'indicateur synthétique brut issu de l'enquête Camme (retardé).
-Même si les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur issu de l'enquête Camme, on observe plusieurs évolutions similaires (par exemple le pic dans tous les indicateurs entre mars et octobre 2012).
-Par ailleurs, l'indicateur de sentiment construit à partir du modèle de référence parait plus bruité que l'indicateur de sentiment construit à partir de notre modèle \emph{word2vec}.
-Cela peut venir du fait que, dans les tweets utilisés pour construire les indicateurs mensuels, il y a bien plus de mots inconnus au modèle de référence (20,7 \%) qu'à notre modèle \emph{word2vec} (13,6 \%).
+Le graphique \ref{fig:bslogcam} présente l'indicateur de sentiment construit à partir de notre modèle \emph{word2vec}, celui construit à partir du modèle de référence et l'indicateur synthétique brut issu de l'enquête Camme (retardé).
+Même si les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur issu de l'enquête Camme, on observe plusieurs évolutions similaires (par exemple le pic entre mars et octobre 2012).
+Par ailleurs, l'indicateur construit à partir du modèle de référence parait plus bruité que l'indicateur de sentiment construit à partir de notre modèle \emph{word2vec}.
+Cela peut venir du fait que, dans les tweets utilisés pour construire les indicateurs mensuels, il y a bien plus de mots inconnus au modèle de référence basé sur les tweets SNCF (20,7 \%) qu'à notre modèle \emph{word2vec} qui comporte de nombreux \emph{vecteurs-mots} (13,6 \%).
 
 \begin{figure}[htp]
 {\centering \includegraphics[width =\textwidth]{img/rmd-graphSentiments-1}}
 \captionsetup{margin=0cm,format=hang,justification=justified}
 \caption{Indicateur synthétique brut de confiance des ménages de l'enquête Camme (retardé) et indicateurs mensuels de sentiment construits à partir de notre modèle \emph{word2vec} et à partir de notre modèle de référence.}\label{fig:bslogcam}
 \footnotesize
-\emph{Note de lecture : tous les indicateurs sont centrés-réduits avant d'avoir une moyenne nulle et une variance égale à 1 entre janvier 2011 et décembre 2018.}
+\emph{Note de lecture : tous les indicateurs sont centrés-réduits (de moyenne nulle et de variance unitaire) entre janvier 2011 et décembre 2018.}
 
-\emph{L'indicateur Camme brut correspond à l'indicateur que l'on obtient en utilisant les mêmes soldes d'opinion et les mêmes coefficients que dans l'indicateur synthétique publié par l'Insee mais en utilisant les soldes d'opinion bruts plutôt que CVS-CJO.
+\emph{L'indicateur Camme brut, calculé par les auteurs, est obtenu en utilisant les mêmes soldes d'opinion et coefficients que ceux de l'indicateur synthétique publié par l'Insee, mais en utilisant les soldes d'opinion bruts plutôt que CVS-CJO.
 Cet indicateur est retardé : la valeur au mois $m$ correspond à la publication du mois $m-1$.}
 \end{figure}
 
-Afin de regarder les similitudes entre nos indicateurs de sentiment et l'indicateur Camme, nous utilisons un algorithme de déformation temporelle dynamique --- \emph{Dynamic Time Warping} (DTW) (voir par exemple \cite{dtw} pour l'implémentation en \faRProject).
-Cet algorithme permet de calculer les distances entre deux séries temporelles, en étant robuste aux différentes amplitudes et aux décalages temporelles.
+Afin de regarder les similitudes entre nos indicateurs de sentiment et l'indicateur Camme, nous utilisons un algorithme de déformation temporelle dynamique --- \emph{Dynamic Time Warping} (DTW) (voir par exemple \cite{dtw} pour son implémentation en \faRProject{} que nous utilisons ici).
+Cet algorithme permet de calculer une distance entre deux séries temporelles robuste aux différentes amplitudes et aux décalages temporels.
 Ainsi, la distance entre une série et la même série retardée sera nulle (les deux séries représentent la même information) alors que ce ne serait pas le cas si on utilisait d'autres distances, comme la distance euclidienne.
-À partir de cet méthode, nous trouvons que la similarité entre l'indicateur Camme et notre indicateur de sentiment issu du modèle de référence est plus grande que celle entre l'indicateur Camme et l'indicateur de sentiment calculé à partir de notre modèle \emph{word2vec}.
+Cette méthode conclut sur le fait que la similarité entre l'indicateur Camme et notre indicateur de sentiment issu du modèle de référence est légèrement plus grande que celle entre l'indicateur Camme et l'indicateur de sentiment calculé à partir de notre modèle \emph{word2vec}.
 
 \hypertarget{et-dans-une-optique-de-pruxe9vision}{%
 \subsubsection{Et dans une optique de prévision ?}\label{et-dans-une-optique-de-pruxe9vision}}
 
-Nos deux indicateurs de sentiment constituent des indicateurs avancés de l'indicateur synthétique issu de l'enquête Camme.
-En effet, les sentiments issus des tweets du mois \(m\) peuvent se rapprocher des résultats de l'enquête Camme du mois \(m+1\).
+Les deux indices de sentiments issus des tweets du mois \(m\) peuvent se rapprocher des résultats de l'enquête Camme du mois \(m+1\) et sont alors disponibles un mois plus tôt.
 Nous allons donc étudier dans quelle mesure nos indicateurs permettent de prévoir les résultats de l'indicateur synthétique de Camme.
 
-Dans cette partie nous étudions les séries désaisonnalisées et différenciées.
-En effet, afin que les résultats économétriques de cette partie soient valides, il est nécessaire de stationnariser les séries.
-Or la figure \ref{fig:bslogcam} suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par le test de Philipps-Perron et le test KPSS), également présente dans les séries désaisonnalisées (puisque la tendance est conservée).
-Différencier les séries désaisonnalisées permet d'obtenir des séries stationnaires.
+Dans cette partie, afin que les résultats économétriques soient valides, nous étudions les séries stationnaires, c'est-à-dire désaisonnalisées et différenciées.
+En effet, la figure \ref{fig:bslogcam} suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par les tests de Philipps-Perron et KPSS), y compris lorsqu'ils sont désaisonnalisés. \colorbox{BurntOrange}{Alain : regarder commentaire.}
 
-Nous trouvons alors que :
+L'indicateur de sentiment issu du modèle \emph{word2vec} cause au sens de Granger l'indicateur synthétique issus de l'enquête Camme (p-valeur de 0,02).
+C'est-à-dire que la connaissance de l'évolution de notre second indicateur de sentiment apporte de l'information pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
+Ce n'est pas le cas pour le premier indicateur (référence) calculé uniquement à partir des sentiments des mots des tweets (p-valeur de 0,58), malgré la similitude entre ces deux modèles (partie \ref{subsec:compseries}).
 
-\begin{itemize}
-\item
-  L'indicateur de sentiment issu du modèle \emph{word2vec} cause au sens de Granger l'indicateur synthétique issus de l'enquête Camme (p-valeur de 0,02).
-  C'est-à-dire que la connaissance de l'évolution de notre indicateur de sentiment est utile pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
-\item
-  L'indicateur de sentiment issu du modèle de référence ne cause pas au sens de Granger l'indicateur synthétique issus de l'enquête Camme (p-valeur de 0,58).
-  C'est-à-dire que la malgré la similitude entre les deux indicateurs soulignée dans la partie \ref{subsec:compseries}, la connaissance de l'évolution de l'indicateur de sentiment issu du modèle de référence n'est pas utile pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
-\end{itemize}
+\bigskip
 
-En somme, exploiter les résultats de \emph{word2vec} pour construire un indicateur de sentiment permet bien d'améliorer les résultats par rapport à l'utilisation d'un modèle simple.
-En effet, en procédant de cette façon, nous sommes capables de construire un indicateur avancé de l'opinion des ménages issu de l'enquête Camme, alors que les thèmes traités par les deux indicateurs sont différents.
-L'indicateur synthétique de l'enquête Camme résume l'opinion des ménages français sur des sujets très spécifiques (évolution du niveau de vie, du chômage, etc.) alors que notre indicateur de sentiment indique juste si les individus sont plus ou moins positifs en fonction des mois, sans cibler de thématique particulière.
-Cela pourrait expliquer une partie différences observées entre nos deux indicateurs.
+En somme, l'exploitation des résultats de \emph{word2vec} dans la construction d'un indice de sentiment de tweets permet, contrairement au modèle de référence, de construire un indicateur anticipé d'un mois permettant de prévoir (au sens de Granger) l'indicateur synthétique de l'enquête Camme. Cela est vrai alors même que les deux indicateurs évoluent différemment en raison de leur philosophie différente : alors que l'indicateur Camme résume l'opinion des ménages sur des sujets très spécifiques (évolution du niveau de vie, du chômage, etc.), notre indicateur de sentiment mesure juste la positivité / négativité des mots employés dans des tweets, sans cibler de thématique particulière.
 
-La construction de notre indicateur pourrait être amélioré en de nombreux points.
+La construction d'un indice de sentiment basé sur les tweets pourrait évidemment être prolongée et améliorée.
+Un prolongement possible serait le prétraitement plus approfondi de la base de tweets. Les mots mal orthographiés (lettres en trop, oubli d'espace, mauvaise ponctuation\dots) accroissent en effet considérablement la taille du vocabulaire et la rareté des mots.
+Toutefois, cette correction doit être effectuée avec précaution ; les différentes orthographes du même mot peuvent parfois refléter des sentiments différents.
+Par exemple, «~lol~», «~LOL~» et «~loool~» sont peut-être utilisées dans des contextes différents : ironie, blagues, rires\dots
 
-En amont de la construction de la représentation vectorielle des mots, on pourrait appronfondir le pré-traitement de la base.
-En effet, une des difficultés de notre base de données est que les mots peuvent être mal orthographiés (lettres en trop, oubli d'espace, mauvaise ponctuation\dots) ce qui accroit considérablement la taille du vocabulaire et la probabilité de trouver des mots inconnus dans la construction d'indicateurs de sentiment.
-Toutefois, cette correction doit être effectuée avec précaution puisque l'on peut penser que différentes orthographes du même mots, ou même différentes casses, peuvent refléter des sentiments différents.
-On peut par exemple penser que les trois orthographes suivantes du même mot «~mdr~», ne sont pas utilisées dans le même contexte : «~mdrrrrrrrrrrr~», «~MDRRRRRRRRR~» ou «~mdr~».
-
-En aval de \emph{word2vec}, la qualité de notre indicateur de sentiment pourrait être améliorée en utilisant des modèles plus complexes pour effectuer l'analyse de sentiments, comme des réseaux de neurones récurrents, ou encore en mobiliser d'auters bases de données pour intégrer une catégorie «~neutre~» dans la prévision des entiments.
-Nous pourrions égalment essayer mieux gérer la gestion des mots manquants dans la prévision des sentiments, en étudiant plus précisément ces mots et l'impact de notre méthode imputation.
+L'utilisation de modèles d'analyse de sentiments plus complexes, comme les réseaux de neurones récurrents, amélioreraient peut-être également la qualité de la prévision du sentiment d'un tweet, tout comme l'utilisation de bases d'entraînement contenant une plus grande gradation des sentiments des tweets (permettant notamment qu'ils soient catégorisés de «~neutres~»).
+Nous pourrions également essayer de gérer avec plus de précision les mots manquants, en étudiant leur nature et l'impact de notre méthode d'imputation sur les prévisions de sentiments.
 
 \newpage
 

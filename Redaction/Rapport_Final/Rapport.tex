@@ -698,7 +698,7 @@ Nous comparerons deux approches : une première basée sur les sentiments moyens
 Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
 Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
 \[S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\} - 1 \qquad \in [0,1]\]
-avec \(\gamma \in [-1,1]\) un seuil fixé, \(\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]\) le sentiment moyen du mot \(i\) calculé à partir du nombre de fois qu'il apparait dans un tweet positif (\(nb_+(i)\)) et négatif (\(nb_-(i)\)).
+avec \(\gamma \in [-1,1]\) un seuil fixé, \(\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]\) le sentiment moyen du mot \(i\) calculé à partir du nombre de tweets positifs (\(nb_+(i)\)) et négatifs (\(nb_-(i)\)) dans lesquels il apparaît.
 
 Afin d'évaluer l'efficacité du modèle et de sélectionner le \(\gamma\) qui présente les meilleures performances, nous séparons le corpus de la SNCF en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots\footnote{13 \% des mots du vocabulaires et 1 \% des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen \(\alpha_i\) est fixé à 0.}, et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
 
@@ -755,7 +755,8 @@ La première est de retirer ces mots des tweets analysés afin qu'ils n’influe
 La seconde est de leur attribuer la valeur du vecteur correspondant aux mots rares (vecteur « lowfrequency », voir partie \ref{subsec:baseentrainement}) en partant du principe que s'ils sont absents du corpus d'entraînement du modèle \emph{word2vec}, ce sont bien des mots très peu fréquents. 
 C’est cette deuxième option qui semble donner des résultats légèrement meilleurs, ce qui peut signifier que l’on capte alors le fait que les mots peu fréquents ne sont en moyenne pas neutres (plutôt positifs ou négatifs\footnote{En utilisant le modèle logit retenu, la prévision d'une \emph{sentence-embedding} composée uniquement du mot « lowfrequency » donne $\widehat{\mathbb{P}}(Y_i = 1 | X_{lowfrequency}) = 0,87$, ce qui laisse supposer que les mots-rares ont une consonance davantage positive.}). 
 
-\item \textbf{La modélisation probit ou logit}. En plus de comparer leurs AUC, à specification fixée, on compare les modèles logit et probit avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les mêmes résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
+\item \textbf{La modélisation probit ou logit}. En plus de comparer les AUC des différentes spécifications ci-dessus,  on compare à spécification fixée les modèles logit et probit avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les mêmes résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
+
 \end{enumerate}
 
 Finalement, nous retenons le modèle estimé par une \textbf{régression logit} sur la base en \textbf{gardant les mots-vides} et en affectant aux mots inconnus le \textbf{vecteur des mots très peu fréquents}. L'\emph{accuracy} de ce modèle est de 69,8 \%\footnote{Cette valeur de l'\emph{accuracy} correspond au seuil \(\gamma = 0,5\). Comme dans la partie précédente, nous avons déterminé le seuil optimal et comme celui-ci était très proche de 0,5 (\(\gamma^* = 0.495\)), pour une \emph{accuracy} de seulement 70,0 \%, nous avons conservé le seuil médian de \(0,5\).}, valeur inférieure au modèle de référence de la partie \ref{sec:sentiments} (89,1 \%).
@@ -788,7 +789,7 @@ En effet, la distribution de la part des mots inconnus est étonnamment similair
 \paragraph{Le processus d'annotation utilisé par la SNCF}\label{le-processus-dannotation-utilisuxe9-par-la-sncf}}
 
 L'éventualité que la méthode de référence reproduise en partie le processus qui a été utilisé pour générer les sentiments de la base SNCF pourrait également être une explication de la surperformance du modèle de référence.
-En effet, nous ne disposons pas de la méthodologie qui a permis à la SNCF d'annoter ses tweets et nous avons pu relever quelques incohérences dans les sentiments attribués à certains tweets. Cela peut laisser supposer qui peut laisser supposer que l'annotation n'a pas été purement manuelle ou bien a été faite avec quelques erreurs.
+En effet, nous ne disposons pas de la méthodologie qui a permis à la SNCF d'annoter ses tweets et nous avons pu relever quelques incohérences dans les sentiments attribués à certains tweets. Cela peut laisser supposer que l'annotation n'a pas été purement manuelle.
 Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a en effet été qualifié de positif.
 
 \begin{quote}
@@ -807,7 +808,7 @@ Dans le cas de \emph{deep-learning} sur des données de photographie, il pourrai
 Dans notre cas précis, il s'agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets de la SNCF, qui portent sur un sujet très spécifique et pour lesquels certains mots ont peut-être une interprétation spécifique en termes de sentiments.
 Modéliser le «~domain shift~» implique donc d'estimer le passage d'une représentation à une autre en utilisant des informations de distribution\footnote{La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le « domain shift » lié à l’utilisation d’appareil photos différents.}.
 
-L'idée n'est pas ici de modéliser mathématiquement\footnote{Pour modéliser mathématiquement de manière relativement «~grossière~» un \emph{domain shift}, il s'agirait de considérer par exemple une variable latente «~idéale~» \(x_0\) (une base de tweets de référence), jamais observée mais qui influerait sur \(y\) (l'indice mensuel).
+L'idée n'est pas ici de modéliser mathématiquement \colorbox{BurntOrange}{NDBP à conserver ?}\footnote{Pour modéliser mathématiquement de manière relativement «~grossière~» un \emph{domain shift}, il s'agirait de considérer par exemple une variable latente «~idéale~» \(x_0\) (une base de tweets de référence), jamais observée mais qui influerait sur \(y\) (l'indice mensuel).
   Nous observons uniquement \(x\) telle \(x=F(x_0)\) avec \(F\) qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données \(x\) utilisée.
   La distribution \(P(y|x_0)\) (de l'indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base «~sncf~» et base de tweets postés en France entre 2013 et 2017).
   En revanche, cette distribution est modifiée si \(F\) est modifiée.} le \emph{domain shift} mais de remarquer que la base de tweets de la SNCF semble en effet qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé\footnote{Les mots «~bus~» (3800 occurrences), «~métro~» (820), «~sncf~» (781), «~retard~» (411), «~ratp~» (237), «~gare~» (195), «~chauffeur~» (160)\dots\{\} sont parmi les plus employés dans les tweets de la base test.} mais également de part le ton particulièrement ironique de nombreux tweets\footnote{Comme en témoignent ces deux tweets «~1h de retard la sncf, vous savez pas l'amour que je vous porte~» et «~J'ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas~».
@@ -837,7 +838,7 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 \subsection{Sentiments des tweets et enquête de conjoncture auprès des ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}}
 
 À partir du modèle logit décrit dans la partie \ref{sec:wordembeddings}, nous construisons un indicateur mensuel de sentiment des tweets.
-Pour cela, nous calculons une représentation vectorielle de chaque tweet en faisnat la moyenne de celles de chaque mots présents dans le tweet.
+Pour cela, nous calculons une représentation vectorielle de chaque tweet en faisant la moyenne de celles de chaque mots présents dans le tweet.
 Nous prédisons ensuite le sentiment grâce à notre modèle entraîné sur les tweets de la base de la SNCF.
 Afin de comparer notre indicateur à l'indicateur synthétique de confiance des ménages de l'enquête Camme, plusieurs éléments sont à prendre en considération :
 

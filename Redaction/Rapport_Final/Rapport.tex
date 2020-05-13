@@ -837,7 +837,7 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 \subsection{Sentiments des tweets et enquête de conjoncture auprès des ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}}
 
 À partir du modèle logit décrit dans la partie \ref{sec:wordembeddings}, nous construisons un indicateur mensuel de sentiment des tweets.
-Pour cela, nous calculons une représentation vectorielle de chaque tweet à partir de celles de chaque mots présents dans le tweet.
+Pour cela, nous calculons une représentation vectorielle de chaque tweet en faisnat la moyenne de celles de chaque mots présents dans le tweet.
 Nous prédisons ensuite le sentiment grâce à notre modèle entraîné sur les tweets de la base de la SNCF.
 Afin de comparer notre indicateur à l'indicateur synthétique de confiance des ménages de l'enquête Camme, plusieurs éléments sont à prendre en considération :
 
@@ -872,7 +872,7 @@ Afin de comparer notre indicateur à l'indicateur synthétique de confiance des 
 \subsubsection{Comparaison entre les séries}\label{subsec:compseries}}
 
 Le graphique \ref{fig:bslogcam} présente les indicateurs de sentiment construits à partir de notre modèle \emph{word2vec}, celui construit à partir du modèle de référence et l'indicateur synthétique brut issu de l'enquête Camme (retardé).
-Même si en niveau nos deux indicateurs de sentiment diffèrent de l'indicateur issu de l'enquête Camme, on observe plusieurs évolutions similaires (par exemple le pic dans tous les indicateurs entre mars et octobre 2012).
+Même si les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur issu de l'enquête Camme, on observe plusieurs évolutions similaires (par exemple le pic dans tous les indicateurs entre mars et octobre 2012).
 Par ailleurs, l'indicateur de sentiment construit à partir du modèle de référence parait plus bruité que l'indicateur de sentiment construit à partir de notre modèle \emph{word2vec}.
 Cela peut venir du fait que, dans les tweets utilisés pour construire les indicateurs mensuels, il y a bien plus de mots inconnus au modèle de référence (20,7 \%) qu'à notre modèle \emph{word2vec} (13,6 \%).
 
@@ -901,7 +901,7 @@ Nous allons donc étudier dans quelle mesure nos indicateurs permettent de prév
 
 Dans cette partie nous étudions les séries désaisonnalisées et différenciées.
 En effet, afin que les résultats économétriques de cette partie soient valides, il est nécessaire de stationnariser les séries.
-Or la figure \ref{fig:bslogcam} suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par le test de Philipps-Perron et le test KPSS), également présente dans les séries désaisonnalisées permet d'obtenir des (puisque la tendance est conservée).
+Or la figure \ref{fig:bslogcam} suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par le test de Philipps-Perron et le test KPSS), également présente dans les séries désaisonnalisées (puisque la tendance est conservée).
 Différencier les séries désaisonnalisées permet d'obtenir des séries stationnaires.
 
 Nous trouvons alors que :
@@ -917,7 +917,7 @@ Nous trouvons alors que :
 
 En somme, exploiter les résultats de \emph{word2vec} pour construire un indicateur de sentiment permet bien d'améliorer les résultats par rapport à l'utilisation d'un modèle simple.
 En effet, en procédant de cette façon, nous sommes capables de construire un indicateur avancé de l'opinion des ménages issu de l'enquête Camme, alors que les thèmes traités par les deux indicateurs sont différents.
-L'indicateur synthétique de l'enquête Camme résume l'opinion des ménages français sur des sujets très spécifiques (évolution du niveau de vie, du chômage, etc.) alors que notre indicateur de sentiment indique juste si les individus sont plus ou moins positifs en fonction des mois.
+L'indicateur synthétique de l'enquête Camme résume l'opinion des ménages français sur des sujets très spécifiques (évolution du niveau de vie, du chômage, etc.) alors que notre indicateur de sentiment indique juste si les individus sont plus ou moins positifs en fonction des mois, sans cibler de thématique particulière.
 Cela pourrait expliquer une partie différences observées entre nos deux indicateurs.
 
 La construction de notre indicateur pourrait être amélioré en de nombreux points.
@@ -927,10 +927,8 @@ En effet, une des difficultés de notre base de données est que les mots peuven
 Toutefois, cette correction doit être effectuée avec précaution puisque l'on peut penser que différentes orthographes du même mots, ou même différentes casses, peuvent refléter des sentiments différents.
 On peut par exemple penser que les trois orthographes suivantes du même mot «~mdr~», ne sont pas utilisées dans le même contexte : «~mdrrrrrrrrrrr~», «~MDRRRRRRRRR~» ou «~mdr~».
 
-En aval de \emph{word2vec}, la qualité de notre indicateur de sentiment pourrait être améliorée en utilisant des modèles plus complexes pour effectuer l'analyse de sentiments, comme des réseaux de neurones récurrents.
-Nous pourrions essayer mieux gérer la gestion des mots manquants dans la prévision des sentiments, en étudiant plus précisément ces mots et l'impact de notre méthode imputation.
-
-\colorbox{BurntOrange}{parler de la catégorie neutre ?}
+En aval de \emph{word2vec}, la qualité de notre indicateur de sentiment pourrait être améliorée en utilisant des modèles plus complexes pour effectuer l'analyse de sentiments, comme des réseaux de neurones récurrents, ou encore en mobiliser d'auters bases de données pour intégrer une catégorie «~neutre~» dans la prévision des entiments.
+Nous pourrions égalment essayer mieux gérer la gestion des mots manquants dans la prévision des sentiments, en étudiant plus précisément ces mots et l'impact de notre méthode imputation.
 
 \newpage
 
@@ -1244,6 +1242,21 @@ Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettant le r�
 
 \hypertarget{sec:cvs}{%
 \subsection{Correction des effets saisonniers}\label{sec:cvs}}
+
+L'objectif de la désaisonnaliser est de décomposer une série \(X_t\) en trois composantes inobservées :
+
+\begin{itemize}
+\item
+  \(TC_t\) la tendance-cycle
+\item
+  \(S_t\) la saisonnalité
+\item
+  \(I_t\) l'irrégulier
+\end{itemize}
+
+Parler en quelques mots de la méthode de désaisonnalisation et de la décomposition.
+
+Parler du test combiné X-13, mettre des graphiques avec les coefficients.
 
 \newpage
 

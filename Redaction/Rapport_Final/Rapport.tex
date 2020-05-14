@@ -115,7 +115,7 @@ Les modèles \emph{word2vec}, développés par une équipe de recherche chez Goo
 
 Dans ce projet de statistique appliquée, nous étudierons dans un premier temps en détail et implémenterons le modèle \emph{word2vec} (partie \ref{sec:word2vec}).
 Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (partie \ref{sec:evaluation}).
-Enfin, nous mobiliserons des techniques d'analyse de sentiments afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (partie \ref{sec:sentimentalAnalysis}).
+Enfin, nous mobiliserons des techniques d'analyse de sentiment afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (partie \ref{sec:sentimentalAnalysis}).
 
 \hypertarget{sec:word2vec}{%
 \section{\texorpdfstring{Implémentation du modèle \emph{word2vec}}{Implémentation du modèle word2vec}}\label{sec:word2vec}}
@@ -806,11 +806,11 @@ Bien que des solutions comme la correction de biais de sélection des échantill
 Le changement de domaine se caractérise par un changement de la nature, du «~domaine~» des données utilisées.
 Dans le cas de \emph{deep-learning} sur des données de photographie, il pourrait par exemple s'agir de traiter de corpus de photos prises par des appareil photo calibrés de manière différentes (contraste, luminosité\dots) .
 Dans notre cas précis, il s'agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets de la SNCF, qui portent sur un sujet très spécifique et pour lesquels certains mots ont peut-être une interprétation spécifique en termes de sentiments.
-Modéliser le «~domain shift~» implique donc d'estimer le passage d'une représentation à une autre en utilisant des informations de distribution\footnote{La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le « domain shift » lié à l’utilisation d’appareil photos différents.}.
+Modéliser le «~domain shift~» implique donc d'estimer le passage d'une représentation à une autre en utilisant des informations de distribution\footnote{La correction gamma (représentation paramétrique non linéaire de l'intensité des pixels) est par exemple une manière de pouvoir traiter le «~domain shift~» lié à l'utilisation d'appareil photos différents.}.
 
-L'idée n'est pas ici de modéliser mathématiquement \colorbox{BurntOrange}{NDBP à conserver ?}\footnote{Pour modéliser mathématiquement de manière relativement «~grossière~» un \emph{domain shift}, il s'agirait de considérer par exemple une variable latente «~idéale~» \(x_0\) (une base de tweets de référence), jamais observée mais qui influerait sur \(y\) (l'indice mensuel).
+L'idée n'est pas ici de modéliser mathématiquement \colorbox{BurntOrange}{NDBP à conserver ?}\footnote{En quelque mot, pour modéliser mathématiquement un \emph{domain shift} on considérerait une variable latente «~idéale~» \(x_0\) (une base de tweets de référence), jamais observée mais qui influerait sur \(y\) (l'indice mensuel).
   Nous observons uniquement \(x\) telle \(x=F(x_0)\) avec \(F\) qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données \(x\) utilisée.
-  La distribution \(P(y|x_0)\) (de l'indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base «~sncf~» et base de tweets postés en France entre 2013 et 2017).
+  La distribution \(\mathbb P(y\mid x_0)\) (de l'indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base «~sncf~» et base de tweets postés en France entre 2013 et 2017).
   En revanche, cette distribution est modifiée si \(F\) est modifiée.} le \emph{domain shift} mais de remarquer que la base de tweets de la SNCF semble en effet qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé\footnote{Les mots «~bus~» (3800 occurrences), «~métro~» (820), «~sncf~» (781), «~retard~» (411), «~ratp~» (237), «~gare~» (195), «~chauffeur~» (160)\dots\{\} sont parmi les plus employés dans les tweets de la base test.} mais également de part le ton particulièrement ironique de nombreux tweets\footnote{Comme en témoignent ces deux tweets «~1h de retard la sncf, vous savez pas l'amour que je vous porte~» et «~J'ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas~».
   Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal prédits, 4 peuvent être utilisés pour manier l'ironie (rire, mdr, ptdr et mdrrr).}.
 
@@ -825,7 +825,7 @@ Cette nouvelle base test permet certainement de corriger une partie des biais é
 
 \begin{itemize}
 \item
-  La base de test de «~github~», bien qu'assez mal traduite, ne semble pas à notre connaissance avoir été annotée par des techniques d'analyse de sentiments similaires à la méthode de référence ;
+  La base de test de «~github~», bien qu'assez mal traduite, ne semble pas à notre connaissance avoir été annotée par des techniques d'analyse de sentiment similaires à la méthode de référence ;
 \item
   Ses tweets sont nombreux et semblent traiter de sujets divers contrairement aux tweets de la SNCF, plus ciblés ;
 \item
@@ -858,11 +858,11 @@ Afin de comparer notre indicateur à l'indicateur synthétique de confiance des 
     Pour cela nous avons utilisé la méthode X-12ARIMA (annexe \ref{annexe:cvscjo}).
   \item
     Utiliser un indicateur synthétique brut issu de Camme.
-    Pour cela, nous avons construit un nouvel indicateur synthétique en appliquant les poids associés à chaque variable aux soldes d'opinion bruts\footnote{Pour connaître ces poinds, nous avons reproduit l'analyse factorielle utilisée pour construire l'indicateur synthétique publié par l'Insee. Faire une analyse factorielle statique revient à faire une moyenne pondérée des 8 soldes d'opinion centrés-réduits.}.
+    Pour cela, nous avons construit un nouvel indicateur synthétique en appliquant les poids associés à chaque variable aux soldes d'opinion bruts\footnote{Pour connaître ces poids, nous avons reproduit l'analyse factorielle utilisée pour construire l'indicateur synthétique publié par l'Insee. Faire une analyse factorielle statique revient à faire une moyenne pondérée des 8 soldes d'opinion centrés-réduits.}.
   \end{enumerate}
 
   Lorsque cela est possible, nous privilégierons la seconde solution : supprimer la saisonnalité serait enlever une information importante pour l'analyse de l'évolution des sentiments.
-  Toutefois, de nombreuses méthodes économétriques ne sont applicables que sur les séries stationnaires \colorbox{BurntOrange}{Pour Alain : le terme stationnaire est-il juste ?} et donc désaisonnalisées, c'est pourquoi nous utiliserons dans ces cas la première approche.
+  Toutefois, de nombreuses méthodes économétriques ne sont applicables que sur les séries stationnaires et donc désaisonnalisées, c'est pourquoi nous utiliserons dans ces cas la première approche.
 \end{itemize}
 
 \hypertarget{subsec:compseries}{%
@@ -895,8 +895,9 @@ Cette méthode conclut sur le fait que la similarité entre l'indicateur Camme e
 Les deux indices de sentiments issus des tweets du mois \(m\) peuvent se rapprocher des résultats de l'enquête Camme du mois \(m+1\) et sont alors disponibles un mois plus tôt.
 Nous allons donc étudier dans quelle mesure nos indicateurs permettent de prévoir les résultats de l'indicateur synthétique de Camme.
 
-Dans cette partie, afin que les résultats économétriques soient valides, nous étudions les séries stationnaires, c'est-à-dire désaisonnalisées et différenciées.
-En effet, la figure \ref{fig:bslogcam} suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par les tests de Philipps-Perron et KPSS), y compris lorsqu'ils sont désaisonnalisés. \colorbox{BurntOrange}{Alain : regarder commentaire.}
+Dans cette partie, afin que les résultats économétriques soient valides, il faut que les séries soient stationnaires.
+La figure \ref{fig:bslogcam} suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par les tests de Philipps-Perron et KPSS), y compris lorsqu'ils sont désaisonnalisés.
+C'est pourquoi nous différencions les séries désaisonnalisées pour les rendre stationnaires.
 
 L'indicateur de sentiment issu du modèle \emph{word2vec} cause au sens de Granger l'indicateur synthétique issus de l'enquête Camme (p-valeur de 0,02).
 C'est-à-dire que la connaissance de l'évolution de notre second indicateur de sentiment apporte de l'information pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
@@ -904,14 +905,15 @@ Ce n'est pas le cas pour le premier indicateur (référence) calculé uniquement
 
 \bigskip
 
-En somme, l'exploitation des résultats de \emph{word2vec} dans la construction d'un indice de sentiment de tweets permet, contrairement au modèle de référence, de construire un indicateur anticipé d'un mois permettant de prévoir (au sens de Granger) l'indicateur synthétique de l'enquête Camme. Cela est vrai alors même que les deux indicateurs évoluent différemment en raison de leur philosophie différente : alors que l'indicateur Camme résume l'opinion des ménages sur des sujets très spécifiques (évolution du niveau de vie, du chômage, etc.), notre indicateur de sentiment mesure juste la positivité / négativité des mots employés dans des tweets, sans cibler de thématique particulière.
+En somme, l'exploitation des résultats de \emph{word2vec} dans la construction d'un indice de sentiment de tweets permet, contrairement au modèle de référence, de construire un indicateur anticipé d'un mois permettant de prévoir l'indicateur synthétique de l'enquête Camme.
+Cela est vrai alors même que les deux indicateurs évoluent différemment en raison de leur philosophie différente : alors que l'indicateur Camme résume l'opinion des ménages sur des sujets très spécifiques (évolution du niveau de vie, du chômage, etc.), notre indicateur de sentiment mesure juste la positivité / négativité des mots employés dans des tweets, sans cibler de thématique particulière.
 
 La construction d'un indice de sentiment basé sur les tweets pourrait évidemment être prolongée et améliorée.
 Un prolongement possible serait le prétraitement plus approfondi de la base de tweets. Les mots mal orthographiés (lettres en trop, oubli d'espace, mauvaise ponctuation\dots) accroissent en effet considérablement la taille du vocabulaire et la rareté des mots.
 Toutefois, cette correction doit être effectuée avec précaution ; les différentes orthographes du même mot peuvent parfois refléter des sentiments différents.
 Par exemple, «~lol~», «~LOL~» et «~loool~» sont peut-être utilisées dans des contextes différents : ironie, blagues, rires\dots
 
-L'utilisation de modèles d'analyse de sentiments plus complexes, comme les réseaux de neurones récurrents, amélioreraient peut-être également la qualité de la prévision du sentiment d'un tweet, tout comme l'utilisation de bases d'entraînement contenant une plus grande gradation des sentiments des tweets (permettant notamment qu'ils soient catégorisés de «~neutres~»).
+L'utilisation de modèles d'analyse de sentiment plus complexes, comme les réseaux de neurones récurrents, amélioreraient peut-être également la qualité de la prévision du sentiment d'un tweet, tout comme l'utilisation de bases d'entraînement contenant une plus grande gradation des sentiments des tweets (permettant notamment qu'ils soient catégorisés de «~neutres~»).
 Nous pourrions également essayer de gérer avec plus de précision les mots manquants, en étudiant leur nature et l'impact de notre méthode d'imputation sur les prévisions de sentiments.
 
 \hypertarget{conclusion}{%
@@ -923,14 +925,14 @@ Nous nous sommes imprégnés de son fonctionnement et l'avons implémenté dans 
 Au-delà de la compréhension et de l'implémentation du modèle, nous nous sommes également initiés aux tests d'hyperparamètres et à son évaluation sur un corpus fictif (partie \ref{sec:evaluation}) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et T-SNE et jugement humain).
 Il a été fascinant d'observer à quel point le modèle présente d'excellents résultats en termes de capture sémantiques des mots dans un texte.
 
-Dans la partie \ref{sec:sentimentalAnalysis} dédiée à l'analyse de sentiments, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant notre deuxième année à l'ENSAE (modèles de prédiction binaire, analyse de séries temporelles, minimisation du risque empirique / cross-validation\dots).
+Dans la partie \ref{sec:sentimentalAnalysis} dédiée à l'analyse de sentiment, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant notre deuxième année à l'ENSAE (modèles de prédiction binaire, analyse de séries temporelles, minimisation du risque empirique / validation croisée\dots).
 L'entraînement et le test du modèle logit dont les prédicteurs correspondent aux dimensions des \emph{word-embedding} nous a permis d'observer qu'en plus de représenter la proximité entre mots, le modèle \emph{word2vec} permet de capter dans une certaine mesure le sentiment de phrases.
 
 Bien sûr, la comparaison de l'indice mensuel de sentiment moyens des tweets que nous avons construit avec l'indicateur synthétique de confiance des ménages peut à première vue paraître «~décevante~» en raison des différences observées entre les deux séries.
 Toutefois, le test de causalité au sens de Granger nous indique que l'indice obtenu s'avère utile pour prédire l'indicateur Camme.
 
 La possibilité d'obtenir deux indicateurs très proches était assez utopique en raison de leurs philosophies différentes.
-Au-delà de la positivité ou négativité d'un tweet, il demeure important d'également déceler les sujets sur lesquels les tweets portent pour créer un indice plus ciblé (via, par exemple, l'utilisation de \emph{hashtags}).
+Au-delà de la positivité ou négativité d'un tweet, il demeure important de déceler les sujets sur lesquels les tweets portent pour créer un indice plus ciblé (via, par exemple, l'utilisation de \emph{hashtags}).
 En effet, l'opinion des Français évolue différemment entre 2011 et 2018 en fonction des sujets de société concernés (figure \ref{fig:figconclu}).
 Par ailleurs, les bases d'entraînement et de test utilisées pour entraîner le modèle comportent de nombreuses limites (\emph{domain-shift}, processus d'annotation, mots inconnus).
 
@@ -1003,7 +1005,8 @@ Pour toute métrique \(D\) (\(D=N\) ou \(D=M\)), on associe le produit scalaire 
 La construction des axes de l'ACP est faite par projection orthogonale.
 La projection orthogonale d'un individu \(i\) (vecteur ligne) \(z_i\) sur une droite de vecteur directeur unitaire \(v\) vaut \(\langle {}^tz_i,v\rangle_{M}=z_i\times v\) et les coordonnées de projection des \(n\) individus valent \(Zv\).
 
-Les vecteurs directeurs des axes sont définis de manière à maximiser la dispersion du nuage (son inertie\footnote{}) des individus projetés et conserver ainsi au mieux les distances entre les individus. L'inertie\footnote{La dispersion d'un nuage de points unidimensionnel par rapport à sa moyenne se mesure par la variance. Dans le cadre multidimensionnel, la dispersion du nuage par rapport à son barycentre \(\bar z\) se mesure par l'inertie, qui généralise la variance.} se définit alors comme :
+Les vecteurs directeurs des axes sont définis de manière à maximiser la dispersion du nuage (son inertie\footnote{La dispersion d'un nuage de points unidimensionnel par rapport à sa moyenne se mesure par la variance.
+  Dans le cadre multidimensionnel, la dispersion du nuage par rapport à son barycentre \(\bar z\) se mesure par l'inertie, qui généralise la variance.}) des individus projetés et conserver ainsi au mieux les distances entre les individus. L'inertie se définit alors comme :
 
 \begin{align*}
 I(Z) &= \sum_{i = 1}^n p_i\|z_i-\bar{z}\|_M^2 \text{ avec }
@@ -1135,6 +1138,7 @@ avec \(q_{1-\frac{\alpha}{2}}\) le quantile d'ordre \(1-\frac{\alpha}{2}\) d'une
 \section{Correction des effets saisonniers et jours ouvrables}\label{annexe:cvscjo}}
 
 La figure \ref{fig:cvscjo} compare les séries brutes et corrigées des variations saisonniers et des jours ouvrables (CVS-CJO) des trois indicateurs étudiés.
+Même si les séries brutes semblent très proches des séries désaisonnalisées, la présence de saisonnalité est confirmée par le F-test proposé par \cite{lytras}.
 
 Dans cette annexe nous présentons de quelle manière nous désaisonnalisons nos deux indicateurs de sentiment calculés à partir des tweets.
 Pour rappel, l'indicateur synthétique de confiance des ménages publié par l'Insee grâce à l'enquête Camme est calculé à partir de soldes d'opinion CVS-CJO : on considère donc qu'il est CVS-CJO.
@@ -1177,12 +1181,7 @@ Dans la correction des effets saisonniers et des effets jours ouvrables (CVS-CJO
 
 Dans notre cas, puisque les tweets sont tirés à des jours fixes il n'y a pas d'effet nombre de jours et l'effet fête mobile n'aurait pas de sens.
 En revanche, il pourrait y avoir un effet type de jour : on peut par exemple supposer que les thèmes traités par les tweets, et donc les sentiments, sont différents en fonction du jour de la semaine.
-On pourait donc avoir des sentiments influencés par les types de jours pendants lesquels les tweets sont tirés.
-
-Pour nos indicateurs de sentiment (modèle logistique ou modèle de référence construit à partir du sentiment moyen des mots), nous ne détectons pas d'effet jours ouvrables.
-Cela ne signifie pas pour autant que le type de jour n'a pas d'effet sur nos indicateurs de sentiment, mais que nous n'arrivons pas à en estimer un.
-Cela peut venir de la méthode de collecte : tirer les tweets tous les 1, 5, 10, 15, 20, 25 et 28 de chaque mois revient à tirer tous les jours de la semaine sauf 1\footnote{Si le 1\textsuperscript{er} jour du mois est un lundi alors, parmi les 4 200 tweets, 1 200 sont tirés un lundi, 0 le mardi et 600 les autres jours de la semaine.}.
-On peut donc difficilement isoler l'effet du type de jour : il faudrait pour cela faire une analyse plus approfondie en étudiant construisant un indicateur de sentiment par jour de la semaine.
+Les sentiments exprimés par les tweets pourraient donc être influencés par les types de jours pendants lesquels les tweets sont tirés.
 
 Pour estimer l'effet jour ouvrable, nous utilons l'approche de la méthode X-12ARIMA, notamment décrite dans \cite{L2018}.
 
@@ -1234,23 +1233,51 @@ y_t=\beta_0 LY_t + \tilde\beta_1 \left(\sum_{j=1}^{5}N_{jt} - (N_{6t} + N_{7t})\
 
 Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettant le régresseur \(LY_t\) dans \eqref{eq:eqcjotd} et \eqref{eq:eqcjowd}. On considère qu'il y a un effet jours ouvrables significatif lorsque \(\exists i\in \{1,2,\dots,6\}\::\:\beta_i\ne0\) ou lorsque \(\tilde\beta_1\ne0\).
 
+Pour nos indicateurs de sentiment (modèle logistique à partir de \emph{word2vec} ou modèle de référence construit à partir du sentiment moyen des mots), nous ne détectons pas d'effet jours ouvrables.
+Cela ne signifie pas pour autant que le type de jour n'a pas d'effet sur nos indicateurs de sentiment, mais que nous n'arrivons pas à en estimer un.
+Cela peut venir de la méthode de collecte : tirer les tweets tous les 1, 5, 10, 15, 20, 25 et 28 de chaque mois revient à tirer tous les jours de la semaine sauf 1\footnote{Si le 1\textsuperscript{er} jour du mois est un lundi alors, parmi les 4 200 tweets, 1 200 sont tirés un lundi, 0 le mardi et 600 les autres jours de la semaine.}.
+On peut donc difficilement isoler l'effet du type de jour : il faudrait pour cela faire une analyse plus approfondie en étudiant construisant un indicateur de sentiment par jour de la semaine.
+
 \hypertarget{sec:cvs}{%
 \subsection{Correction des effets saisonniers}\label{sec:cvs}}
 
-L'objectif de la désaisonnaliser est de décomposer une série \(X_t\) en trois composantes inobservées : la tendance-cycle,
+L'objectif de la désaisonnalisation est de décomposer une série \(X_t\) en trois composantes inobservées :
 
 \begin{itemize}
 \item
   \(TC_t\) la tendance-cycle : combinaison de la tendance et du cycle ;
 \item
-  \(S_t\) la saisonnalité : une fluctuation qui qui se répète d'année en année à la même période
+  \(S_t\) la saisonnalité : une fluctuation qui qui se répète d'année en année à la même période ;
 \item
-  \(I_t\) l'irrégulier : une fluctuation résiduelle non comprise dans les deux composantes précédentes (chocs ponctuels, etc.)
+  \(I_t\) l'irrégulier : une fluctuation résiduelle non comprise dans les deux composantes précédentes (chocs ponctuels, etc.).
 \end{itemize}
 
-Parler en quelques mots de la méthode de désaisonnalisation et de la décomposition.
+Ces composantes sont combinées entre elles selon un \emph{schéma de composition} dont les plus classiques sont :
 
-Parler du test combiné X-13, mettre des graphiques avec les coefficients.
+\begin{itemize}
+\item
+  le schéma additif : \(X_t=TC_t+S_t+I_t\) ;
+\item
+  le schéma multiplicatif \(X_t=TC_t\times S_t\times I_t\).
+\end{itemize}
+
+À partir de l'estimation de ces composantes, il est possible de désaisonnaliser les séries en enlevant la composante saisonnière \(S_t\).
+
+Pour effectuer la désaisonnalisation, la méthode X-12ARIMA utilise l'algorithme X-11.
+En quelques mots, c'est un algorithme qui repose sur l'utilisation de moyennes mobiles afin d'estimer itérativement les différentes composantes.
+
+Le graphique \ref{fig:coefcvscjo} trace l'évolution des coefficients saisonniers pour nos indicateurs de sentiment.
+L'évolution des coefficients saisonniers de l'indicateur de sentiment calculé à partir modèle de référence suggère que la saisonnalité de cette série est faible.
+L'étude de ceux de l'indicateur calculé à partir du modèle \emph{word2vec} suggère que les tweets sont globalement plus pessimistes en septembre et février, et plus optimistes en avril, octobre et décembre.
+
+\begin{figure}[htp]
+{\centering\includegraphics[width = \textwidth]{img/rmd-graphCoefCVS-1}}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Commposantes saisonnières des indicateurs mensuels de sentiment construits à partir de notre modèle \emph{word2vec} et à partir de notre modèle de référence.}\label{fig:coefcvscjo}
+\footnotesize
+
+\emph{La composante saisonnière a été estimée par la méthode X-12ARIMA.}
+\end{figure}
 
 \newpage
 
@@ -1269,6 +1296,7 @@ Parler du test combiné X-13, mettre des graphiques avec les coefficients.
 \bibitem[Levy \& Golberg (2015)]{Levy} Levy, O., Golberg, Y. (2015). Neural Word Embedding as Implicit Matrix Factorization.
 \url{https://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
 \bibitem[Levy \& Golberg (2014)]{Levy2} Levy, O., Golberg, Y. (2014). Dependency-based word embeddings. ACL. \url{http://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
+\bibitem[Lytras \emph{et al} (2007)]{lytras} Lytras, D. P., Feldpausch, R. M., Bell, W. R (2007). Determining Seasonality: A Comparison of Diagnostics from X-12-ARIMA, U.S. Census Bureau, presented at ICES III, June, 2007. \url{https://www.census.gov/ts/papers/ices2007dpl.pdf}.
 \bibitem[Mikolov \emph{et al} (2013a)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013a). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
 \bibitem[Mikolov \emph{et al} (2013b)]{MikolovNS} Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., and Dean, J. (2013b). Distributed representations of words and phrases and their compositionality, arXiv:1310.4546. \url{https://arxiv.org/pdf/1310.4546.pdf}.
 \bibitem[Pennington, Socher \& Manning (2014)]{Pennington} Pennington, J., Socher, R., Manning, C. D., (2014).  Glove: global vectors for word representation. Proc. of EMNLP,1532 – 1543. \url{https://www.aclweb.org/anthology/D14-1162.pdf}.

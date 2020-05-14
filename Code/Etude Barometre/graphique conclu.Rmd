@@ -1,0 +1,140 @@
+---
+title: "Untitled"
+author: "Kim Antunez et Alain Quartier-la-Tente"
+date: "5/12/2020"
+output: 
+    pdf_document:
+        keep_tex: yes
+themeoptions: "coding=utf8,language=english"
+classoption: 'french'
+fontsize: 11pt
+geometry: margin=0.95in
+lang: "french"
+documentclass: "article"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.height=2.5,fig.width=8,
+  fig.path = "img/rmd-",
+  fig.align = "center")
+library(ggplot2)
+library(AQLTools)
+library(zoo)
+#library(RJDemetra)
+library(patchwork)
+library(R.utils)
+library(dplyr)
+```
+
+```{r}
+baro <- readRDS("../../data/sentimental_analysis/barometre.RDS")
+indic_select <- c("in1","og4_3","in3","og3_1")
+
+# in1 <- "La société française aujourd'hui me paraît plutôt juste."
+# og4_3 <- "Je suis personnellement préoccupé(e) par la pauvreté."
+# in3 <- "À l'avenir, les inégalités en France vont diminuer."
+# og3_1 <- "Quand je pense à l'avenir, je suis plutôt optimiste pour moi-même."
+# og4_6 <- "Je suis personnellement préoccupé(e) par le chômage"
+# pe2 <- "À l'avenir, la pauvreté et l'exclusion en France vont diminuer."
+
+
+tweets <- read.table("../../data_bis/modeles.csv", sep = ";", stringsAsFactors = FALSE, header=TRUE)
+colnames(tweets)[1] <- "Date"
+
+tweets_an <- tweets %>% 
+    mutate(Annee=as.numeric(substr(Date,1,4))) %>% 
+    group_by(Annee) %>% 
+    summarise_if(is.numeric, mean, na.rm = TRUE) %>% 
+    select(Annee,reg_log_nrmsw_lf)
+
+modeles <- merge(baro[,c("Annee",indic_select)],
+                 tweets_an,by="Annee")
+
+modeles_ts <- ts(modeles[,-1],start = 2011,frequency = 1)
+donnes_calcul <- scale(modeles_ts)
+# donnes_calcul_lag <- scale(ts.intersect(modeles[,c(ind_retenu, "sncf")], data_lag[,1:2]))
+#colnames(donnes_calcul) <- c(indic_select,"Modèle word2vec")
+colnames(donnes_calcul) <- c("La société française aujourd'hui me\nparaît plutôt juste.\n",
+  "Je suis personnellement préoccupé(e)\npar la pauvreté.\n",
+  "À l'avenir, les inégalités en France\nvont diminuer.\n",
+  "Quand je pense à l'avenir, je suis\nplutôt optimiste pour moi-même.\n",
+  "Modèle word2vec (moyenne annuelle)")
+
+
+
+
+graph_glob <- function(data, titre = NULL, sous_titre = NULL, legende = NULL, afficheVolatilite = FALSE,
+                       cex = 0.6, diviserParPeriode = FALSE, x_lab = NULL, x_lab_month = FALSE, y_lab = NULL,
+                       outDec = ",",
+                       n_xlabel = 8, n_ylabel = 12){
+    
+    time <- time(data)
+    freq <- frequency(data)
+    dataGraph <- data.frame(cbind(time, data))
+    if (is.null(legende)){
+        if(is.mts(data)){
+            legende <- colnames(data)
+        }else{
+            legende <- ""
+        }
+    }
+    colnames(dataGraph) <- c("date", legende)
+    
+    dataGraph <- reshape2::melt(dataGraph, id="date")  # convert to long format
+    
+    if (freq==1){
+        periode <- "Y"
+        periode <- factor(periode)
+    }
+    if (freq==2){
+        periode <- ifelse(time(data)%%1==0, "S1", "S2")
+        periode <- factor(periode,levels = c("S1","S2"), ordered = T)
+    }
+    if (freq==4){
+        periode <- capitalize(quarters(zoo::as.yearqtr(dataGraph$date)))
+        periode <- factor(periode,levels=capitalize(quarters(zoo::as.yearqtr((0:3)/4))),ordered = T)
+    }
+    if (freq==12){
+        periode <- capitalize(months(zoo::as.yearmon(dataGraph$date)))
+        periode <- factor(periode,levels=capitalize(months(zoo::as.yearmon((0:11)/12))),ordered = T)
+    }
+    
+    dataGraph <- data.frame(dataGraph,periode=periode)
+    p <- ggplot(data = dataGraph, aes(x = date, y = value, group = variable,
+                                      color = variable,
+                                      linetype = variable,
+                                      fill = variable
+                                      )) + 
+         scale_linetype_manual(values=c(rep("dashed",ncol(data)-1),"solid"))+
+        geom_line(size=0.80) +
+        labs(title = titre, subtitle = sous_titre,
+             x = x_lab, y = y_lab) +
+        scale_x_continuous(breaks = scales::pretty_breaks(n = n_xlabel),
+                           labels = function(x) AQLTools:::creation_x_label(x, x_lab_month = x_lab_month, outDec = outDec)) +
+        scale_y_continuous(breaks = scales::pretty_breaks(n = n_ylabel),
+                           labels = function(x) format(x, decimal.mark = outDec))+
+        AQLTools:::theme_aqltools() + 
+    	theme(#legend.background = element_rect(fill = alpha("gray99", 0.4),colour = "gray80", linetype = "solid"), 
+			  legend.justification = "top",
+			  legend.position = "right"
+			  )
+    
+    
+    
+    
+    
+    p
+}
+
+```
+
+
+```{r graphSentiments,fig.cap="test"}
+ graph_glob(donnes_calcul,n_xlabel = 8)  +
+     scale_colour_manual(breaks = colnames(donnes_calcul),
+                        values = c("#0072B2", "#D55E00", "#CC79A7", "#009E73", "#000000")
+                       )+
+         #coord_cartesian(y=c(-3,2.5))+
+     guides(color=guide_legend(ncol=5))
+```

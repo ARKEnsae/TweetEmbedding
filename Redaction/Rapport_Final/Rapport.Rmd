@@ -744,7 +744,8 @@ Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a
 \end{quote}
 
 
-#### Le domain-shift
+#### Le domain-shift\footnote{Les éléments en lien avec le \emph{dataset shift} proviennent de \cite{Candela}}
+
 
 Une dernière explication possible pourrait être du à ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}.
 
@@ -892,33 +893,42 @@ Nous pourrions également essayer de gérer avec plus de précision les mots man
 <!-- * ouverture (éventuelle) sur le lien avec les événements d’actualité : dire ce qu’on a tenté et conclure qu’il est très difficile d’analyser les différences entre nos indicateurs et l’indicateur Camme.  -->
 <!-- * ouverture (encore plus éventuelle) : sur si on observe un message intéressant sur une des 8 composantes de Camme.  -->
 
-
-\newpage
-
 # Conclusion {.unnumbered} 
 
 Ce projet très riche nous a permis de partir à la découverte des méthodes d’apprentissage par réseaux de neurones, via le modèle *word2vec*. 
-Nous nous sommes imprégnés de son fonctionnement et l’avons implémenté dans son ensemble grâce à la librairie `Pytorch` de Python (partie 1). 
-Au-delà de la compréhension et de l’implémentation du modèle, nous nous sommes également initiés aux tests d’hyperparamètres et à son évaluation sur un corpus fictif (partie 2) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et T-SNE et jugement humain). 
+Nous nous sommes imprégnés de son fonctionnement et l’avons implémenté dans son ensemble grâce à la librairie `Pytorch` de Python (partie \@ref(sec:word2vec)). 
+Au-delà de la compréhension et de l’implémentation du modèle, nous nous sommes également initiés aux tests d’hyperparamètres et à son évaluation sur un corpus fictif (partie \@ref(sec:evaluation)) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et T-SNE et jugement humain). 
 Il a été fascinant d’observer à quel point le modèle présente d’excellents résultats en termes de capture sémantiques des mots dans un texte.
 
 
-Dans la partie 3 dédiée à l’analyse de sentiments, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant ce second semestre 2020 (modèles de prédiction binaire, analyses de séries temporelles, minimisation du risque empirique / cross-validation\dots).
+Dans la partie \@ref(sec:sentimentalAnalysis) dédiée à l’analyse de sentiments, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant notre deuxième année à l'ENSAE (modèles de prédiction binaire, analyse de séries temporelles, minimisation du risque empirique / cross-validation\dots).
 L’entraînement et le test du modèle logit dont les prédicteurs correspondent aux dimensions des *word-embedding* nous a permis d’observer qu’en plus de représenter la proximité entre mots, le modèle *word2vec* permet de capter dans une certaine mesure le sentiment de phrases. 
 
 
-Bien sûr, la comparaison de l’indice mensuel de sentiment moyens des tweets que nous avons construit avec l’indicateur synthétique de confiance des ménages peu à première vue paraître « décevante » \colorbox{BurntOrange}{(préciser ce qu’on fait dans la partie après rédaction ALAIN)} mais la possibilité d’obtenir deux indicateurs très proches était assez utopique. 
-D’une part pour des raisons évoquées liées aux limites bases d’entraînement et de test (*domain-shift*, processus d’annotation, mots inconnus), d'autre part car au-delà de la positivité ou négativité d’un tweet, il demeure important d’également déceler le sujet sur lesquel le tweet porte pour créer un indice qui corresponde à une opinion sur un sujet précis ().
-En effet, la figure X.X montre l’évolution de l’opinion des Français entre 2011 et 2018) concernant un certain nombre de sujets sociaux et nous pouvons voir que les évolutions sont différentes selon les sujets. 
-Un prolongement serait peut-être de se focaliser sur des sujets plus précis en mobilisant les hashtags présents dans les tweets. 
+Bien sûr, la comparaison de l’indice mensuel de sentiment moyens des tweets que nous avons construit avec l’indicateur synthétique de confiance des ménages peut à première vue paraître « décevante » en raison des différences observées entre les deux séries.
+Toutefois, le test de causalité au sens de Granger nous indique que l'indice obtenu s'avère utile pour prédire l'indicateur Camme. 
+
+La possibilité d’obtenir deux indicateurs très proches était assez utopique en raison de leurs philosophies différentes.
+Au-delà de la positivité ou négativité d’un tweet, il demeure important d’également déceler les sujets sur lesquels les tweets portent pour créer un indice plus ciblé (via, par exemple, l'utilisation de *hashtags*).
+En effet, l'opinion des Français évolue différemment entre 2011 et 2018 en fonction des sujets de société concernés (figure \@ref(fig:figconclu)).
+Par ailleurs, les bases d’entraînement et de test utilisées pour entraîner le modèle comportent de nombreuses limites (*domain-shift*, processus d’annotation, mots inconnus). 
+
+\begin{figure}[htp]
+{\centering \includegraphics[width =\textwidth]{img/graph_conclu}}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Opinion des Français sur les sujets sociaux et indicateur annuel de sentiment construit à partir de \emph{word2vec}.}\label{fig:figconclu}
+\footnotesize
+\emph{Source : Baromètre d'opinion de la DREES, 2011-2018.}
+\emph{Note de lecture : tous les indicateurs sont centrés-réduits (de moyenne nulle et de variance unitaire) entre janvier 2011 et décembre 2018.}
+\end{figure}
+
 
 Les méthodes d’apprentissage étant en perpétuelle évolution, le modèle *word2vec* mis en exergue en 2013, connaît déjà des prolongements. 
 Par exemple, son extension *fasttext*^[
 La bibliothèque open-source https://fasttext.cc/ permet de télécharger des modèles pré-entraînés dans 157 langues différentes.
-] (Bojanowski et al., 2017 ), traite de la rareté des mots en représentant le mot non seulement comme lui-même mais grâce à des sacs de $n$-grammes constitutifs. 
-Par exemple, si $n = 3$, « WHERE » est représenté par <where> mais également <wh, whe, her, ere, re>. *word2vec* connaît également des modèles « concurrents », le plus connu étant certainement GloVe pour « Global Vectors » (Penning-ton et al., 2014). 
-Alors que *word2vec* privilégie l’utilisation de « n-grammes » (avec l’utilisation des mots contextes qui se situent autour d’une fenêtre du mot focus), GloVe se base sur l’ensemble les statistiques d'occurrence des mots du corpus (matrice de cooccurrence mot-mot) et prétend permettre alors, par construction, de capturer des statistiques plus générales liées au corpus. 
-
+] (\cite{Bojanowski}), traite de la rareté des mots en représentant le mot non seulement comme lui-même mais grâce à des sacs de $n$-grammes constitutifs. 
+Par exemple, si $n = 3$, « WHERE » est représenté non seulement par `<where>` mais également `<wh, whe, her, ere, re>`. *word2vec* connaît également des modèles « concurrents », le plus connu étant certainement *GloVe* pour « *Global Vectors* » (\cite{Pennington}). 
+Alors que *word2vec* privilégie l’utilisation de « n-grammes » (avec l’utilisation des mots contextes qui se situent autour d’une fenêtre du mot focus), *GloVe* se base sur l’ensemble les statistiques d'occurrence des mots du corpus (matrice de cooccurrence mot-mot) et prétend permettre alors, par construction, de capturer des statistiques plus générales liées au corpus. 
 
 
 \newpage
@@ -1216,13 +1226,15 @@ Parler en quelques mots de la méthode de désaisonnalisation et de la décompos
 Parler du test combiné X-13, mettre des graphiques avec les coefficients.
 
 
-
-
 \newpage
+
+\small 
+
 
 \nocite{*}
 \begin{thebibliography}{999}
 \bibitem[Bengio \emph{et al} (2003)]{Bengio} Bengio, Y., Ducharme, R., Vincent, P., Janvin, C. (2003). A Neural Probabilistic Language Model. JMLR, 3:1137–1155. \url{https://papers.nips.cc/paper/1839-a-neural-probabilistic-language-model.pdf}.
+\bibitem[Bojanowski et al. (2017)]{Bojanowski} Bojanowski, P., Grave, E., Joulin, A., \& Mikolov, T. (2017). Enriching word vectors with subword information. Transactions of the Association for Computational Linguistics, 5, 135-146. \url{https://www.mitpressjournals.org/doi/abs/10.1162/tacl_a_00051}.
 \bibitem[Boumedyen Billami \& Gala (2017)]{Boumedyen} Boumedyen Billami, M.,  Gala, N (2017). Création et validation de signatures sémantiques : application à la mesure de similarité sémantique et à la substitution lexicale. TALN 2017. \url{https://hal.archives-ouvertes.fr/hal-01528117/document}.
 \bibitem[Candela et al. (2009)]{Candela} Candela, J. Q., Sugiyama, M., Schwaighofer, A., \& Lawrence, N. D. (2009) Dataset shift in machine learning. The MIT Press, 1, 5. \url{http://www.acad.bg/ebook/ml/The.MIT.Press.Dataset.Shift.in.Machine.Learning.Feb.2009.eBook-DDU.pdf}.
 \bibitem[Hutter, Hoos \& Leyton-Brown (2014)]{Hutter} Hutter, F., Hoos, H., Leyton-Brown, K., (2014). An Efficient Approach for Assessing Hyperparameter Importance. PMLR 32(1):754-762. \url{http://proceedings.mlr.press/v32/hutter14.pdf}.
@@ -1238,8 +1250,7 @@ Parler du test combiné X-13, mettre des graphiques avec les coefficients.
 \bibitem[Rubenstein \& Goodenough (1965)]{Rubenstein} Rubenstein, H.,  Goodenough, J. B. (1965). Contextual Correlates of Synonymy. Commun. ACM, 8 (10), 627–633. \url{https://dl.acm.org/doi/10.1145/365628.365657}.
 \bibitem[Schakel \& Wilson (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significance using Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
 \bibitem[Tormene \emph{et al} (2008)]{dtw} Tormene P, Giorgino T, Quaglini S, Stefanelli M (2008). “Matching
-Incomplete Time Series with Dynamic Time Warping: An Algorithm and an
-Application to Post-Stroke Rehabilitation.” \emph{Artificial Intelligence
+Incomplete Time Series with Dynamic Time Warping: An Algorithm and an Application to Post-Stroke Rehabilitation.” \emph{Artificial Intelligence
 in Medicine}, \textbf{45}(1), 11-34. doi: 10.1016/j.artmed.2008.11.007, \url{https://doi.org/10.1016/j.artmed.2008.11.007}.
 \end{thebibliography}
 

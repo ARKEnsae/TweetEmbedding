@@ -130,7 +130,7 @@ graph_glob <- function(data, titre = NULL, sous_titre = NULL, legende = NULL, af
 ```
 
 
-```{r graphSentiments,fig.cap="test"}
+```{r graphConclu,fig.cap="test"}
  graph_glob(donnes_calcul,n_xlabel = 8)  +
      scale_colour_manual(breaks = colnames(donnes_calcul),
                         values = c("#0072B2", "#D55E00", "#CC79A7", "#009E73", "#000000")

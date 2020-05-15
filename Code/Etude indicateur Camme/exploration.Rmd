@@ -10,7 +10,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
-                      fig.height=6,fig.width=10, cache = TRUE)
+                      fig.height=6,fig.width=10, cache = FALSE)
 library(highcharter)
 library(ggplot2)
 library(AQLTools)

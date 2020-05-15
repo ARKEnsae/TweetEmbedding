@@ -184,3 +184,70 @@ cvs_baseline_sncf <- graph_cvs(cvs_baseline_sncf_ts)  +
     coord_cartesian(y = c(-2.5,2.5))
 cvs_camme / cvs_w2vec / cvs_baseline_sncf
 ```
+
+```{r graphCoefCVS,fig.height=5}
+graph_coefcvs <- function(data, titre = NULL, sous_titre = NULL, legende = NULL, afficheVolatilite = FALSE,
+                      cex = 0.6, diviserParPeriode = FALSE, x_lab = NULL, x_lab_month = FALSE, y_lab = NULL,
+                      outDec = ",",
+                      n_xlabel = 8, n_ylabel = 6){
+  
+  time <- time(data)
+  freq <- frequency(data)
+  dataGraph <- data.frame(cbind(time, data))
+  if (is.null(legende)){
+    if(is.mts(data)){
+      legende <- colnames(data)
+    }else{
+      legende <- ""
+    }
+  }
+  colnames(dataGraph) <- c("date", legende)
+  
+  dataGraph <- reshape2::melt(dataGraph, id="date")  # convert to long format
+  
+  if (freq==1){
+    periode <- "Y"
+    periode <- factor(periode)
+  }
+  if (freq==2){
+    periode <- ifelse(time(data)%%1==0, "S1", "S2")
+    periode <- factor(periode,levels = c("S1","S2"), ordered = T)
+  }
+  if (freq==4){
+    periode <- capitalize(quarters(zoo::as.yearqtr(dataGraph$date)))
+    periode <- factor(periode,levels=capitalize(quarters(zoo::as.yearqtr((0:3)/4))),ordered = T)
+  }
+  if (freq==12){
+    periode <- capitalize(months(zoo::as.yearmon(dataGraph$date)))
+    periode <- factor(periode,levels=capitalize(months(zoo::as.yearmon((0:11)/12))),ordered = T)
+  }
+  
+  dataGraph <- data.frame(dataGraph,periode=periode)
+  p <- ggplot(data = dataGraph, aes(x = date, y = value, group = variable, colour = variable
+  ))+
+    geom_line(size=0.80) +
+    labs(title = titre, subtitle = sous_titre,
+         x = x_lab, y = y_lab) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = n_xlabel),
+                       labels = function(x) substr(x,3,4)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = n_ylabel),
+                       labels = function(x) format(x, decimal.mark = outDec))+
+    AQLTools:::theme_aqltools() +
+    scale_colour_manual(breaks = colnames(data),
+                        values = c("#4B0055", "#7ED357"))
+  p
+}
+coef_sais <- ts.union(get_indicators(jx13(donnes_calcul[,1]),"s")[[1]],
+                      get_indicators(jx13(donnes_calcul[,2]),"s")[[1]])
+colnames(coef_sais) <- c("Modèle word2vec", "Modèle de référence")
+graph_coefcvs(coef_sais,n_xlabel = 4,x_lab = "Dates") +
+  geom_hline(yintercept = 0,linetype = "dotted") +
+  facet_wrap(~periode,nrow=1)  +
+  coord_cartesian(y = c(-.7,.7)) + 
+  theme(panel.spacing = unit(0, "lines"))+
+  theme(
+    legend.justification = "left",
+    legend.position = "top"
+  )+
+  guides(color=guide_legend(nrow=1))
+```

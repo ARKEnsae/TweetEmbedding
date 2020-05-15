@@ -274,6 +274,17 @@ jd2_seasonality_FTest(serie) # présence de saisonnalité
 jd2_seasonality_QSTest(serie) # pas de saisonnalité
 ```
 
+```{r}
+serie <- modeles[,"sncf"]
+serie <- ts(scale(serie),
+            start = start(serie),
+            frequency = 12)
+jd2_seasonality_Friedman(serie) # test s'il y a une saisonnalité stable
+jd2_seasonality_KruskalWallis(serie) # pas de saisonnalité
+jd2_seasonality_FTest(serie) # présence de saisonnalité
+jd2_seasonality_QSTest(serie) # pas de saisonnalité
+```
+
  Ici les résultats sont mitigés :
  
 - le test de Friedman nous dit que si il y a une saisonnalité alors il y a une saisonnalité stable. S'il n'y a pas de saisonnalité alors ce test va conclure à une saisonnalité stable (tout le temps égal à 0)

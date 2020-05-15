@@ -33,6 +33,7 @@ header-includes:
 - \usepackage{subcaption}
 - \usepackage{amsfonts}
 - \usepackage{dsfont}
+- \usepackage{xspace}
 
 ---
 

@@ -37,6 +37,7 @@ header-includes:
 - \usepackage{pifont}
 - \usepackage{wrapfig}
 - \usepackage{textpos}
+- \usepackage{array}
 
 ---
 
@@ -367,39 +368,61 @@ Les méthodes que nous avons retenues pour évaluer, dans les parties qui suiven
 
 ## Évaluation sur un corpus fictif {#sec:corpusFictif}
 
-Avant de nous attaquer au jeu de données complet décrit plus bas, nous avons évalué un premier corpus fictif afin de nous assurer de la robustesse et de la validité du modèle implémenté.
+Avant de nous attaquer au jeu de données complet décrit dans la prochaine section, nous avons évalué notre modèle sur un corpus fictif afin de nous assurer de sa robustesse et de sa validité.
 
-Pour construire ce corpus, nous avons associé dix couples (du type `[voiture, camion]`), à dix mots différents que l'on considèrera comme des mots contextes (`[véhicule, moto\dots]`). Le corpus fictif est ainsi formé de 10 000 phrases composées chacune d'un mot d'un couple, de cinq mots du contexte et de trois mots bruits, tous tirés aléatoirement. L'objectif sera de vérifier qu'en appliquant notre modèle sur ce corpus fictif, on obtient bien des vecteurs-mots proches pour des couples `[focus, contexte]` et éloignés pour des couples `[focus, mots bruits]`.
+Pour construire ce corpus, nous construit 10 groupes de mots composés d’un couple (du type `[grand, petit]`) et de dix mots différents que l'on considère comme des mots contextes (`[taille, xl...]`). Le corpus fictif est formé de 10 000 phrases de neuf mots. Chacune de ces phrases est constitué de la façon suivante :
 
-Pour cela, nous avons mis en œuvre les différentes techniques d'évaluation^[À l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.] 
+- on tire au hasard un groupe de mots;
+- pour ce groupe de mots, on tire au hasard : un des deux mots du couple et cinq des dix mots contexte associés  ;
+- on tire trois mots « bruits » au hasard, parmi une liste 100 mots qui ne font pas partie des couples ou des contextes ;
+- la phrase est alors constituée en plaçant ces 9 mots dans un ordre aléatoire.
+
+En construisant les phrases de cette façon, les mots du couples ne seront jamais utilisés dans les mêmes phrases mais aurons un contexte similaire. Si notre modèle est correctement implémenté, les représentations vectorielles des mots de nos couples seront : proches entre elles, proches des représentations mots contextes et éloignées des représentations mots bruits.
+
+Après avoir évalué notre modèle sur ce corpus fictif, ,ous avons mis en œuvre les différentes techniques d'évaluation^[À l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.] 
 présentées dans l'annexe \ref{annexe:commentEvaluer} sur les *word-embeddings* obtenus grâce à ce corpus fictif. 
 
-\begin{table}
+Les résultats semblent concluants : la similarité cosinus montre bien une forte corrélation entre les mots focus et contexte (i.e. : les mots d’un même \og groupe \fg) du corpus fictif et une faible corrélation avec les mots bruits (tableau \ref{table:tableau_evaluation}). 
+L'ACP et l'algorithme t-SNE permettent également de montrer graphiquement cette proximité (figure \ref{fig:figure_evaluation}). 
+Les clusters apparaissent de manière plus évidente avec t-SNE. 
+
+
+\begin{table}[!h]
 \begin{center}
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|>{\centering\arraybackslash}p{3cm}|}
     \hline
-    mot & similarité cosinus \tabularnewline
+    mot & similarité cosinus avec \og grand \fg{} \tabularnewline
     \hline
-    énorme & 0,991   \tabularnewline
-    taille & 0,991   \tabularnewline
-    \dots & \dots    \tabularnewline
-    vanille & 0,061   \tabularnewline
-    salissures & 0,054   \tabularnewline
+    longueur & 0,982   \tabularnewline
+    petit & 0,981   \tabularnewline
+    s & 0,979   \tabularnewline
+    $\vdots$ & $\vdots$    \tabularnewline
+    susiens & - 0,735 \tabularnewline
+    allates & -0,784 \tabularnewline
+    %produit & 0,100   \tabularnewline
+    %voiture & 0,097   \tabularnewline
     \hline
  \end{tabular}
-\captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Mots les plus proches de \og grand \fg{} par similarité cosinus}\label{table:tableau_evaluation}
+\begin{tabular}{|c|>{\centering\arraybackslash}p{3cm}|}
+    \hline
+    mot & similarité cosinus avec \og petit \fg{} \tabularnewline
+    \hline
+    taille & 0,987   \tabularnewline
+    longueur & 0,983   \tabularnewline
+    grand & 0,981   \tabularnewline
+    $\vdots$ & $\vdots$    \tabularnewline
+    alesiez & - 0,745 \tabularnewline
+    allates & -0,810 \tabularnewline
+    %citrine & 0,129   \tabularnewline
+    %voiture & 0,121   \tabularnewline
+    \hline
+ \end{tabular}
 \end{center}
-\vspace{-0.3cm}
+\captionsetup{margin=0cm,format=hang,justification=justified}
+\caption{Mots les plus proches et les plus éloignées du couple  `[grand, petit]` par la similarité cosinus.}\label{table:tableau_evaluation}
 \footnotesize
 \emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{table}
-
-
-
-Les résultats semblent concluants : la similarité cosinus montre bien une forte corrélation entre les mots focus et contexte du corpus initial et une faible corrélation avec les mots bruits (tableau \ref{table:tableau_evaluation}). 
-L'ACP et l'algorithme t-SNE permettent également de montrer graphiquement cette proximité (figure \ref{fig:figure_evaluation}). 
-Les clusters apparaissent de manière plus évidente avec t-SNE. 
 
 \begin{figure}
 \begin{center}
@@ -411,7 +434,6 @@ Les clusters apparaissent de manière plus évidente avec t-SNE.
 \footnotesize
 \emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{figure}
-
 
 
 ## Choix des meilleurs hyperparamètres pour le modèle {#sec:hyperparametres}
@@ -522,7 +544,7 @@ Nous avons ensuite fait tourner le modèle que nous avons implémenté en utilis
 
 Les résultats obtenus semblent relativement satisfaisants. La recherche des plus proches voisins par similarité cosinus (dont quelques exemples sont illustrés en tableau \ref{table:knn_ark}) donne des résultats proches de l'intuition. 
 
-\begin{table}
+\begin{table}[!h]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
     \hline
@@ -1135,7 +1157,7 @@ Une dernière façon de vérifier la qualité de nos vecteurs-mots est de les co
 Elle contient 65 paires de noms communs (tableau \ref{table:human_judgement}) évaluées sur une échelle de 0 (non liés) à 4 (très liés).
 
 
-\begin{table}
+\begin{table}[!h]
 \begin{center}
 \begin{tabular}{|c|c|c|}
     \hline
@@ -1143,9 +1165,9 @@ Elle contient 65 paires de noms communs (tableau \ref{table:human_judgement}) é
     \hline
     corde & sourire & 0,00   \tabularnewline
     midi & ficelle & 0,00   \tabularnewline
-    \dots & \dots & \dots   \tabularnewline
+    $\vdots$  & $\vdots$  & $\vdots$    \tabularnewline
     corde & ficelle & 3,33   \tabularnewline
-    \dots & \dots & \dots   \tabularnewline
+    $\vdots$  & $\vdots$  & $\vdots$    \tabularnewline
     automobile & auto & 3,94   \tabularnewline
     coq & coq & 4,00   \tabularnewline
     \hline

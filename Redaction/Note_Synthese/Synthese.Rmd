@@ -116,7 +116,9 @@ La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du
 
 
 Nous entraînons le réseau de neurones en le nourrissant de paires `[focus, contexte]` contenues dans les $n$ mots du vocabulaire des tweets.
-Pour cela, on tire au hasard^[Pour éviter que les mots trop fréquents, souvent peu informatifs, soient sur-entraînés, on effectue un tout d'abord un sous-échantillonnage (*subsampling*).] un mot focus pour lequel on tire un mot *contexte* au hasard dans une fenêtre $w$. 
+Pour cela, on tire au hasard^[
+Pour éviter que les mots trop fréquents, souvent peu informatifs, soient sur-entraînés, on effectue un tout d'abord un sous-échantillonnage (*subsampling*).
+] un mot focus pour lequel on tire un mot *contexte* au hasard dans une fenêtre $w$. 
 Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois. Le nombre de fois que l'ensemble du corpus est parcouru est appelé *epochs*.
 
 À chaque étape, les matrices sont mises à jour par descente de gradient :
@@ -160,12 +162,17 @@ L’indicateur synthétique de confiance des ménages provient de l'Enquête men
 
 \end{encadre}
 
-Grâce à l'évaluation de plusieurs modèles, nous avons pu déterminer les hyperparamètres les plus pertinents\footnote{$ep = 100$ pour le nombre d'\og \emph{epochs} \fg{} / $lr = 0,02$ pour le \og \emph{learning rate} \fg{}, ou taux d'apprentissage/ $w = 4$ pour la taille de la fenêtre (\emph{window}) de sélection des mots contextes / $dim = 100$ pour la dimension des vecteurs-mots (ou \emph{word-embeddings})} au regard des données dont nous disposons (encadré \@ref(enc:encadre1)). 
-Selon nos critères d'évaluation, les résultats obtenus en sortie du modèle *word2vec* nous confirment la qualité de l'entraînement du corpus de 1,3 million de tweets^[Avant de nous attaquer au jeu de données complet, nous avons également évalué notre modèle sur un corpus fictif afin de nous assurer de sa robustesse et de sa validité.] : 
+Grâce à l'évaluation de plusieurs modèles, nous avons pu déterminer les hyperparamètres les plus pertinents%
+\footnote{
+$ep = 100$ pour le nombre d'\og \emph{epochs} \fg / $lr = 0,02$ pour le \og \emph{learning rate} \fg, ou taux d'apprentissage/ $w = 4$ pour la taille de la fenêtre (\emph{window}) de sélection des mots contextes / $dim = 100$ pour la dimension des vecteurs-mots (ou \emph{word-embeddings}).
+} au regard des données dont nous disposons (encadré \@ref(enc:encadre1)). 
+Selon nos critères d'évaluation, les résultats obtenus en sortie du modèle *word2vec* nous confirment la qualité de l'entraînement du corpus de 1,3 million de tweets^[
+Avant de nous attaquer au jeu de données complet, nous avons également évalué notre modèle sur un corpus fictif afin de nous assurer de sa robustesse et de sa validité.
+] : 
 
 \begin{itemize}
 \item Le coefficient de corrélation de Spearman avec le jugement humain est significatif (p-valeur proche de 0 \%) et assez élevé (0,495) ;
-\item La recherche des plus proches voisins par similarité cosinus donne des résultats proches de l'intuition pour quelques mots de référence évalués (bonjour, femme, samedi \dots) ;
+\item La recherche des plus proches voisins par similarité cosinus donne des résultats proches de l'intuition pour quelques mots de référence évalués (bonjour, femme, samedi\dots) ;
 \item La projection de certains vecteurs-mots sur les deux premiers axes d'une ACP (figure \ref{fig:acp_gensim}) est de qualité ;
 \item Les sommes vectorielles sur les vecteurs-mots présentent des résultats plus mitigés. L'exemple de  $\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} = \overrightarrow{Reine}$ (figure \ref{fig:acp_reine}) semble plutôt fonctionner. 
 \end{itemize}
@@ -208,16 +215,16 @@ $$S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n 
 
 \textbf{Modèle 2 : \emph{word-embeddings}}
 
-Ce deuxième modèle est une régression binaire avec comme prédicteurs chacune des 100 dimensions des vecteurs-mots. Les vecteurs-mots sont moyennés pour obtenir la représentation vectorielle du tweet : la  « \emph{sentence-embedding} »
+Ce deuxième modèle est une régression binaire avec comme prédicteurs chacune des 100 dimensions des vecteurs-mots. Les vecteurs-mots sont moyennés pour obtenir la représentation vectorielle du tweet : la  « \emph{sentence-embedding} ».
 Le sentiment prédit d'un tweet $t$ sera :
- $$S_{2,\gamma}(t) = 2 \times \mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in [0,1]$$
+ $$S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in [0,1]$$
 Avec : 
 $$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} 
 \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)$$
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
 \item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
-\item $\varepsilon_i$ le résidu de notre modèle de fonction de répartition $F_{\varepsilon}(x) = \frac{1}{1 + e^{-x}}$ (logit)
+\item $\varepsilon_i$ le résidu de notre modèle de fonction de répartition $F_{\varepsilon}(x) = \frac{1}{1 + e^{-x}}$ (logit).
 \end{itemize}
 
  \end{multicols}
@@ -225,21 +232,24 @@ $$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 
 
 
 \begin{multicols}{2}
-\faArrowCircleRight{} \emph{Accuracy}\footnote{taux de tweets dont le sentiment est bien prédit} =  89,1 \% ($\gamma^* = -0,14$) 
+\faArrowCircleRight{} \emph{Accuracy}\footnote{Taux de tweets dont le sentiment est bien prédit.} =  89,1 \% ($\gamma^* = -0,14$).
 
-\faArrowCircleRight{} \emph{Accuracy} =  69,8 \% ($\gamma^* \simeq 0,5$) 
+\faArrowCircleRight{} \emph{Accuracy} =  69,8 \% ($\gamma^* \simeq 0,5$).
 
  \end{multicols}
 
 À partir de ces modèles, nous avons construit deux indicateurs de sentiment des tweets en calculant la moyenne mensuelle des prévisions des sentiments des *sentence-embeddings* des tweets (graphique \@ref(fig:bslogcam)), puis avons comparé ces indicateurs avec l'indicateur synthétique de confiance des ménages (Camme, Insee).
 
-Les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur Camme. On peut toutefois remarquer que l'indice réalisé à partir du modèle 2 apporte une information pour prévoir^[Il le cause au sens de Granger (p-valeur de 0,02).] l'évolution de l'indicateur Camme. 
+Les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur Camme. 
+Toutefois, contrairement à l'indice du modèle 1, l'indice réalisé à partir du modèle 2 apporte une information significative pour prévoir l'évolution de l'indicateur Camme^[
+Il le cause au sens de Granger (p-valeur de 0,05).
+]. 
 
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[width =0.7\textwidth]{img/rmd-graphSentiments-1}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Les trois indicateurs (centrés-réduits sur la période)}\label{fig:bslogcam}
+\caption{Les trois indicateurs (centrés-réduits sur la période).}\label{fig:bslogcam}
 \end{center}
 \end{figure}
 

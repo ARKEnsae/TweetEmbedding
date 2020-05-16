@@ -1021,7 +1021,7 @@ Il faudrait pour cela mobiliser un analyseur de sentiments performant pour les t
 Quelques avancées récentes, comme CamemBERT (\cite{Martin}), le cousin français de BERT entraîné sur 138 GB de texte français issu du web, pourrait par exemple être mobilisé.
 L'outil BERT de Google permet en effet non seulement de qualifier le sentiment global d'un texte mais également d'identifier de quel sujet il traite. 
 Une étape de sélection de données semble en effet indispensable pour que les tweets annotés de la base d'entraînement soient en lien avec l'enquête Camme de l'Insee.
-Cela pourrait passer non seulement par l'analyse approfondie du contenu du tweet (notamment via l'utilisation de hashtags) mais également son auteur (médias, faux comptes, individus lambdas \dots). 
+Cela pourrait passer non seulement par l'analyse approfondie du contenu du tweet (notamment via l'utilisation de hashtags) mais également son auteur (médias, faux comptes, individus lambdas\dots). 
 
 
 En amont de *word2vec*, un **prétraitement plus approfondi des tweets** pourrait contribuer à l'amélioration de la qualité des vecteurs-mots et à la réduction des mots inconnus. 
@@ -1295,7 +1295,7 @@ Les sentiments exprimés par les tweets pourraient donc être influencés par le
 
 Pour estimer l'effet jour ouvrable, nous utilisons l'approche de la méthode X-12ARIMA, notamment décrite dans \cite{L2018}.
 
-Supposons que le $j$^ème^ jour de la semaine a un effet $\alpha_j$ où $j=1$ désigne le lundi, $j=2$ le mardi, \dots , et $j=7$ le dimanche. 
+Supposons que le $j$^ème^ jour de la semaine a un effet $\alpha_j$ où $j=1$ désigne le lundi, $j=2$ le mardi, \dots, et $j=7$ le dimanche. 
 Chaque $\alpha_j$ représente par exemple le sentiment moyen d'un jour $j$.
 Si $N_{jt}$ représente le nombre de jours $j$ dans le mois $t$, la longueur du mois $t$ est alors $N_t = \sum_{j=1}^{7} N_{jt}$ et l'effet cumulé pour ce mois (le sentiment moyen du mois) sera :
 $$

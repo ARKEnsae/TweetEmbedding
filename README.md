@@ -1,11 +1,11 @@
 # StatApp  <img src="Redaction/Rapport_Final/img/LOGO-ENSAE.png" align="right" alt=""  width="100"/>
 
-Projet de statistique appliqué sur l'analyse statistique et empirique des modèles de word embedding
+Projet de statistique appliquée sur l'analyse statistique et empirique des modèles de word embedding
 
-Note d'étape : https://aqlt.github.io/StatApp/Redaction/Rapport_Intermediaire/rapport_inter.pdf
+Note d'étape : https://aqlt.github.io/TweetEmbedding/Redaction/Rapport_Intermediaire/rapport_inter.pdf
 
-Rapport : https://aqlt.github.io/StatApp/Redaction/Rapport_Final/Rapport.pdf
+Rapport : https://arkensae.github.io/TweetEmbedding/Redaction/Rapport_Final/Rapport.pdf
 
-Synthèse 
+Synthèse : https://arkensae.github.io/TweetEmbedding/Redaction/Note_Synthese/Synthese.pdf
 
 

@@ -418,23 +418,24 @@ Les méthodes que nous avons retenues pour évaluer, dans les parties qui suiven
 
 Avant de nous attaquer au jeu de données complet décrit dans la prochaine section, nous avons évalué notre modèle sur un corpus fictif afin de nous assurer de sa robustesse et de sa validité.
 
-Pour construire ce corpus, nous construit 10 groupes de mots composés d'un couple (du type \texttt{{[}grand,\ petit{]}}) et de dix mots différents que l'on considère comme des mots contextes (\texttt{{[}taille,\ xl...{]}}). Le corpus fictif est formé de 10 000 phrases de neuf mots. Chacune de ces phrases est constitué de la façon suivante :
+Nous générons tout d'abord 10 groupes de mots chacun composé d'un couple de référence de mots proches (du type \texttt{{[}grand,\ petit{]}}) et de 10 autres mots que l'on considère comme des mots appartenant au contexte des 2 mots «~référence~» (\texttt{{[}taille,\ xl...{]}}).
+
+Nous construisons ensuite un corpus fictif formé de 10 000 phrases de 9 mots constituées de la manière suivante :
 
 \begin{itemize}
 \tightlist
 \item
-  on tire au hasard un groupe de mots;
+  on tire au hasard 1 des 10 groupes de mots;
 \item
-  pour ce groupe de mots, on tire au hasard : un des deux mots du couple et cinq des dix mots contexte associés ;
+  au sein de ce groupe, on tire au hasard 1 des 2 mots «~référence~» et 5 des 10 mots contextes associés ;
 \item
-  on tire trois mots «~bruits~» au hasard, parmi une liste 100 mots qui ne font pas partie des couples ou des contextes ;
+  on tire 3 mots «~bruits~» au hasard, parmi une liste 100 mots qui ne font pas partie des couples de référence ou des contextes ;
 \item
   la phrase est alors constituée en plaçant ces 9 mots dans un ordre aléatoire.
 \end{itemize}
 
-En construisant les phrases de cette façon, les mots du couples ne seront jamais utilisés dans les mêmes phrases mais aurons un contexte similaire. Si notre modèle est correctement implémenté, les représentations vectorielles des mots de nos couples seront : proches entre elles, proches des représentations mots contextes et éloignées des représentations mots bruits.
-
-Après avoir évalué notre modèle sur ce corpus fictif, ,ous avons mis en œuvre les différentes techniques d'évaluation\footnote{À l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.}
+En construisant les phrases de cette façon, les mots du couple de référence ne seront jamais utilisés dans les mêmes phrases mais auront un contexte similaire. Si notre modèle est correctement implémenté, les représentations vectorielles des mots de nos couples de référence seront proches entre elles et de celles des mots contextes mais seront éloignées des représentations des mots bruits.
+Pour le vérifier, nous avons mis en œuvre les différentes techniques d'évaluation\footnote{À l'exception de la méthode par \og jugement humain \fg{} puisque le corpus est ici créé fictivement par ordinateur sans prêter attention au réel sens des mots.}
 présentées dans l'annexe \ref{annexe:commentEvaluer} sur les \emph{word-embeddings} obtenus grâce à ce corpus fictif.
 
 Les résultats semblent concluants : la similarité cosinus montre bien une forte corrélation entre les mots focus et contexte (i.e. : les mots d'un même \og groupe \fg) du corpus fictif et une faible corrélation avec les mots bruits (tableau \ref{table:tableau_evaluation}).
@@ -473,7 +474,7 @@ Les clusters apparaissent de manière plus évidente avec t-SNE.
  \end{tabular}
 \end{center}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Mots les plus proches et les plus éloignées du couple  `[grand, petit]` par la similarité cosinus.}\label{table:tableau_evaluation}
+\caption{Mots les plus proches et les plus éloignés des mots du couple de référence \texttt{[grand, petit]} par la similarité cosinus.}\label{table:tableau_evaluation}
 \footnotesize
 \emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{table}
@@ -598,7 +599,6 @@ En pratique, en comparant l'effet de la dimension des vecteurs (modèle fixé à
 \subsubsection{\texorpdfstring{Avec \og notre \fg{} modèle}{Avec notre  modèle}}\label{avec-notre-moduxe8le}}
 
 Nous avons ensuite fait tourner le modèle que nous avons implémenté en utilisant les paramètres retenus précédemment\footnote{w~=~4, lr~=~0,02 et dim~=~100} mais uniquement sur 100~000 tweets et 80 epochs pour des questions de temps de calcul\footnote{Près de 18 heures.}.
-
 Les résultats obtenus semblent relativement satisfaisants. La recherche des plus proches voisins par similarité cosinus (dont quelques exemples sont illustrés en tableau \ref{table:knn_ark}) donne des résultats proches de l'intuition.
 
 \begin{table}[!h]
@@ -694,7 +694,7 @@ hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
 La similarité cosinus de chaque paire de mots est renseignée entre les parenthèses.}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{img/acp_gensim.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
@@ -705,7 +705,7 @@ La similarité cosinus de chaque paire de mots est renseignée entre les parenth
 \emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02 / dim = 100 / base : ensemble des tweets }
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{minipage}{.5\textwidth}
   \centering
   \includegraphics[width=0.92\linewidth]{img/acp_reine.png}
@@ -735,23 +735,6 @@ Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions da
 Afin de créer un indice mensuel de sentiment moyens des tweets, nous allons utiliser les vecteurs-mots en sortie du modèle \emph{word2vec} couplé avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs.
 Nous comparerons enfin cet indicateur avec indicateur synthétique de confiance des ménages (Camme, Insee). L'ensemble de ces données sont décrites dans l'encadré \ref{enc:encadre1}.
 
-\hypertarget{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}{%
-\subsection{\texorpdfstring{Prédire le sentiment d'un tweet à partir des \emph{word-embeddings}}{Prédire le sentiment d'un tweet à partir des word-embeddings}}\label{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}}
-
-Nous cherchons dans cette partie à construire un modèle permettant de prédire le sentiment (\(+1\) ou \(-1\)) associé à un tweet à partir des mots qui le composent.
-Nous utilisons pour cela la base annotée sur les transports (encadré \ref{enc:encadre1}).
-Nous comparerons deux approches : une première basée sur les sentiments moyens de chaque mot des tweets (partie \ref{sec:sentiments}) qui servira de référence (\emph{baseline}) pour évaluer l'efficacité de la seconde approche basée sur les \emph{word-embeddings} (partie \ref{sec:wordembeddings}) .
-
-\hypertarget{sec:sentiments}{%
-\subsubsection{Prédiction à partir du sentiment moyen des mots}\label{sec:sentiments}}
-
-Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
-Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
-\[S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\} - 1 \qquad \in [0,1]\]
-avec \(\gamma \in [-1,1]\) un seuil fixé, \(\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]\) le sentiment moyen du mot \(i\) calculé à partir du nombre de tweets positifs (\(nb_+(i)\)) et négatifs (\(nb_-(i)\)) dans lesquels il apparaît.
-
-Afin d'évaluer l'efficacité du modèle, nous séparons le corpus de la base de tweets sur les transports en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots\footnote{13 \% des mots du vocabulaires et 1 \% des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen \(\alpha_i\) est fixé à 0.} et à déterminer le \(\gamma\) qui présente les meilleurs performances, et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
-
 \begin{encadre}[true]{Données utilisées}\label{enc:encadre1}
 
 \small
@@ -776,6 +759,23 @@ Il est calculé par analyse factorielle statique, dont l’objectif est de résu
 L’indicateur est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10 et doit donc s’interpréter en évolution. 
 
 \end{encadre}
+
+\hypertarget{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}{%
+\subsection{\texorpdfstring{Prédire le sentiment d'un tweet à partir des \emph{word-embeddings}}{Prédire le sentiment d'un tweet à partir des word-embeddings}}\label{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}}
+
+Nous cherchons dans cette partie à construire un modèle permettant de prédire le sentiment (\(+1\) ou \(-1\)) associé à un tweet à partir des mots qui le composent.
+Nous utilisons pour cela la base annotée sur les transports (encadré \ref{enc:encadre1}).
+Nous comparerons deux approches : une première basée sur les sentiments moyens de chaque mot des tweets (partie \ref{sec:sentiments}) qui servira de référence (\emph{baseline}) pour évaluer l'efficacité de la seconde approche basée sur les \emph{word-embeddings} (partie \ref{sec:wordembeddings}).
+
+\hypertarget{sec:sentiments}{%
+\subsubsection{Prédiction à partir du sentiment moyen des mots}\label{sec:sentiments}}
+
+Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
+Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
+\[S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\} - 1 \qquad \in [0,1]\]
+avec \(\gamma \in [-1,1]\) un seuil fixé, \(\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]\) le sentiment moyen du mot \(i\) calculé à partir du nombre de tweets positifs (\(nb_+(i)\)) et négatifs (\(nb_-(i)\)) dans lesquels il apparaît.
+
+Afin d'évaluer l'efficacité du modèle, nous séparons le corpus de la base de tweets sur les transports en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets). La base d'entraînement sert à calculer les sentiments moyens des mots\footnote{13 \% des mots du vocabulaires et 1 \% des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen \(\alpha_i\) est fixé à 0.} et à déterminer le \(\gamma\) qui présente les meilleurs performances, et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
 
 On choisit \(\gamma\) tel que l'\emph{accuracy} sur la base d'entraînement\footnote{Dans notre base d'entraînement la proportion de tweets positifs (43 \%) est proche de la proportion de tweets négatifs (57 \%).
   Il n'y a donc pas de problème de déséquilibre de classe : maximiser l'\emph{accuracy} permet bien de maximiser la performance de notre algorithme.} -- c'est-à-dire le taux de tweets dont le sentiment est bien prédit -- soit maximale. On obtient \(\gamma^* = -0,14\) (figure \ref{fig:max_baseline}).
@@ -887,7 +887,7 @@ Modéliser le «~domain shift~» implique donc d'estimer le passage d'une repré
 L'idée n'est pas ici de modéliser mathématiquement\footnote{En quelque mot, pour modéliser mathématiquement un \emph{domain shift} on considérerait une variable latente «~idéale~» \(x_0\) (une base de tweets de référence), jamais observée mais qui influerait sur \(y\) (l'indice mensuel).
   Nous observons uniquement \(x\) telle \(x=F(x_0)\) avec \(F\) qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données \(x\) utilisée.
   La distribution \(\mathbb P(y\mid x_0)\) (de l'indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base annotée sur les transports urbains et base de tweets postés en France entre 2013 et 2017).
-  En revanche, cette distribution est modifiée si \(F\) est modifiée.} le \emph{domain shift} mais de remarquer que la base de tweets sur les transports semble en effet qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé\footnote{Les mots «~bus~» (3800 occurrences), «~métro~» (820), «~SNCF~» (781), «~retard~» (411), «~ratp~» (237), «~gare~» (195), «~chauffeur~» (160)\dots\{\} sont parmi les plus employés dans les tweets de la base test.} mais également de part le ton particulièrement ironique de nombreux tweets\footnote{Comme en témoignent ces deux tweets «~1h de retard la SNCF, vous savez pas l'amour que je vous porte~» et «~J'ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas~».
+  En revanche, cette distribution est modifiée si \(F\) est modifiée.} le \emph{domain shift} mais de remarquer que la base de tweets sur les transports semble en effet qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé\footnote{Les mots «~bus~» (3800 occurrences), «~métro~» (820), «~SNCF~» (781), «~retard~» (411), «~ratp~» (237), «~gare~» (195), «~chauffeur~» (160)\dots sont parmi les plus employés dans les tweets de la base test.} mais également de part le ton particulièrement ironique de nombreux tweets\footnote{Comme en témoignent ces deux tweets «~1h de retard la SNCF, vous savez pas l'amour que je vous porte~» et «~J'ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas~».
   Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal prédits, 4 peuvent être utilisés pour manier l'ironie (rire, mdr, ptdr et mdrrr).}.
 
 \hypertarget{test-dune-modification-de-la-source-de-la-base-de-test}{%
@@ -999,14 +999,21 @@ La première raison de leur différence est probablement leur philosophie distin
 \emph{Note de lecture : tous les indicateurs sont centrés-réduits (de moyenne nulle et de variance unitaire) entre janvier 2011 et décembre 2018.}
 \end{figure}
 
-L'idéal serait de disposer d'\textbf{une base de tweets traitant de sujets divers, et bien annotés}. Il faudrait mobiliser un analyseur de sentiments performant pour les tweets en français, or peu de modèles de NLP préentraînés sont disponibles en dehors de l'anglais. Quelques avancées récentes, comme CamemBERT\footnote{source}, le cousin Français de BERT\footnote{L'outil BERT de Google permet de comprendre les intentions formulées derrière les expressions naturelles des internautes en analysant les phrases et leur contexte.} entraîné sur 138GB de texte français issu du web, \ldots{}
-, tout comme l'utilisation de bases d'entraînement contenant une plus grande gradation des sentiments des tweets (permettant notamment qu'ils soient catégorisés de «~neutres~»)
+L'idéal serait de disposer d'\textbf{une base de tweets traitant de sujets divers, et bien annotés} qui contiendrait une plus grande gradation de sentiments (permettant notamment qu'ils soient catégorisés de «~neutres~»).
+Il faudrait pour cela mobiliser un analyseur de sentiments performant pour les tweets en français, or peu de modèles de NLP préentraînés sont disponibles en dehors de l'anglais.
+Quelques avancées récentes, comme CamemBERT (\cite{Martin}), le cousin français de BERT entraîné sur 138 GB de texte français issu du web, pourrait par exemple être mobilisé.
+L'outil BERT de Google permet en effet non seulement de qualifier le sentiment global d'un texte mais également d'identifier de quel sujet il traite.
+Une étape de sélection de données semble en effet indispensable pour que les tweets annotés de la base d'entraînement soient en lien avec l'enquête Camme de l'Insee.
+Cela pourrait passer non seulement par l'analyse approfondie du contenu du tweet (notamment via l'utilisation de hashtags) mais également son auteur (médias, faux comptes, individus lambdas \dots).
 
-En amont de \emph{word2vec}, un prétraitement plus approfondi des tweets pourrait contribuer à l'amélioration de la qualité des vecteurs-mots et à la réduction des mots inconnus. Les mots mal orthographiés (lettres en trop, oubli d'espace, mauvaise ponctuation\dots) accroissent en effet considérablement la taille du vocabulaire et la rareté des mots. Cette correction doit toutefois être effectuée avec précaution : les différentes orthographes d'un même mot peuvent parfois refléter des sentiments différents.
-Par exemple, «~lol~», «~LOL~» et «~loool~» sont peut-être utilisées dans des contextes différents : ironie, blagues, rires\dots L'extension \emph{fasttext}\footnote{La bibliothèque open-source \url{https://fasttext.cc/} permet de télécharger des modèles pré-entraînés dans 157 langues différentes.} (\cite{Bojanowski}) de \emph{word2vec} apporte une solution au traitement des mots rares. On représente un mot non seulement comme lui-même mais aussi grâce à des sacs de \(n\)-grammes constitutifs.
-Si \(n = 3\), «~WHERE~» est représenté non seulement par \texttt{\textless{}where\textgreater{}} mais également \texttt{\textless{}wh,\ whe,\ her,\ ere,\ re\textgreater{}}.
+En amont de \emph{word2vec}, un \textbf{prétraitement plus approfondi des tweets} pourrait contribuer à l'amélioration de la qualité des vecteurs-mots et à la réduction des mots inconnus. Les mots mal orthographiés (lettres en trop, oubli d'espace, mauvaise ponctuation\dots) accroissent en effet considérablement la taille du vocabulaire et la rareté des mots. Cette correction doit toutefois être effectuée avec précaution : les différentes orthographes d'un même mot peuvent parfois refléter des sentiments différents.
+Par exemple, « lol », « LOL » et « loool » sont peut-être utilisées dans des contextes différents : ironie, blagues, rires\dots 
 
-Enfin, l'utilisation de modèles d'analyse de sentiment plus élaborés, comme les réseaux de neurones récurrents, amélioreraient peut-être également la qualité de la prévision du sentiment d'un tweet. Il est également sûrement possible de gérer avec plus de précision les mots manquants, en étudiant leur nature et l'impact de notre méthode d'imputation sur les prévisions de sentiments.
+Certains modèles ont montré que de considérer les mots comme étant des séquences d'unités de sous-mots\footnote{On représente un mot non seulement comme lui-même mais aussi grâce à des sacs de \(n\)-grammes constitutifs. Si \(n = 3\), « WHERE » est représenté non seulement par \texttt{\textless{}where\textgreater{}} mais également \texttt{\textless{}wh,\ whe,\ her,\ ere,\ re\textgreater{}}.}, améliore certaines tâches d'apprentissage comme par exemple les traductions (\cite{Sennrich}).
+L'extension \emph{fasttext}\footnote{La bibliothèque open-source \url{https://fasttext.cc/} permet de télécharger des modèles pré-entraînés dans 157 langues différentes.} (\cite{Bojanowski}) de \emph{word2vec} modélise ce principe et permet ainsi un meilleur traitement des mots rares.
+Il serait également possible de gérer avec plus de précision les mots inconnus, en étudiant leur nature et l'impact de notre méthode d'imputation sur les prévisions de sentiments.
+
+Enfin, l'utilisation de \textbf{modèles d'analyse de sentiment plus élaborés}, comme les réseaux de neurones récurrents, amélioreraient peut-être également la qualité de la prévision du sentiment d'un tweet.
 
 \newpage
 
@@ -1027,7 +1034,7 @@ Toutefois, le test de causalité au sens de Granger nous indique que l'indice ob
 
 La possibilité d'obtenir deux indicateurs très proches était assez utopique en raison de leurs philosophies différentes.
 Au-delà de la positivité ou négativité d'un tweet, il demeure important de déceler les sujets sur lesquels les tweets portent pour créer un indice plus ciblé.
-Par ailleurs, les bases d'entraînement et de test utilisées pour entraîner le modèle comportent de nombreuses limites (\emph{domain-shift}, processus d'annotation, mots inconnus).
+Par ailleurs, les bases d'entraînement et de test utilisées pour entraîner le modèle comportent de nombreuses limites (\emph{domain-shift}, processus d'annotation, mots inconnus). L'identification de ces limites invite à de nombreuses pistes d'amélioration identifiées dans la partie précédente.
 
 Les méthodes d'apprentissage étant en perpétuelle évolution, le modèle \emph{word2vec} mis en exergue en 2013, connaît déjà des «~concurrents~». Le plus connu est certainement \emph{GloVe} pour «~\emph{Global Vectors}~» (\cite{Pennington}).
 Alors que \emph{word2vec} privilégie l'utilisation de «~n-grammes~» (avec l'utilisation des mots contextes qui se situent autour d'une fenêtre du mot focus), \emph{GloVe} se base sur l'ensemble les statistiques d'occurrence des mots du corpus (matrice de cooccurrence mot-mot) et prétend permettre alors, par construction, de capturer des statistiques plus générales liées au corpus.
@@ -1219,22 +1226,22 @@ avec \(q_{1-\frac{\alpha}{2}}\) le quantile d'ordre \(1-\frac{\alpha}{2}\) d'une
 \hypertarget{annexe:cvscjo}{%
 \section{Correction des effets saisonniers et jours ouvrables}\label{annexe:cvscjo}}
 
-La figure \ref{fig:cvscjo} compare les séries brutes et corrigées des variations saisonniers et des jours ouvrables (CVS-CJO) des trois indicateurs étudiés.
+La figure \ref{fig:cvscjo} compare les séries brutes et corrigées des variations saisonnières et des jours ouvrables (CVS-CJO) des trois indicateurs étudiés.
 Même si les séries brutes semblent très proches des séries désaisonnalisées, la présence de saisonnalité est confirmée par le F-test proposé par \cite{lytras}.
 
 Dans cette annexe nous présentons de quelle manière nous désaisonnalisons nos deux indicateurs de sentiment calculés à partir des tweets.
-Pour rappel, l'indicateur synthétique de confiance des ménages publié par l'Insee grâce à l'enquête Camme est calculé à partir de soldes d'opinion CVS-CJO : on considère donc qu'il est CVS-CJO.
+Pour rappel, l'indicateur synthétique de confiance des ménages publié par l'Insee grâce à l'enquête Camme est calculé à partir de soldes d'opinion CVS-CJO, c'est pourquoi on considère ici qu'il est CVS-CJO.
 L'indicateur brut associé correspond à l'indicateur que l'on obtient en utilisant les mêmes soldes d'opinion et les mêmes coefficients que dans l'indicateur publié par l'Insee mais en utilisant les soldes d'opinion bruts plutôt que CVS-CJO.
 
 \begin{figure}[htp]
 {\centering\includegraphics[width = \textwidth]{img/rmd-graphCVS-1}}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Comparaison des séries brutes et CVS-CJO de l'indicateur synthétique de confiance des ménages de l'enquête Camme et indicateurs mensuels de sentiment construits à partir de notre modèle \emph{word2vec} et à partir de notre modèle de référence.}\label{fig:cvscjo}
+\caption{Comparaison des séries brutes et CVS-CJO de l'indicateur synthétique de confiance des ménages de l'enquête Camme et des indicateurs mensuels de sentiment que nous avons construits à partir de nos deux modèles (celui utilisant  \emph{word2vec} et le modèle référence).}\label{fig:cvscjo}
 \footnotesize
 
 \emph{L'indicateur Camme brut correspond à l'indicateur que l'on obtient en utilisant les mêmes soldes d'opinion et les mêmes coefficients que dans l'indicateur synthétique publié par l'Insee mais en utilisant les soldes d'opinion bruts plutôt que CVS-CJO.}
 
-\emph{Les autres indicateurs ont été corrigées des variations saisonnières et des jours ouvrables (CVS-CJO) par la méthode X-12ARIMA.}
+\emph{Les autres indicateurs ont été corrigés des variations saisonnières et des jours ouvrables (CVS-CJO) par la méthode X-12ARIMA.}
 \end{figure}
 
 Pour désaisonnaliser nos deux indicateurs de sentiment, nous avons utilisé la méthode X-12ARIMA qui fonctionne en deux étapes :
@@ -1242,7 +1249,7 @@ Pour désaisonnaliser nos deux indicateurs de sentiment, nous avons utilisé la 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  La série initiale est pré-ajustées de certains effets déterministes (effets jours ouvrables et points atypiques) grâce à un modèle de régression linéaire dont les résidus suivent un modèle ARIMA (partie \ref{sec:cjo}).
+  La série initiale est pré-ajustée de certains effets déterministes (effets jours ouvrables et points atypiques) grâce à un modèle de régression linéaire dont les résidus suivent un modèle ARIMA (partie \ref{sec:cjo}).
 \item
   Cette série pré-ajustée est ensuite désaisonnalisée par une méthode non-paramétrique qui repose sur l'usage de moyennes mobiles (partie \ref{sec:cvs}).
 \end{enumerate}
@@ -1250,24 +1257,24 @@ Pour désaisonnaliser nos deux indicateurs de sentiment, nous avons utilisé la 
 \hypertarget{sec:cjo}{%
 \subsection{Correction des effets jours ouvrables}\label{sec:cjo}}
 
-Dans la correction des effets saisonniers et des effets jours ouvrables (CVS-CJO) on distingue trois types d'effets :
+Dans la correction des effets saisonniers et des effets jours ouvrables (CVS-CJO), on distingue trois types d'effets :
 
 \begin{itemize}
 \item
-  un effet \emph{nombre de jours} lié au nombre de jours dans le mois
+  un effet \emph{nombre de jours} lié au nombre de jours dans le mois ;
 \item
-  un effet \emph{type de jour} lié au nombre de jours de chaque type (lundi, mardi\dots)
+  un effet \emph{type de jour} lié au nombre de jours de chaque type (lundi, mardi\dots) ;
 \item
   un effet \emph{fêtes mobiles} lié à la variation d'une année sur l'autre de la date de certaines fêtes comme Pâques.
 \end{itemize}
 
-Dans notre cas, puisque les tweets sont tirés à des jours fixes il n'y a pas d'effet nombre de jours et l'effet fête mobile n'aurait pas de sens.
+Dans notre cas, puisque les tweets sont tirés à des jours fixes, il n'y a pas d'effet nombre de jours et l'effet fête mobile n'aurait pas de sens.
 En revanche, il pourrait y avoir un effet type de jour : on peut par exemple supposer que les thèmes traités par les tweets, et donc les sentiments, sont différents en fonction du jour de la semaine.
-Les sentiments exprimés par les tweets pourraient donc être influencés par les types de jours pendants lesquels les tweets sont tirés.
+Les sentiments exprimés par les tweets pourraient donc être influencés par les types de jours échantillonnés pour tirer aléatoirement les tweets.
 
-Pour estimer l'effet jour ouvrable, nous utilons l'approche de la méthode X-12ARIMA, notamment décrite dans \cite{L2018}.
+Pour estimer l'effet jour ouvrable, nous utilisons l'approche de la méthode X-12ARIMA, notamment décrite dans \cite{L2018}.
 
-Supposons que le \(j\)\textsuperscript{ème} jour de la semaine a un effet \(\alpha_j\) où \(j=1\) désigne le lundi, \(j=2\) le mardi,\dots, et \(j=7\) le dimanche.
+Supposons que le \(j\)\textsuperscript{ème} jour de la semaine a un effet \(\alpha_j\) où \(j=1\) désigne le lundi, \(j=2\) le mardi, \dots , et \(j=7\) le dimanche.
 Chaque \(\alpha_j\) représente par exemple le sentiment moyen d'un jour \(j\).
 Si \(N_{jt}\) représente le nombre de jours \(j\) dans le mois \(t\), la longueur du mois \(t\) est alors \(N_t = \sum_{j=1}^{7} N_{jt}\) et l'effet cumulé pour ce mois (le sentiment moyen du mois) sera :
 \[
@@ -1278,7 +1285,7 @@ Une première idée pour détecter et évaluer les effets de jours ouvrables dan
 Mais ces régresseurs sont par nature saisonniers (il y a en moyenne plus de lundis en janvier qu'en février) et fortement corrélés.
 
 Une formulation différente mais équivalente de l'effet jours ouvrables permet de résoudre en grande partie ces problèmes.
-L'effet journalier moyen, les ventes moyennes d'une journée, s'écrit \(\bar{\alpha} = \sum_{j=1}^7 \alpha_j /7\).
+L'effet journalier moyen, l'opinion moyenne sur une journée, s'écrit \(\bar{\alpha} = \sum_{j=1}^7 \alpha_j /7\).
 Comme par construction \(\sum_{j=1}^7 \left(\alpha_j-\bar{\alpha}\right) = 0\), on peut écrire :
 \begin{eqnarray*}
 \sum_{j=1}^7 \alpha_j N_{jt} & = & \bar{\alpha}N_t + \sum_{j=1}^7 \left(\alpha_j-\bar{\alpha}\right) N_{jt} \nonumber \\
@@ -1289,14 +1296,14 @@ Comme la quantité \(\bar{\alpha}N_t\) est par nature saisonnière (janvier a to
 représente la moyenne de la longueur du mois \(t\).
 En d'autres termes, \(N_t^*\) est égal à \(30\) ou \(31\) si le mois considéré n'est pas un mois de février et à \(28,25\) dans le cas contraire.
 Le second terme de l'égalité est donc nul sauf pour le mois de février.
-L'utilisation des variables contrastes permet donc de désaisonnaliser les régresseurs jours ouvrables.
+L'utilisation des variables contrastes (considérer \(N_{7t}\) comme variable de référence) permet donc de désaisonnaliser les régresseurs jours ouvrables.
 
-La version actuelle de X-12ARIMA utilisent le modèle Reg-ARIMA suivant pour estimer les effets de jours ouvrables :
+La version actuelle de X-12ARIMA utilise le modèle Reg-ARIMA suivant pour estimer les effets de jours ouvrables :
 \begin{equation}
 y_t=\beta_0 LY_t + \sum_{j=1}^{6} \beta_j \left(N_{jt} - N_{7t}\right) + \varepsilon_t
     \label{eq:eqcjotd}
 \end{equation}
-où \(\varepsilon_t\) suit un modèle ARIMA et \(LY_t\) désigne le régresseur « année bissextile » --- \emph{Leap Year} (LY) --- égal à:
+où \(\varepsilon_t\) suit un modèle ARIMA et \(LY_t\) désigne le régresseur « année bissextile » --- \emph{Leap Year} (LY) --- égal à :
 \[
 LY_{t} = \left\{ \begin{array}{rl} 
                 0,75 & \mbox{si } t \mbox{ est un mois de février bissextil } \\
@@ -1307,18 +1314,18 @@ LY_{t} = \left\{ \begin{array}{rl}
 \]
 
 Une spécification alternative consiste à regrouper les régresseurs du lundi au vendredi et ceux du samedi et du dimanche\footnote{On a donc \(\beta_1=\beta_2=\dots=\beta_5\) et \(\beta_6 = 0\).}.
-On considère ainsi que l'effet d'un lundi lundi est le même que l'effet d'un mardi, etc. jusqu'au vendredi et que cet effet est différent le samedi et le dimanche. Le modèle \eqref{eq:eqcjotd} devient :
+On considère ainsi que l'effet d'un lundi est le même que l'effet d'un mardi, etc. jusqu'au vendredi et que cet effet est différent le samedi et le dimanche (week-end). Le modèle \eqref{eq:eqcjotd} devient :
 \begin{eqnarray}
 y_t=\beta_0 LY_t + \tilde\beta_1 \left(\sum_{j=1}^{5}N_{jt} - (N_{6t} + N_{7t})\right) + \varepsilon'_t
 \label{eq:eqcjowd}
 \end{eqnarray}
 
-Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettant le régresseur \(LY_t\) dans \eqref{eq:eqcjotd} et \eqref{eq:eqcjowd}. On considère qu'il y a un effet jours ouvrables significatif lorsque \(\exists i\in \{1,2,\dots,6\}\::\:\beta_i\ne0\) ou lorsque \(\tilde\beta_1\ne0\).
+Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettons le régresseur \(LY_t\) dans \eqref{eq:eqcjotd} et \eqref{eq:eqcjowd}. On considère qu'il y a un effet jours ouvrables significatif lorsque \(\exists i\in \{1,2,\dots,6\}\::\:\beta_i\ne0\) ou lorsque \(\tilde\beta_1\ne0\).
 
-Pour nos indicateurs de sentiment (modèle logistique à partir de \emph{word2vec} ou modèle de référence construit à partir du sentiment moyen des mots), nous ne détectons pas d'effet jours ouvrables.
+\faArrowCircleRight{} Pour nos indicateurs de sentiment (modèle logistique à partir de \emph{word2vec} ou modèle de référence construit à partir du sentiment moyen des mots), nous ne détectons pas d'effet jours ouvrables.
 Cela ne signifie pas pour autant que le type de jour n'a pas d'effet sur nos indicateurs de sentiment, mais que nous n'arrivons pas à en estimer un.
-Cela peut venir de la méthode de collecte : tirer les tweets tous les 1, 5, 10, 15, 20, 25 et 28 de chaque mois revient à tirer tous les jours de la semaine sauf 1\footnote{Si le 1\textsuperscript{er} jour du mois est un lundi alors, parmi les 4 200 tweets, 1 200 sont tirés un lundi, 0 le mardi et 600 les autres jours de la semaine.}.
-On peut donc difficilement isoler l'effet du type de jour : il faudrait pour cela faire une analyse plus approfondie en étudiant construisant un indicateur de sentiment par jour de la semaine.
+Cela peut venir de la méthode de collecte : tirer les tweets tous les 1, 5, 10, 15, 20, 25 et 28 de chaque mois revient à tirer tous les jours de la semaine sauf un\footnote{Si le premier jour du mois est un lundi alors, parmi les 4 200 tweets, 1 200 sont tirés un lundi, 0 le mardi et 600 les autres jours de la semaine.}.
+On peut donc difficilement isoler l'effet du type de jour. Pour le faire, il faudrait faire une analyse plus approfondie en construisant par exemple un indicateur de sentiment par jour de la semaine.
 
 \hypertarget{sec:cvs}{%
 \subsection{Correction des effets saisonniers}\label{sec:cvs}}
@@ -1329,7 +1336,7 @@ L'objectif de la désaisonnalisation est de décomposer une série \(X_t\) en tr
 \item
   \(TC_t\) la tendance-cycle : combinaison de la tendance et du cycle ;
 \item
-  \(S_t\) la saisonnalité : une fluctuation qui qui se répète d'année en année à la même période ;
+  \(S_t\) la saisonnalité : une fluctuation qui se répète d'année en année à la même période ;
 \item
   \(I_t\) l'irrégulier : une fluctuation résiduelle non comprise dans les deux composantes précédentes (chocs ponctuels, etc.).
 \end{itemize}
@@ -1355,7 +1362,7 @@ L'étude de ceux de l'indicateur calculé à partir du modèle \emph{word2vec} s
 \begin{figure}[htp]
 {\centering\includegraphics[width = \textwidth]{img/rmd-graphCoefCVS-1}}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Commposantes saisonnières des indicateurs mensuels de sentiment construits à partir de notre modèle \emph{word2vec} et à partir de notre modèle de référence.}\label{fig:coefcvscjo}
+\caption{Composantes saisonnières des indicateurs mensuels de sentiment que nous avons construits à partir de nos deux modèles (celui utilisant  \emph{word2vec} et le modèle référence).}\label{fig:coefcvscjo}
 \footnotesize
 
 \emph{La composante saisonnière a été estimée par la méthode X-12ARIMA.}
@@ -1363,7 +1370,7 @@ L'étude de ceux de l'indicateur calculé à partir du modèle \emph{word2vec} s
 
 \newpage
 
-\small
+\footnotesize
 
 \nocite{*}
 
@@ -1379,12 +1386,14 @@ L'étude de ceux de l'indicateur calculé à partir du modèle \emph{word2vec} s
 \url{https://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
 \bibitem[Levy \& Golberg (2014)]{Levy2} Levy, O., Golberg, Y. (2014). Dependency-based word embeddings. ACL. \url{http://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
 \bibitem[Lytras \emph{et al} (2007)]{lytras} Lytras, D. P., Feldpausch, R. M., Bell, W. R (2007). Determining Seasonality: A Comparison of Diagnostics from X-12-ARIMA, U.S. Census Bureau, presented at ICES III, June, 2007. \url{https://www.census.gov/ts/papers/ices2007dpl.pdf}.
+\bibitem[Martin et al. (2019)]{Martin} Martin, L., Muller, B., Suárez, P. J. O., Dupont, Y., Romary, L., de la Clergerie, É. V., \& Sagot, B. (2019). CamemBERT: a Tasty French Language Model. arXiv preprint arXiv:1911.03894. \url{https://arxiv.org/abs/1911.03894}.
 \bibitem[Mikolov \emph{et al} (2013a)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013a). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
 \bibitem[Mikolov \emph{et al} (2013b)]{MikolovNS} Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., and Dean, J. (2013b). Distributed representations of words and phrases and their compositionality, arXiv:1310.4546. \url{https://arxiv.org/pdf/1310.4546.pdf}.
 \bibitem[Pennington, Socher \& Manning (2014)]{Pennington} Pennington, J., Socher, R., Manning, C. D., (2014).  Glove: global vectors for word representation. Proc. of EMNLP,1532 – 1543. \url{https://www.aclweb.org/anthology/D14-1162.pdf}.
 \bibitem[{\v R}eh{\r u}{\v r}ek \& Sojka (2010)]{Rehurek} {\v R}eh{\r u}{\v r}ek, R.,  Sojka, P. (2010). Software Framework for Topic Modelling with Large Corpora. Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. p. 46--50, 5 pp. ISBN 2-9517408-6-7. \url{https://is.muni.cz/publication/884893/en}.
 \bibitem[Rubenstein \& Goodenough (1965)]{Rubenstein} Rubenstein, H.,  Goodenough, J. B. (1965). Contextual Correlates of Synonymy. Commun. ACM, 8 (10), 627–633. \url{https://dl.acm.org/doi/10.1145/365628.365657}.
 \bibitem[Schakel \& Wilson (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significance using Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
+\bibitem[Sennrich, Haddow \& Birch (2015)]{Sennrich} Sennrich, R., Haddow, B., \& Birch, A. (2015). Neural machine translation of rare words with subword units. arXiv preprint arXiv:1508.07909. \url{https://arxiv.org/pdf/1508.07909.pdf}.
 \bibitem[Tormene \emph{et al} (2008)]{dtw} Tormene P, Giorgino T, Quaglini S, Stefanelli M (2008). “Matching
 Incomplete Time Series with Dynamic Time Warping: An Algorithm and an Application to Post-Stroke Rehabilitation.” \emph{Artificial Intelligence
 in Medicine}, \textbf{45}(1), 11-34. doi: 10.1016/j.artmed.2008.11.007, \url{https://doi.org/10.1016/j.artmed.2008.11.007}.

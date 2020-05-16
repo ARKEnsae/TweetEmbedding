@@ -1,0 +1,18 @@
+---
+title: "titre"
+author: "antuki"
+output: pdf_document
+---
+
+```{r, warning=FALSE, echo=FALSE}
+library(reticulate)
+```
+
+```{python, echo=FALSE}
+x = 0
+y = 10
+for ii in [1,2,3,4,5,6,7]:
+    x += 1
+     y -= 1
+x, y
+```

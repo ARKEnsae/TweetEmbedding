@@ -1,0 +1,331 @@
+---
+title: "Analyse des résultats"
+author: "Kim Antunez, Alain Quartier, Romain Lesauvage"
+automaticcontents: true
+output:
+    pdf_document:
+        toc: true
+        toc_depth: 2
+        number_sections: true
+        fig_width: 7
+        fig_height: 6
+        fig_caption: true
+        highlight: default
+        template: default.tex
+        keep_tex: yes
+themeoptions: "coding=utf8,language=english"
+classoption: 'french'
+fontsize: 11pt
+geometry: margin=1in
+lang: "french"
+documentclass: "article"
+linkcolor: "#FF0000"
+urlcolor: "#FF0000"
+citecolor: "#FF0000"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                        fig.path = "img/markdown-",
+                      cache = FALSE) #TRUE
+options(enable_print_style = FALSE)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+library(reticulate)
+```
+
+```{r}
+#NEW
+#setwd('C:/Users/Kim Antunez/Documents/Projets_autres/StatApp')
+```
+
+# Créer un rapport automatique
+
+## Rendu de Rmarkdown avec du code python
+
+Exemple à partir des premières lignes du code d'Alain. 
+
+```{python, echo=FALSE, error=TRUE}
+import os
+import string
+import re
+import math
+from math import sqrt
+import numpy as np
+import random
+import time
+import pandas as pd
+import nltk, re, pprint
+#nltk.download('punkt')
+from nltk import word_tokenize
+random.seed(1)
+np.random.seed(1)
+
+import matplotlib.pyplot as plt
+from IPython.display import clear_output
+from matplotlib import pyplot as plt
+import collections
+#%matplotlib inline
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import torch.autograd as autograd
+
+import pickle
+
+
+#PCA & TSNE : 
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from scipy.stats import spearmanr
+
+import plotly
+import plotly.graph_objs as go
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+import cufflinks as cf
+import seaborn as sns
+
+import gensim
+from gensim.models import word2vec
+
+#import rpy2.robjects as r
+
+
+#os.chdir('C:/Users/torna/Documents/StatApp/StatApp')
+#os.chdir('/Users/alainquartierlatente/Desktop/Ensae/StatApp')
+#os.chdir('C:/Users/Kim Antunez/Documents/Projets_autres/StatApp')
+#os.chdir('/home/aqlt/Documents/Ensae/StatApp')
+
+nom_dossier = "100k"
+#nom_dossier = "ens"
+gensim_utile = True #True pour le modèle google, False pour le modele ARK
+
+
+with open("C:/Users/Kim Antunez/Documents/Projets_autres/StatApp/data/corpus_trie%s.file" %nom_dossier, "rb") as f:
+    corpus = pickle.load(f) 
+ens_tweets = [phrase.split() for phrase in corpus]
+len(ens_tweets)
+
+phrases = ens_tweets
+words = [item for sublist in phrases for item in sublist]
+print(type(words))
+with open('C:/Users/Kim Antunez/Documents/Projets_autres/StatApp/data/%s/vocabulary.file' %nom_dossier, "rb") as f:
+    vocabulary = pickle.load(f) 
+index_mot = {index: w for (index, w) in enumerate(vocabulary)}
+mot_index = {w: index for (index, w) in enumerate(vocabulary)}
+print("Nombre de mots :", len(words))
+print("Taille du vocabulaire :", len(vocabulary))
+fdist = nltk.FreqDist(words)
+
+def cos_distance(u, v):
+    return (np.dot(u, v)  / (math.sqrt(np.dot(u, u)) * (math.sqrt(np.dot(v, v)))))
+
+def eucl_distance(u, v):
+    return (1/(np.linalg.norm(u/np.dot(u, u)-v/np.dot(v, v)))+1)
+
+def mot_plus_proche(word, n=10, distance="cos"):
+    word_distance = {}
+    for mot in mot_poids:
+        if mot != word:
+            if distance == "cos":
+                word_distance[mot] = (cos_distance(mot_poids[mot],(mot_poids[word])))
+            else:
+                word_distance[mot] = (eucl_distance(mot_poids[mot],(mot_poids[word])))
+    word_distance = sorted(word_distance.items(), key=lambda t: t[1],reverse=True)
+    return word_distance[0:n]
+    
+def distance_mots(word1,word2, mot_poids, distance="cos"):
+    if word1 in mot_poids.keys() and word2 in mot_poids.keys():
+        if(distance=="cos"):
+            word_distance = (cos_distance(mot_poids[word1],(mot_poids[word2])))
+        else:
+            word_distance = (eucl_distance(mot_poids[word1],(mot_poids[word2])))
+    else:
+        word_distance = float('nan')
+    return word_distance
+distance_mots_v = np.vectorize(distance_mots)
+
+def corr_modele(chemin, distance="cos", gensimbool = gensim_utile, epoch_max = 50):  
+    all_cor = []
+    all_p_val = []
+    if gensimbool:
+        #chemin = "data/" + nom_dossier + "/gensim/Simulation_" + str(numero_simulation) + dossier
+        #chemin = "data/{}/gensim/dim{}_ep{}_w{}_lr{}_seed{}".format(nom_dossier, dim, epoch, window, str(learning_rate)[2:], seed)  
+        isdir = os.path.isdir(chemin)
+        if isdir:
+            model = gensim.models.keyedvectors.KeyedVectors.load(chemin + "/word2vec.model")
+            py_list = []
+            for mot in vocabulary:
+                py_list.append(model.wv[mot].tolist())   
+            mat_finale = torch.FloatTensor(py_list)
+            mot_poids = {index_mot[index]: poids.detach().numpy() for (index, poids) in enumerate(mat_finale)}
+            df = pd.read_csv('C:/Users/Kim Antunez/Documents/Projets_autres/StatApp/data_bis/word_similarity.csv', sep=";")
+            df["corr_word2vec"] = distance_mots_v(df["word1"],df["word2"], mot_poids, distance)
+            df = df.dropna()
+            corr, p_value = spearmanr(df["corr"], df["corr_word2vec"])
+            all_cor.append(corr)
+            all_p_val.append(p_value)
+    else:
+        isdir = os.path.isdir(chemin)
+        if isdir:
+            for i in range(epoch_max):
+                try:
+                    with open('{}/input_{}.file'.format(chemin, i+1), "rb") as f:
+                        input = pickle.load(f)
+                    with open('{}/output{}.file'.format(chemin, i+1), "rb") as f:
+                        output = pickle.load(f)
+                    mat_finale = (input+output)/2
+                    mot_poids = {index_mot[index]: poids.detach().numpy() for (index, poids) in enumerate(mat_finale)}
+                    df = pd.read_csv('C:/Users/Kim Antunez/Documents/Projets_autres/StatApp/data_bis/word_similarity.csv', sep=";")
+                    df["corr_word2vec"] = distance_mots_v(df["word1"],df["word2"], mot_poids, distance)
+                    df = df.dropna()
+                    corr, p_value = spearmanr(df["corr"], df["corr_word2vec"])
+                    all_cor.append(corr)
+                    all_p_val.append(p_value)
+                except OSError:
+                    break;     
+        
+    return([all_cor, all_p_val]);
+
+
+def tableau_corr_hji(dim = "\d*", epoch = "\d*", window = "\d*",
+                     learning_rate = "\d*", seed = "\d*",
+                     distance="cos", index = "seed", gensimbool = gensim_utile):    
+    if(isinstance(learning_rate, float)):
+        learning_rate = str(learning_rate)[2:]
+    if(isinstance(dim, list)):
+        dim = r['paste0']("(",r['paste0']("(",dim,")",collapse = "|"),")")[0]
+    if(isinstance(epoch, list)):
+        epoch = r['paste0']("(",r['paste0']("(",epoch,")",collapse = "|"),")")[0]
+    if(isinstance(window, list)):
+        window = r['paste0']("(",r['paste0']("(",window,")",collapse = "|"),")")[0]
+    if(isinstance(learning_rate, list)):
+        learning_rate = [str(lr)[2:] if isinstance(lr, float) else lr for lr in learning_rate]
+        learning_rate = r['paste0']("(",r['paste0']("(",learning_rate,")",collapse = "|"),")")[0]
+    if(isinstance(seed, list)):
+        seed = r['paste0']("(",r['paste0']("(",seed,")",collapse = "|"),")")[0]
+
+    requete_regexp = 'dim{}_ep{}_w{}_lr{}_seed{}'.format(dim, epoch, window, learning_rate, seed)
+    if gensimbool:
+        gensim_st = "gensim/"
+    else:
+        gensim_st = ""
+    dossiers = r['list.files'](path = 'C:/Users/Kim Antunez/Documents/Projets_autres/StatApp/data/{}/{}'.format(nom_dossier, gensim_st), pattern = requete_regexp)
+    dossiers = [dossiers[i] for i in range(len(dossiers))]
+    resultats = []
+    nom_cols = dossiers
+
+    for dossier in dossiers:
+        resultats.append(corr_modele(chemin = 'C:/Users/Kim Antunez/Documents/Projets_autres/StatApp/data/{}/{}{}'.format(nom_dossier, gensim_st, dossier), 
+                                 distance= distance,gensimbool = gensimbool))
+    max_len = max([len(x[0]) for x in resultats])
+    for i in range(len(resultats)):
+        if(len(resultats[i][0])<max_len):
+            resultats[i][0] = resultats[i][0] +[np.nan]*(max_len - len(resultats[i][0]))
+            resultats[i][1] = resultats[i][1] +[np.nan]*(max_len - len(resultats[i][1]))
+    dossiers_sep = [string.split('_') for string in dossiers]
+    all_dim = [r['grep']("^dim", x, value = True)[0] for x in dossiers_sep]
+    all_dim = [r['paste0']("dim=", r['gsub']("dim", "", x))[0] for x in all_dim] 
+    all_ep = [r['grep']("^ep", x, value = True)[0] for x in dossiers_sep]
+    all_ep = [r['paste0']("ep=", r['gsub']("ep", "", x))[0] for x in all_ep] 
+    all_w = [r['grep']("^w", x, value = True)[0] for x in dossiers_sep]
+    all_w = [r['paste0']("w=", r['gsub']("w", "", x))[0] for x in all_w] 
+    all_lr = [r['grep']("^lr", x, value = True)[0] for x in dossiers_sep]
+    all_lr = [r['paste0']("lr=0.", r['gsub']("lr", "", x))[0] for x in all_lr] 
+    all_seed = [r['grep']("^seed", x, value = True)[0] for x in dossiers_sep]
+    all_seed = [r['paste0']("seed=", r['gsub']("seed", "", x))[0] for x in all_seed] 
+    
+    all_name = [all_dim, all_ep, all_w, all_lr, all_seed]
+
+    
+    correspondance = {'dim': 0,
+                  'epoch': 1,
+                  'window': 2,
+                  'learning_rate': 3,
+                 'seed': 4}
+    if not isinstance(index, list):
+        index = [index]
+    index_num = [correspondance[i] for i in index]
+    indexs = [all_name[i] for i in [0,1,2,3,4] if i in index_num ]
+    column = [all_name[i] for i in [0,1,2,3,4] if i not in index_num]
+    lignes = list(map("\n".join, zip(*indexs)))
+    colonnes = list(map("\n".join, zip(*column)))
+    pivot_df = pd.DataFrame({'lignes': lignes,
+                  'colonnes': colonnes})
+    
+    all_cor = pd.DataFrame([elem[0] for elem in resultats])
+    all_p_val = pd.DataFrame([elem[1] for elem in resultats])
+    all_cor.columns = all_p_val.columns = ["values"]
+    
+
+    all_cor = pd.concat([pivot_df, all_cor], axis=1)
+    all_cor = all_cor.pivot(index = "lignes", columns = "colonnes", values = 'values')
+    all_p_val = pd.concat([pivot_df, all_p_val], axis=1)
+    all_p_val = all_p_val.pivot(index = "lignes", columns = "colonnes", values = 'values')
+    
+    # Pour enlever les noms ajouté par la fonction pivot
+    all_cor = all_corename_axis(None, axis=1)  
+    all_cor = all_corename_axis(None, axis=0)
+    all_p_val = all_p_val.rename_axis(None, axis=1)  
+    all_p_val = all_p_val.rename_axis(None, axis=0)
+    return([all_cor, all_p_val])
+
+
+from matplotlib.lines import Line2D
+
+def intervalles_confiance (resultats_hji, distance = "cos"):
+    colors = sns.color_palette("hls", 6)
+    fig = plt.figure(figsize = (12,6))    
+    ax = fig.add_axes([0.1, 0.1, 1, 1])
+    corr = resultats_hji
+    corr = correindex(index = ['seed=1','seed=5','seed=10','seed=15','seed=20','seed=25'])
+    # ax.set_ylim(-0.5,0.6) # seulement si besoin pour faire des graph comparables
+    ax.set_xlim(-0.2,len(corr.columns)-1+.2)
+
+    for i in range(len(corr.columns)):
+        corr_values = corr.iloc[:,i].values.tolist()
+        ec = np.std(corr_values)
+        moy = np.mean(corr_values)
+        print(moy)
+        icm = moy - 1.96 * ec
+        icp = moy + 1.96 * ec
+        ax.errorbar(i, moy, yerr=1.96 * ec,ecolor = "black", alpha = 0.5) 
+        ax.scatter([i]*len(corr_values), corr_values, c=colors, s = 100) 
+        ax.errorbar(i, moy, xerr=0.1, ecolor = "black", alpha= 0.5)
+        
+    ax.set_xticks(list(range(len(corr.columns))))
+    #ax.set_xticklabels(["Simul. n°%i" %simul[i] for i in list(range(len(simul)))])
+    ax.set_xticklabels(corr.columns.values.tolist())
+    #ax.set_xticklabels(["lr=0.01\n w=3\n e=10","lr=0.01\n w=4\n e=10","lr=0.01\n w=5\n e=10",
+    #                    "lr=0.02\n w=3\n e=10","lr=0.02\n w=4\n e=10","lr=0.02\n w=5\n e=10",
+    #                    "lr=0.01\n w=3\n e=100","lr=0.01\n w=4\n e=100","lr=0.01\n w=5\n e=100",
+    #                    "lr=0.02\n w=3\n e=100","lr=0.02\n w=4\n e=100","lr=0.02\n w=5\n e=100"])
+    plt.ylabel("Corrélation entre la distance " + distance + " et le l'indice de jugement humain")
+    plt.xlabel("Simulation avec "+ nom_dossier +" tweets")
+    custom_lines=[]
+    for i in range(len(colors)):
+        custom_lines.append(Line2D([0], [0], marker='o', color='w', label='Scatter',markerfacecolor=colors[i], markersize=10))
+    ax.legend(custom_lines, ['Seed 1','Seed 5','Seed 10','Seed 15','Seed 20','Seed 25'])
+
+
+corr_modele("C:/Users/Kim Antunez/Documents/Projets_autres/StatApp/data/100k/gensim/dim20_ep10_w3_lr01_seed1", distance="cos", gensimbool = True, epoch_max = 50)
+
+resultats_hji = tableau_corr_hji(learning_rate = [0.01,0.02],
+                       window = [3,4,5], dim = 50, index="seed",
+                       distance = "cos")[0]
+print(resultats_hji)
+```
+
+
+```{python, eval=TRUE, echo=FALSE}
+# Pour mettre dans l'ordre les lignes
+#resultats_hji = resultats_hji.reindex(index = ['seed=1','seed=5','seed=10','seed=15','seed=20','seed=25'])
+
+##Il faut installer pandas 1.0 et tabulate
+#print(resultats_hji)
+#print(resultats_hji.to_markdown())
+```

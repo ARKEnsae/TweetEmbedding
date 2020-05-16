@@ -1,0 +1,2 @@
+cd "C:\Users\Kim Antunez\Documents\Projets_autres\StatApp\Redaction\Rapport_Final\Brouillons\Kim\analyse_simul_gensim"
+jupyter nbconvert --to pdf  --no-input analyse_simul_gensim.ipynb 

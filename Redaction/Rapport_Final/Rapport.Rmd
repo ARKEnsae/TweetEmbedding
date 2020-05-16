@@ -263,7 +263,7 @@ $$
 }
 $$
 
-Maximiser l'équation \@ref(eq:objSoftMax) revient à minimiser la fonction de perte suivante pour chaque couple [focus, contexte] :
+Maximiser l'équation \@ref(eq:objSoftMax) revient à minimiser la fonction de perte suivante pour chaque couple `[focus, contexte]` :
 
 
 $$
@@ -398,8 +398,8 @@ Les clusters apparaissent de manière plus évidente avec t-SNE.
     petit & 0,981   \tabularnewline
     s & 0,979   \tabularnewline
     $\vdots$ & $\vdots$    \tabularnewline
-    susiens & - 0,735 \tabularnewline
-    allates & -0,784 \tabularnewline
+    susiens & $- 0,735$ \tabularnewline
+    allates & $-0,784$ \tabularnewline
     %produit & 0,100   \tabularnewline
     %voiture & 0,097   \tabularnewline
     \hline
@@ -412,8 +412,8 @@ Les clusters apparaissent de manière plus évidente avec t-SNE.
     longueur & 0,983   \tabularnewline
     grand & 0,981   \tabularnewline
     $\vdots$ & $\vdots$    \tabularnewline
-    alesiez & - 0,745 \tabularnewline
-    allates & -0,810 \tabularnewline
+    alesiez & $- 0,745$ \tabularnewline
+    allates & $-0,810$ \tabularnewline
     %citrine & 0,129   \tabularnewline
     %voiture & 0,121   \tabularnewline
     \hline
@@ -429,7 +429,7 @@ Les clusters apparaissent de manière plus évidente avec t-SNE.
 \begin{center}
 \includegraphics[width=1\textwidth]{img/figures.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Évaluation du modèle sur données fictives}\label{fig:figure_evaluation}
+\caption{Évaluation du modèle sur données fictives.}\label{fig:figure_evaluation}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
@@ -480,7 +480,7 @@ Pour cette première série de tests d'hyperparamètres, nous avons fixé la dim
 \begin{center}
 \includegraphics[width=1\textwidth]{img/test_parametres.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Tests d'hyperparamètres : epochs, fenêtre et taux d'apprentissage}\label{fig:evaluation_1}
+\caption{Tests d'hyperparamètres : epochs, fenêtre et taux d'apprentissage.}\label{fig:evaluation_1}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
@@ -524,7 +524,7 @@ On cherche cette fois-ci à évaluer l'effet de la dimension des *word-embedding
 \begin{center}
 \includegraphics[width=1\textwidth]{img/test_parametres2.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Tests d'hyperparamètres : dimension des *word-embeddings*}\label{fig:figure_dim}
+\caption{Tests d'hyperparamètres : dimension des *word-embeddings*.}\label{fig:figure_dim}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
@@ -564,7 +564,7 @@ allez (0,43) & vidéo (0,39) & 3 (0,43) & \includegraphics[height=4mm]{img/emoji
     \hline
  \end{tabular}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{10 plus proches voisins par similarité cosinus avec \og notre \fg{} modèle}\label{table:knn_ark}
+\caption{10 plus proches voisins par similarité cosinus avec \og notre \fg{} modèle.}\label{table:knn_ark}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
@@ -630,7 +630,7 @@ hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
     \hline
  \end{tabular}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{10 plus proches voisins par similarité cosinus avec le modèle \texttt{Gensim}}\label{table:knn_gensim}
+\caption{10 plus proches voisins par similarité cosinus avec le modèle \texttt{Gensim}.}\label{table:knn_gensim}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
@@ -643,7 +643,7 @@ La similarité cosinus de chaque paire de mots est renseignée entre les parenth
 \begin{center}
 \includegraphics[width=0.5\textwidth]{img/acp_gensim.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{ACP sur un corpus réduit de mots}\label{fig:acp_gensim}
+\caption{ACP sur un corpus réduit de mots.}\label{fig:acp_gensim}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
@@ -735,7 +735,7 @@ En évaluant le modèle sur la base de test, l'*accuracy* vaut 89,1 \%. On const
 \begin{center}
 \includegraphics[width=0.5\textwidth]{img/max_baseline.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Optimisation du seuil $\gamma$ pour le modèle à partir des sentiments moyens des mots}\label{fig:max_baseline}
+\caption{Optimisation du seuil $\gamma$ pour le modèle à partir des sentiments moyens des mots.}\label{fig:max_baseline}
 \end{center}
 \end{figure}
 
@@ -808,7 +808,7 @@ En effet, la distribution de la part des mots inconnus est étonnamment similair
 \begin{center}
 \includegraphics[width=0.5\textwidth]{img/mots_inconnus.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Part des mots inconnus dans les tweets}\label{fig:mots_inconnus}
+\caption{Part des mots inconnus dans les tweets.}\label{fig:mots_inconnus}
 \end{center}
 \end{figure}
 
@@ -1075,7 +1075,6 @@ Les vecteurs directeurs des axes sont définis de manière à maximiser la dispe
 La dispersion d’un nuage de points unidimensionnel par rapport à sa moyenne se mesure par la variance. 
 Dans le cadre multidimensionnel, la dispersion du nuage par rapport à son barycentre $\bar z$ se mesure par l'inertie, qui généralise la variance.
 ]) des individus projetés et conserver ainsi au mieux les distances entre les individus. L'inertie se définit alors comme : 
-
 \begin{align*}
 I(Z) &= \sum_{i = 1}^n p_i\|z_i-\bar{z}\|_M^2 \text{ avec }
   \bar{z} = 
@@ -1179,7 +1178,7 @@ Elle contient 65 paires de noms communs (tableau \ref{table:human_judgement}) é
     \hline
  \end{tabular}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Base de données de jugement humain}\label{table:human_judgement}
+\caption{Base de données de jugement humain.}\label{table:human_judgement}
 \end{center}
 \end{table}
 

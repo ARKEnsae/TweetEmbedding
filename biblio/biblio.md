@@ -43,6 +43,16 @@ TSNE : Page wiki en anglais
 
 The norm of the vector is linked with both the frequency and the variance of the contexts on which occurs. See http://arxiv.org/abs/1510.02675 for a study on this. Article de Roro : https://arxiv.org/pdf/1508.02297v1.pdf
 
+# Partie discussion 
+
+Variabilité des réseaux sociaux et du bruit : https://www.aclweb.org/anthology/I13-1041.pdf 
+
+BERT : https://arxiv.org/pdf/1810.04805.pdf 
+Camembert https://arxiv.org/pdf/1911.03894.pdf 
+BPE (introduit pour du Machine Translation) https://arxiv.org/pdf/1508.07909.pdf 
+
+Sentiment Analysis avec BERT https://www.aclweb.org/anthology/W19-6120.pdf 
+
 # Soutenance 
 
 https://miro.medium.com/max/1632/1*3Eh6afALesGJ_1fkmBxxnQ.png     (schema)

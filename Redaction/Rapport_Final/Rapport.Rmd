@@ -1,6 +1,6 @@
 ---
 title: |
-    |  Word-Embedding et sentiments des ménages avec Twitter 
+    |  *Word-Embedding* et sentiments des ménages avec Twitter 
 author: |
     | Kim Antunez, Romain Lesauvage, Alain Quartier-la-Tente
     | sous l'encadrement de Benjamin Muller (Inria)

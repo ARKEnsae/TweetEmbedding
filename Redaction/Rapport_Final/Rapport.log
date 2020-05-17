@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7400 64-bit) (preloaded format=pdflatex 2020.5.9)  17 MAY 2020 15:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7400 64-bit) (preloaded format=pdflatex 2020.5.9)  17 MAY 2020 15:57
 entering extended mode
 **./Rapport.tex
 (Rapport.tex
@@ -1361,7 +1361,7 @@ Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
 [2] [3]
-<img/cbow_skip_gram.png, id=148, 678.535pt x 414.54875pt>
+<img/cbow_skip_gram.png, id=149, 678.535pt x 414.54875pt>
 File: img/cbow_skip_gram.png Graphic file (type png)
 <use img/cbow_skip_gram.png>
 Package pdftex.def Info: img/cbow_skip_gram.png  used on input line 269.
@@ -1397,13 +1397,13 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 484.
 [6] [7] [8]
-<img/figures.png, id=234, 552.0625pt x 262.48062pt>
+<img/figures.png, id=235, 552.0625pt x 262.48062pt>
 File: img/figures.png Graphic file (type png)
 <use img/figures.png>
 Package pdftex.def Info: img/figures.png  used on input line 704.
 (pdftex.def)             Requested size: 484.20988pt x 230.2307pt.
 [9] [10 <./img/figures.png>]
-<img/test_parametres.png, id=270, 694.595pt x 367.3725pt>
+<img/test_parametres.png, id=271, 694.595pt x 367.3725pt>
 File: img/test_parametres.png Graphic file (type png)
 <use img/test_parametres.png>
 Package pdftex.def Info: img/test_parametres.png  used on input line 803.
@@ -1413,27 +1413,27 @@ nput line 821.
 
 ("C:\Users\torna\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fontawesome5\ufont
 awesomefree0.fd") [11 <./img/test_parametres.png>]
-<img/test_parametres2.png, id=289, 633.86812pt x 313.67188pt>
+<img/test_parametres2.png, id=290, 633.86812pt x 313.67188pt>
 File: img/test_parametres2.png Graphic file (type png)
 <use img/test_parametres2.png>
 Package pdftex.def Info: img/test_parametres2.png  used on input line 878.
 (pdftex.def)             Requested size: 484.20988pt x 239.61836pt.
-<img/emojis/1.png, id=293, 49.18375pt x 47.17625pt>
+<img/emojis/1.png, id=294, 49.18375pt x 47.17625pt>
 File: img/emojis/1.png Graphic file (type png)
 <use img/emojis/1.png>
 Package pdftex.def Info: img/emojis/1.png  used on input line 921.
 (pdftex.def)             Requested size: 11.86511pt x 11.38109pt.
-<img/emojis/2.png, id=294, 45.67062pt x 45.16875pt>
+<img/emojis/2.png, id=295, 45.67062pt x 45.16875pt>
 File: img/emojis/2.png Graphic file (type png)
 <use img/emojis/2.png>
 Package pdftex.def Info: img/emojis/2.png  used on input line 922.
 (pdftex.def)             Requested size: 11.5075pt x 11.38109pt.
-<img/emojis/3.png, id=295, 47.17625pt x 46.67438pt>
+<img/emojis/3.png, id=296, 47.17625pt x 46.67438pt>
 File: img/emojis/3.png Graphic file (type png)
 <use img/emojis/3.png>
 Package pdftex.def Info: img/emojis/3.png  used on input line 927.
 (pdftex.def)             Requested size: 11.5032pt x 11.38109pt.
-<img/emojis/4.png, id=296, 51.19125pt x 50.1875pt>
+<img/emojis/4.png, id=297, 51.19125pt x 50.1875pt>
 File: img/emojis/4.png Graphic file (type png)
 <use img/emojis/4.png>
 Package pdftex.def Info: img/emojis/4.png  used on input line 930.
@@ -1442,12 +1442,12 @@ Package pdftex.def Info: img/emojis/4.png  used on input line 930.
  <./img/emojis/3.png> <./img/emojis/4.png>]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 957.
-<img/acp_freq_gensim.png, id=322, 465.74pt x 262.9825pt>
+<img/acp_freq_gensim.png, id=323, 465.74pt x 262.9825pt>
 File: img/acp_freq_gensim.png Graphic file (type png)
 <use img/acp_freq_gensim.png>
 Package pdftex.def Info: img/acp_freq_gensim.png  used on input line 973.
 (pdftex.def)             Requested size: 242.10493pt x 136.70352pt.
-<img/acp_freq_ark.png, id=323, 335.2525pt x 262.9825pt>
+<img/acp_freq_ark.png, id=324, 335.2525pt x 262.9825pt>
 File: img/acp_freq_ark.png Graphic file (type png)
 <use img/acp_freq_ark.png>
 Package pdftex.def Info: img/acp_freq_ark.png  used on input line 979.
@@ -1460,7 +1460,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 971--986
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<img/acp_gensim.png, id=326, 657.45625pt x 481.8pt>
+<img/acp_gensim.png, id=327, 657.45625pt x 481.8pt>
 File: img/acp_gensim.png Graphic file (type png)
 <use img/acp_gensim.png>
 Package pdftex.def Info: img/acp_gensim.png  used on input line 1035.
@@ -1468,12 +1468,12 @@ Package pdftex.def Info: img/acp_gensim.png  used on input line 1035.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<img/acp_reine.png, id=327, 692.5875pt x 481.8pt>
+<img/acp_reine.png, id=328, 692.5875pt x 481.8pt>
 File: img/acp_reine.png Graphic file (type png)
 <use img/acp_reine.png>
 Package pdftex.def Info: img/acp_reine.png  used on input line 1047.
 (pdftex.def)             Requested size: 222.73608pt x 154.94371pt.
-<img/acp_rome.png, id=328, 635.37375pt x 481.8pt>
+<img/acp_rome.png, id=329, 635.37375pt x 481.8pt>
 File: img/acp_rome.png Graphic file (type png)
 <use img/acp_rome.png>
 Package pdftex.def Info: img/acp_rome.png  used on input line 1053.
@@ -1512,19 +1512,19 @@ LaTeX Font Info:    Trying to load font information for U+dsrom on input line 1
 m.fd"
 File: Udsrom.fd 1995/08/01 v0.1 Double stroke roman font definitions
 ) [16 <./img/acp_reine.png> <./img/acp_rome.png>]
-<img/max_baseline.png, id=370, 355.3275pt x 239.89626pt>
+<img/max_baseline.png, id=371, 355.3275pt x 239.89626pt>
 File: img/max_baseline.png Graphic file (type png)
 <use img/max_baseline.png>
 Package pdftex.def Info: img/max_baseline.png  used on input line 1170.
 (pdftex.def)             Requested size: 242.10493pt x 163.46039pt.
 [17 <./img/max_baseline.png>] [18]
-<img/mots_inconnus.png, id=397, 362.35374pt x 225.84375pt>
+<img/mots_inconnus.png, id=398, 362.35374pt x 225.84375pt>
 File: img/mots_inconnus.png Graphic file (type png)
 <use img/mots_inconnus.png>
 Package pdftex.def Info: img/mots_inconnus.png  used on input line 1281.
 (pdftex.def)             Requested size: 242.10493pt x 150.89754pt.
 [19 <./img/mots_inconnus.png>] [20] [21]
-<img/rmd-graphSentiments-1.pdf, id=444, 568.1225pt x 204.765pt>
+<img/rmd-graphSentiments-1.pdf, id=445, 568.1225pt x 204.765pt>
 File: img/rmd-graphSentiments-1.pdf Graphic file (type pdf)
 <use img/rmd-graphSentiments-1.pdf>
 Package pdftex.def Info: img/rmd-graphSentiments-1.pdf  used on input line 1484
@@ -1540,19 +1540,19 @@ ot available
 (Font)              Font shape `U/fontawesomebrands1/regular/n' tried instead o
 n input line 1497.
 [22 <./img/rmd-graphSentiments-1.pdf>]
-<img/rmd-graphConclu-1.pdf, id=470, 578.16pt x 180.675pt>
+<img/rmd-graphConclu-1.pdf, id=471, 578.16pt x 180.675pt>
 File: img/rmd-graphConclu-1.pdf Graphic file (type pdf)
 <use img/rmd-graphConclu-1.pdf>
 Package pdftex.def Info: img/rmd-graphConclu-1.pdf  used on input line 1572.
 (pdftex.def)             Requested size: 484.20988pt x 151.31383pt.
 [23] [24 <./img/rmd-graphConclu-1.pdf>] [25] [26] [27] [28] [29] [30]
-<img/rmd-graphCVS-1.pdf, id=574, 557.08125pt x 411.5375pt>
+<img/rmd-graphCVS-1.pdf, id=575, 557.08125pt x 411.5375pt>
 File: img/rmd-graphCVS-1.pdf Graphic file (type pdf)
 <use img/rmd-graphCVS-1.pdf>
 Package pdftex.def Info: img/rmd-graphCVS-1.pdf  used on input line 2002.
 (pdftex.def)             Requested size: 484.20988pt x 357.71448pt.
 [31 <./img/rmd-graphCVS-1.pdf>] [32] [33]
-<img/rmd-graphCoefCVS-1.pdf, id=619, 568.1225pt x 350.30875pt>
+<img/rmd-graphCoefCVS-1.pdf, id=620, 568.1225pt x 350.30875pt>
 File: img/rmd-graphCoefCVS-1.pdf Graphic file (type pdf)
 <use img/rmd-graphCoefCVS-1.pdf>
 Package pdftex.def Info: img/rmd-graphCoefCVS-1.pdf  used on input line 2193.
@@ -1578,11 +1578,11 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2232.
  ) 
 Here is how much of TeX's memory you used:
- 32736 strings out of 480896
- 611014 string characters out of 2898166
- 876258 words of memory out of 3000000
- 47465 multiletter control sequences out of 15000+200000
- 655871 words of font info for 264 fonts, out of 3000000 for 9000
+ 32739 strings out of 480896
+ 611066 string characters out of 2898166
+ 876260 words of memory out of 3000000
+ 47467 multiletter control sequences out of 15000+200000
+ 660133 words of font info for 265 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,20n,83p,1000b,1444s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/torna/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.en
@@ -1618,21 +1618,22 @@ public/lm/lmr7.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX 2.9/fonts/type
 1/public/lm/lmr8.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX 2.9/fonts/ty
 pe1/public/lm/lmr9.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX 2.9/fonts/
 type1/public/lm/lmri10.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX 2.9/fo
-nts/type1/public/lm/lmri9.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX 2.9
-/fonts/type1/public/lm/lmsy10.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX
- 2.9/fonts/type1/public/lm/lmsy5.pfb><C:/Users/torna/AppData/Local/Programs/MiK
-TeX 2.9/fonts/type1/public/lm/lmsy6.pfb><C:/Users/torna/AppData/Local/Programs/
-MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Users/torna/AppData/Local/Progra
-ms/MiKTeX 2.9/fonts/type1/public/lm/lmsy9.pfb><C:/Users/torna/AppData/Local/Pro
-grams/MiKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Users/torna/AppData/Local
-/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Users/torna/AppData/L
-ocal/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtt9.pfb><C:/Users/torna/AppDat
-a/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/
-Users/torna/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/zapfding/uzdr.pfb
->
-Output written on Rapport.pdf (35 pages, 1436928 bytes).
+nts/type1/public/lm/lmri12.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX 2.
+9/fonts/type1/public/lm/lmri9.pfb><C:/Users/torna/AppData/Local/Programs/MiKTeX
+ 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Users/torna/AppData/Local/Programs/Mi
+KTeX 2.9/fonts/type1/public/lm/lmsy5.pfb><C:/Users/torna/AppData/Local/Programs
+/MiKTeX 2.9/fonts/type1/public/lm/lmsy6.pfb><C:/Users/torna/AppData/Local/Progr
+ams/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Users/torna/AppData/Local/Pr
+ograms/MiKTeX 2.9/fonts/type1/public/lm/lmsy9.pfb><C:/Users/torna/AppData/Local
+/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Users/torna/AppData/L
+ocal/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Users/torna/AppDa
+ta/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmtt9.pfb><C:/Users/torna/Ap
+pData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+<C:/Users/torna/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/zapfding/uzdr
+.pfb>
+Output written on Rapport.pdf (35 pages, 1450182 bytes).
 PDF statistics:
- 820 PDF objects out of 1000 (max. 8388607)
+ 824 PDF objects out of 1000 (max. 8388607)
  181 named destinations out of 1000 (max. 500000)
  24849 words of extra memory for PDF output out of 24883 (max. 10000000)
 

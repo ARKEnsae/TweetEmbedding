@@ -132,7 +132,7 @@ C’est une méthode algébrique de représentation d’un document visant à r�
 Il est alors nécessaire de capter de nombreux types de proximités entre mots : les synonymes (automobile / voiture), antonymes (froid / chaud), connotations positives *versus* négatives (heureux / triste), etc. 
 
 Un modèle répondant à toutes ces exigences ne peut exister. 
-Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement.
+Pour y répondre au mieux, la sémantique vectorielle puise son inspiration des travaux linguistiques des années 1950 et en particulier de l’ « hypothèse de distribution » selon laquelle un mot se définit par son environnement.
 Dit autrement : les mots qui se produisent dans un contexte identique tendent à avoir des significations similaires^[Comme l'a écrit le linguiste britannique John Rupert Firth en 1957, « Vous connaîtrez un mot par ses fréquentations ».]. 
 
 Les premiers modèles sémantiques (comme le *term frequency-inverse document frequency* (TF-IDF)) représentaient les relations entre mots grâce à des très grandes matrices, dites *sparses*, dont les dimensions correspondaient à la taille du vocabulaire (contenant donc beaucoup de 0). Les méthodes de *word-embedding* qui sont ensuite apparues ont permis de représenter chaque mot d’un dictionnaire par un vecteur de nombres réels denses (peu de 0) de plus faible dimension (en général entre 50 et 1000).
@@ -704,7 +704,7 @@ Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions da
 
 # Construction d'un indice mensuel de sentiment moyen des tweets {#sec:sentimentalAnalysis}
 
-Afin de créer un indice mensuel de sentiment moyen des tweets, nous allons utiliser les vecteurs-mots obtenus en sortie du modèle *word2vec* couplés avec une base de tweets annotée en termes de sentiment. Cette base contient un ensemble de tweets sur les transports urbains tous qualifiés de positifs ou négatifs .
+Afin de créer un indice mensuel de sentiment moyen des tweets, nous allons utiliser les vecteurs-mots obtenus en sortie du modèle *word2vec* couplés avec une base de tweets annotée en termes de sentiment. Cette base contient un ensemble de tweets sur les transports urbains tous qualifiés de positifs ou négatifs.
 Nous comparerons ensuite cet indicateur avec l'indicateur synthétique de confiance des ménages (Camme, Insee). 
 L'ensemble de ces données sont décrites dans l'encadré \@ref(enc:encadre1).
 
@@ -720,7 +720,7 @@ Nous disposons de 4 200 tweets pour tous les mois de la période sous-échantill
 \textbf{Tweets annotés sur les transports urbains}
 
 Cette base est composée d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment.
-Nous avons transformé cette annotation de façon à ce qu'une valeur de $+1$ soit associée à un tweet considéré comme positif et $-1$ à un tweet considéré comme négatif.
+Nous avons transformé cette annotation de façon à ce qu'une valeur de $+1$ soit associée à un tweet considéré comme positif et $0$ à un tweet considéré comme négatif.
 
 
 \textbf{Indicateur synthétique de confiance des ménages}
@@ -734,7 +734,7 @@ Il est normalisé de manière à avoir une moyenne de 100 et un écart-type de 1
 
 ## Prédire le sentiment d’un tweet à partir des *word-embeddings*
 
-Nous cherchons dans cette partie à construire un modèle permettant de prédire le sentiment ($+1$ ou $-1$) associé à un tweet à partir des mots qui le composent.
+Nous cherchons dans cette partie à construire un modèle permettant de prédire le sentiment ($+1$ ou $0$) associé à un tweet à partir des mots qui le composent.
 Nous utilisons pour cela la base annotée sur les transports (encadré \@ref(enc:encadre1)).
 Nous comparerons deux approches : une première basée sur les sentiments moyens de chaque mot des tweets (partie \@ref(sec:sentiments)) qui servira de référence pour évaluer l'efficacité de la seconde approche basée sur les *word-embeddings* (partie \@ref(sec:wordembeddings)).
 
@@ -742,7 +742,7 @@ Nous comparerons deux approches : une première basée sur les sentiments moyens
 
 Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
 Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera :
-$$S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\} - 1 \qquad \in [0,1]$$
+$$S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}$$
   avec $\gamma \in [-1,1]$ un seuil fixé, $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  le sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît. 
 
 Afin d'évaluer l'efficacité du modèle, nous séparons le corpus de la base de tweets sur les transports en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets)^[
@@ -790,7 +790,7 @@ Avec :
 
 Puis nous appliquons le critère de classification suivant pour prédire le sentiment $S_{2,\gamma}(t) \in \{0,1\}$ du tweet $t$ avec le seuil $\gamma = 0,5$ :
 
- $$S_{2,\gamma}(t) = \mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in [0,1]$$
+ $$S_{2,\gamma}(t) = \mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in \{0,1\}$$
 
 Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC^[
 La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs. 
@@ -857,7 +857,7 @@ Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a
 \end{quote}
 
 
-#### Le domain-shift
+#### Le *domain-shift*
 
 
 Une dernière explication possible pourrait être du à ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. 
@@ -869,8 +869,8 @@ Bien que des solutions comme la correction de biais de sélection des échantill
 Le changement de domaine se caractérise par un changement de la nature, du « domaine » des données utilisées.
 Dans le cas de \emph{deep-learning} sur des données de photographie, il pourrait par exemple s’agir de traiter de corpus de photos prises par des appareil photo calibrés de manière différentes (contraste, luminosité\dots) .
 Dans notre cas précis, il s’agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets sur les transports urbains, qui portent sur un sujet très spécifique et pour lesquels certains mots ont peut-être une interprétation spécifique en termes de sentiments. 
-Modéliser le « domain shift » implique donc d’estimer le passage d’une représentation à une autre en utilisant des informations de distribution^[
-La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le « domain shift » lié à l’utilisation d’appareil photos différents.
+Modéliser le *domain shift* implique donc d’estimer le passage d’une représentation à une autre en utilisant des informations de distribution^[
+La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le *domain shift* lié à l’utilisation d’appareil photos différents.
 ].
 
 L’idée n’est pas ici de modéliser mathématiquement le *domain shift*^[

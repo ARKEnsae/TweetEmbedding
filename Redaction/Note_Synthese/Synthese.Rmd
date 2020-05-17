@@ -154,7 +154,7 @@ Ces données correspondent à un ensemble de tweets postés en France entre 2011
 
 \textbf{Tweets annotés sur les transports urbains}
 
-Cette base est composée d'un ensemble d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment (+1 s'ils sont positifs, -1 s'ils sont négatifs).
+Cette base est composée d'un ensemble d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment ($+1$ s'ils sont positifs, $0$ s'ils sont négatifs).
 
 \textbf{Indicateur synthétique de confiance des ménages}
 
@@ -200,7 +200,7 @@ Avant de nous attaquer au jeu de données complet, nous avons également évalu�
 
 Nous utilisons ici vecteurs-mots en sortie du modèle *word2vec*, couplé avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyens des tweet.
 
-Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($+1$ ou $-1$) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
+Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($+1$ ou $0$) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
 
 \begin{multicols}{2}
 
@@ -208,7 +208,7 @@ Nous cherchons tout d'abord à construire un modèle permettant de prédire le s
 
 Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
 Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera :
-$$S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\} - 1 \qquad \in [0,1]$$
+$$S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\} \qquad \in \{ 0,1\}$$
   avec $\gamma \in [-1,1]$ un seuil fixé, $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  le sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît.
 
 \vspace{2.5cm}
@@ -217,7 +217,7 @@ $$S_{1,\gamma}(t) = 2 \times \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n 
 
 Ce deuxième modèle est une régression binaire avec comme prédicteurs chacune des 100 dimensions des vecteurs-mots. Les vecteurs-mots sont moyennés pour obtenir la représentation vectorielle du tweet : la  « \emph{sentence-embedding} ».
 Le sentiment prédit d'un tweet $t$ sera :
- $$S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in [0,1]$$
+ $$S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in \{ 0,1 \}$$
 Avec : 
 $$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} 
 \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)$$

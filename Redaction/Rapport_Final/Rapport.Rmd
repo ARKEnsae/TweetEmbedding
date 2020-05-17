@@ -725,7 +725,7 @@ Nous avons transformé cette annotation de façon à ce qu'une valeur de $+1$ so
 L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee.
 Il décrit, en une variable unique, la composante commune de 8 soldes d’opinion qui correspondent à la différence entre les pourcentages de réponses positives et négatives sur différents sujets (niveau de vie passé et futur en France, situation financière personnelle passée et future, perspective de chômage, opportunité de faire des achats importants, capacité à épargner actuelle et dans les mois à venir). Les réponses \og ne sait pas \fg n'entrent donc pas dans le calcul des soldes d'opinion.
 L'indicateur synthétique est calculé par analyse factorielle statique, dont l’objectif est de résumer l’évolution concomitante de ces soldes aux évolutions très corrélées.
-Il est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10 et doit donc s’interpréter en évolution. 
+Il s’interprète surtout en évolution et il est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10. 
 
 \end{encadre}
 
@@ -906,7 +906,7 @@ Comme il présente une efficacité similaire à lorsqu’il était évalué sur 
 Nous construisons désormais un indicateur mensuel de sentiment des tweets postés en France entre 2011 et 2018 (encadré \@ref(enc:encadre1)) en appliquant le modèle logit sur les *sentence-embeddings* (partie \@ref(sec:wordembeddings)) et en calculant la moyenne des sentiments prévus pour ces tweets (0 si négatifs, 1 si positifs) pour chaque mois.  
 Afin de comparer notre indicateur à l'indicateur synthétique de confiance des ménages de l'enquête Camme, plusieurs éléments sont à prendre en considération :
 
-- L'indicateur Camme, tout comme notre indicateur de sentiment, n'ont pas de sens en niveau. On ne cherche pas à savoir si, à un certain mois, les tweets sont plutôt positifs ou négatifs, mais plutôt à analyser l'évolution de ce sentiment. 
+- L'indicateur Camme, tout comme notre indicateur de sentiment, s'interprète essentiellement en évolution. On ne cherche pas à savoir si, à un certain mois, les tweets sont plutôt positifs ou négatifs, mais plutôt à analyser l'évolution de ce sentiment. 
 C'est pourquoi les deux indicateurs seront centrés réduits sur la période 2011-2018.
 
 - L'indicateur synthétique de l'enquête Camme publié au mois $m$ porte sur l'opinion des ménages au mois $m-1$. 
@@ -983,9 +983,6 @@ Ainsi, l'exploitation des résultats de *word2vec* permet, contrairement au mod�
 En construisant un indicateur de sentiment à partir d'un modèle logit entraîné sur la base présentée en \@ref(subsec:basegit), nous aboutissons à des conclusions semblables pour cette partie \@ref(sec:camme)^[
 En revanche, les mots inconnus y sont plus fréquents et le modèle obtenu présente de moins bons résultats en termes d'*accuracy* à la fois sur une base test issue cette base mais également provenant de la base sur les transports urbains.
 ]. 
-
-
-
 
 # Discussion et prolongements {.unnumbered} 
 

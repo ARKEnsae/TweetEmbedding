@@ -60,38 +60,32 @@ library(shiny)
 
 <!-- Word-Embedding pour construire un indice de sentiment avec Twitter  -->
 
-\begin{textblock*}{\textwidth}(0cm,-24.3cm)
+\begin{textblock*}{\textwidth}(0cm,-21cm)
 \begin{center}
 \includegraphics[height=2.5cm]{img/LOGO-ENSAE.png}
 \end{center}
 \end{textblock*}
 
-\newpage 
-
+\begin{textblock*}{\textwidth}(0cm,2.5cm)
 \begin{center}
 \begin{minipage}{0.7\textwidth}
 
 \begin{wrapfigure}{L}{0cm}
-\includegraphics[height=2.5cm]{img/LOGO-ENSAE.png}
+\includegraphics[height=0.8cm]{img/avatars.png}
 \end{wrapfigure}
 
 $\phantom{saut}$
 
-$\phantom{saut}$
-
-$\phantom{saut}$
-
-
 \emph{Retrouvez l'ensemble du projet et son code sur}
 
-$\phantom{}$%Si je ne fais pas ça il y a un bug avec le wrapfigure
-\url{https://github.com/ARKEnsae/TweetEmbedding}
+https://github.com/ARKEnsae/TweetEmbedding
 
 \end{minipage}
 \end{center}
 
+\end{textblock*}
 
-\vspace{0.5cm}
+\newpage 
 
 
 # Introduction {.unnumbered}
@@ -103,11 +97,13 @@ Les modèles *word2vec*, développés par une équipe de recherche chez Google (
 
 Dans ce projet de statistique appliquée, nous étudierons dans un premier temps en détail et implémenterons le modèle *word2vec* (partie \@ref(sec:word2vec)). 
 Dans un deuxième temps, nous évaluerons le modèle implémenté et l'appliquerons sur une base de données composée d'1,3 million de tweets publiés en France entre 2013 et 2017 (partie \@ref(sec:evaluation)). 
-Enfin, nous mobiliserons des techniques d'analyse de sentiment afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (partie \@ref(sec:sentimentalAnalysis)). La figure \@ref(fig:schemaRecap) résume l'ensemble de notre démarche.
+Enfin, nous mobiliserons des techniques d'analyse de sentiment afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (partie \@ref(sec:sentimentalAnalysis)).
+
+La figure \@ref(fig:schemaRecap) résume l'ensemble de notre démarche.
 
 
-
-\vfill
+\vspace{2cm}
+<!-- \vfill -->
 
 \begin{figure}[!htb]
 \input{img/schema_recap.tex}
@@ -518,7 +514,8 @@ Le nombre d'epochs a un effet net. Passer de 10 à 100 epochs fait nettement aug
 \ 
 
 La valeur 0,02 semble donner systématiquement de meilleurs résultats que 0,01. 
-Les différents taux d'apprentissage présentent des performances similaires^[
+
+En réalisant davantage de tests de taux d'apprentissage en fixant les autres hyperparamètres, les différents taux d'apprentissage présentent des performances similaires^[
 En fixant les paramètres dim = 50, ep = 100 et w = 4 (celles du modèle retenu *in fine*), et en testant les taux d'apprentissage 0,005, 0,01, 0,02, 0,03 et 0,04, les valeurs moyennes des corrélations s'échelonnent entre 0,41 et 0,48, soit des valeurs proches.
 ].
 
@@ -566,7 +563,7 @@ Bien que l'efficacité du modèle semble meilleure en dimension 300, la dimensio
 
 ### Avec \og notre \fg modèle
 
-Nous avons ensuite fait tourner le modèle que nous avons implémenté en utilisant les paramètres retenus précédemment (w = 4, lr = 0,02 et dim = 100) mais uniquement sur 100 000 tweets et 80 epochs pour des questions de temps de calcul^[Pour ces paramètres le temps de calcul était d'environ 18 heures.].
+Nous avons ensuite fait tourner le modèle que nous avons implémenté en utilisant les paramètres retenus précédemment (w = 4, lr = 0,02 et dim = 100) mais uniquement sur 100 000 tweets et 80 epochs pour des questions de temps de calcul^[Pour ces paramètres, le temps de calcul était d'environ 18 heures.].
 Les résultats obtenus semblent relativement satisfaisants. La recherche des plus proches voisins par similarité cosinus (dont quelques exemples sont illustrés en tableau \ref{table:knn_ark}) donne des résultats proches de l'intuition. 
 
 \begin{table}[!h]
@@ -629,7 +626,7 @@ Méthode utilisée : ACP, deux premiers axes.}
 Le coefficient de Spearman a une valeur semblable à précédemment : 0,495 mais sa p-valeur est proche de 0 % et, cette fois-ci, 52 des couples de mots de la base RG-65 ont été reconnus dans le corpus de tweets. 
 
 
-Les 10 plus proches voisins calculés par similarité cosinus (tableau  \ref{table:knn_gensim}) semblent plus pertinents. 
+Les 10 plus proches voisins calculés par similarité cosinus (tableau  \ref{table:knn_gensim}) semblent encore plus pertinents. 
 Les plus proches voisins de \og $1$ \fg contiennent davantage de chiffres, ceux de \og samedi \fg davantage de jours de la semaine et le tableau contient désormais des synonymes de \og femme \fg et de \og bonjour \fg. 
 Certains mots surprenants subsistent toutefois, comme par exemple \og transmets \fg{}, \og désagrément \fg{} et \og betembourg \fg{}, voisins de \og bonjour \fg{}. 
 Toutefois, la fréquence d'apparition de ces mots dans le corpus est faible (moins d'une centaine d'occurrences). 
@@ -728,7 +725,7 @@ Nous avons transformé cette annotation de façon à ce qu'une valeur de $+1$ so
 L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee.
 Il décrit, en une variable unique, la composante commune de 8 soldes d’opinion qui correspondent à la différence entre les pourcentages de réponses positives et négatives sur différents sujets (niveau de vie passé et futur en France, situation financière personnelle passée et future, perspective de chômage, opportunité de faire des achats importants, capacité à épargner actuelle et dans les mois à venir). Les réponses \og ne sait pas \fg n'entrent donc pas dans le calcul des soldes d'opinion.
 L'indicateur synthétique est calculé par analyse factorielle statique, dont l’objectif est de résumer l’évolution concomitante de ces soldes aux évolutions très corrélées.
-Il est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10. 
+Il est normalisé de manière à avoir une moyenne de 100 et un écart-type de 10 et doit donc s’interpréter en évolution. 
 
 \end{encadre}
 
@@ -861,9 +858,7 @@ Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a
 
 
 Une dernière explication possible pourrait être du à ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. 
-Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}. 
-Ces concepts sont décrits dans de nombreux papiers, dont \cite{Candela}.
-
+Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}\footnote{Les éléments en lien avec le \emph{dataset shift}, et plus particulièrement le \emph{domain shift}, proviennent de \cite{Candela}}. 
 Bien que des solutions comme la correction de biais de sélection des échantillons, ou encore celle des données déséquilibrées, soient étudiées depuis de nombreuses décennies dans le monde de la statistique, certains autres problèmes, comme celui du changement de domaine (\emph{domain shift}) émergent depuis plus récemment suite à l’utilisation croissante des méthodes de \emph{machine learning}. 
 
 Le changement de domaine se caractérise par un changement de la nature, du « domaine » des données utilisées.
@@ -906,7 +901,7 @@ Ainsi, les mots de la base test « github » qui ne sont pas dans la base d’
 Comme il présente une efficacité similaire à lorsqu’il était évalué sur une autre base de test, il semble être plus général et s’adapter à des tweets aux contenus plus variés. 
 
 
-## Sentiments des tweets et enquête de conjoncture auprès des ménages 
+## Sentiments des tweets et enquête de conjoncture auprès des ménages {#sec:camme}
 
 Nous construisons désormais un indicateur mensuel de sentiment des tweets postés en France entre 2011 et 2018 (encadré \@ref(enc:encadre1)) en appliquant le modèle logit sur les *sentence-embeddings* (partie \@ref(sec:wordembeddings)) et en calculant la moyenne des sentiments prévus pour ces tweets (0 si négatifs, 1 si positifs) pour chaque mois.  
 Afin de comparer notre indicateur à l'indicateur synthétique de confiance des ménages de l'enquête Camme, plusieurs éléments sont à prendre en considération :
@@ -984,10 +979,9 @@ L'indicateur de sentiment issu du modèle *word2vec* cause au sens de Granger l'
 C'est-à-dire que la connaissance de l'évolution de notre second indicateur de sentiment apporte de l'information pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
 Ce n'est pas le cas pour le premier indicateur (référence) calculé uniquement à partir des sentiments des mots des tweets (p-valeur de 0,58), malgré la similitude entre ces deux modèles (partie \@ref(subsec:compseries)).
 
-Ainsi, l'exploitation des résultats de *word2vec* permet, contrairement au modèle de référence, de construire un indicateur de sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique de l'enquête Camme^[
-Les mêmes résultats sont obtenus en construisant un indicateur de sentiment à partir d'un modèle logit entraîné sur la base présentée en \@ref(subsec:basegit).
-En revanche, l'indicateur obtenu avait de moins bons résultats en termes d'*accuracy* sur une base test de cette base et sur une base test de tweets annotés sur les transports urbains que le modèle entraîné sur tweets annotés sur les transports urbains.
-C'est pourquoi nous avons retenu ce dernier.
+Ainsi, l'exploitation des résultats de *word2vec* permet, contrairement au modèle de référence, de construire un indicateur de sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique de l'enquête Camme.
+En construisant un indicateur de sentiment à partir d'un modèle logit entraîné sur la base présentée en \@ref(subsec:basegit), nous aboutissons à des conclusions semblables pour cette partie \@ref(sec:camme)^[
+En revanche, les mots inconnus y sont plus fréquents et le modèle obtenu présente de moins bons résultats en termes d'*accuracy* à la fois sur une base test issue cette base mais également provenant de la base sur les transports urbains.
 ]. 
 
 
@@ -995,11 +989,9 @@ C'est pourquoi nous avons retenu ce dernier.
 
 # Discussion et prolongements {.unnumbered} 
 
-Ce travail révèle qu'en utilisant une méthode de *word-embedding* entraînée sur des tweets, on pouvait, grâce à un modèle simple, construire un indicateur de sentiment qui permettait de se rapprocher d'indicateurs d'opinion publiés par des enquêtes de la statistique publique. 
-En comparant nos résultats à l'indicateur synthétique de confiance des ménages produits par l'Insee, nous avons montré qu'exploiter les représentations vectorielles des mots améliorait des façon significative les résultats puisque cela a permis de construire un indicateur de sentiment utile pour avoir une estimation avancée des résultats de cette enquête.
+Ce travail révèle que l'utilisation d'une méthode de *word-embedding* entraînée sur des tweets permet, grâce à un modèle simple, de construire un indicateur de sentiment pouvant être comparé à des indices d'opinion produits grâce à des enquêtes de la statistique publique. 
+En comparant nos résultats à l'indicateur synthétique de confiance des ménages produit par l'Insee, nous avons montré qu'exploiter les représentations vectorielles des mots améliorait de façon significative les résultats, puisque cela permet la construction d'un indicateur de sentiment utile pour obtenir une estimation avancée des résultats de cette enquête.
 Toutefois, les évolutions temporelles de ces deux séries demeurent très différentes et nos résultats peuvent être prolongés en de nombreux points.   
-
-<!-- Ce travail a permis la construction d'un indice de sentiment des tweets utile dans la prévision de l'indicateur synthétique de la confiance des ménages produit par l'Insee. Toutefois, les évolutions temporelles de ces deux séries demeurent très différentes.    -->
 
 La première raison de leur différence est probablement leur philosophie distincte. 
 Alors que l'indicateur Camme résume l'opinion des ménages sur des sujets très spécifiques (évolution du niveau de vie, du chômage, etc.), notre indicateur de sentiment mesure simplement la positivité / négativité des mots employés dans des tweets, sans cibler de thématique particulière. 

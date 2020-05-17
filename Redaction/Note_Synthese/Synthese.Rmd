@@ -89,7 +89,7 @@ Bien que l'indice obtenu s'avère utile pour prédire l'indicateur synthétique 
 
 # Implémentation du modèle *word2vec* {#sec:word2vec}
 
-Les modèles *word2vec*, développés par une équipe de recherche chez Google, sont parmi les plus célèbres modèles de *Natural Language Processing* qui utilisent le *word-embedding* -- plongement lexical en français.
+Les modèles *word2vec*, développés par une équipe de recherche chez Google, sont parmi les plus célèbres modèles de *Natural Language Processing* qui utilisent le *word-embedding* --- plongement lexical en français.
 Il s'agit de représenter chaque mot par un vecteur dont la dimension est fixée par la valeur d’un hyperparamètre. 
 
 <!-- \begin{minipage}{\textwidth} -->
@@ -106,20 +106,21 @@ Ainsi, les mots qui apparaissent dans des contextes similaires (« bonjour » 
 
 
 Pour transformer chaque mot en un vecteur, nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire pour chacun des mots du vocabulaire et répond à la question « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ».
-La prédiction en elle-même ne nous intéresse pas, c’est plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings* de dimension $dim$. 
+Ce n'est pas la prédiction en elle-même qui nous intéresse, mais plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings* de dimension $dim$. 
 
-*Skip-gram* est un réseau de neurones à deux couches avec deux matrices initialisées en générant des lois normale $\mathcal N(0,1)$ :
+*Skip-gram* est un réseau de neurones à deux couches avec deux matrices initialisées en générant des lois normales $\mathcal N(0,1)$ :
 
 - En entrée une matrice $W_e$ de taille $n\times dim$ ;
 
-- En sortie une matrice $W_S$ de taille $n\times dim$.
+- En sortie une matrice $W_s$ de taille $n\times dim$.
 
 
 Nous entraînons le réseau de neurones en le nourrissant de paires `[focus, contexte]` contenues dans les $n$ mots du vocabulaire des tweets.
 Pour cela, on tire au hasard^[
 Pour éviter que les mots trop fréquents, souvent peu informatifs, soient sur-entraînés, on effectue un tout d'abord un sous-échantillonnage (*subsampling*).
 ] un mot focus pour lequel on tire un mot *contexte* au hasard dans une fenêtre $w$. 
-Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois. Le nombre de fois que l'ensemble du corpus est parcouru est appelé *epochs*.
+Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois. 
+Le nombre de fois que l'ensemble du corpus est parcouru est appelé *epochs*.
 
 À chaque étape, les matrices sont mises à jour par descente de gradient :
 
@@ -128,10 +129,10 @@ $$\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta Loss(\theta^{(t)})$$
 avec $\eta$ le taux d'apprentissage et $Loss(\theta)$ la fonction de perte.
 
 Le modèle *word2vec* a initialement été construit en utilisant une fonction de perte dérivée de la fonction *softmax*.
-L'inconvénient de cette méthode est qu'elle est très gourmande en temps de calcul. 
+L'inconvénient de cette méthode est qu'elle est très gourmande en temps de calcul ($\mathcal O(n)$ par phrase). 
 L'algorithme a donc ensuite été amélioré en utilisant le *negative sampling*. 
 Dans cette approche, on utilise une fonction de perte sigmoïde. De plus, plutôt que de mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple `[focus, contexte]`, on tire $K$ mots au hasard du vocabulaire $(w_{neg,\,i})_{i=1..K}$ en considérant que ces mots ne seront pas des mots voisins de `focus`. 
-La complexité est ici bien plus faible que pour la fonction softmax, ce qui correspond à un gain considérable en termes de temps de calcul.
+La complexité est ici bien plus faible que pour la fonction softmax ($\mathcal O(K)$ par phrase), ce qui correspond à un gain considérable en termes de temps de calcul.
 
 À la fin de l'algorithme, ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
 Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentation du $i$^ème^ mot du vocabulaire en dimension $dim$.
@@ -144,25 +145,7 @@ Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentati
 Malgré l'utilisation généralisée des *word embeddings*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. 
 C'est pourquoi nous avons évalué la qualité des vecteurs-mots obtenus en sortie de notre modèle *word2vec* à l'aide de méthodes empiriques : la similarité cosinus entre deux mots, la réduction de dimension de l'espace des vecteurs-mots (ACP, T-SNE) et l'évaluation par jugement humain. 
 
-\begin{encadre}[true]{Données utilisées}\label{enc:encadre1}
-
-\small
-
-\textbf{Tweets mensuels}
-
-Ces données correspondent à un ensemble de tweets postés en France entre 2011 et 2018, supposés être représentatifs de l'ensemble de tweets nationaux publiés durant cette période. Nous avons mobilisé un premier échantillon de 1,3 million de tweets pour entraîner notre modèle \emph{word2vec} et un second échantillon composé de 4 200 tweets mensuels sur la période pour construire notre indice mensuel de sentiment. 
-
-\textbf{Tweets annotés sur les transports urbains}
-
-Cette base est composée d'un ensemble d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment ($+1$ s'ils sont positifs, $0$ s'ils sont négatifs).
-
-\textbf{Indicateur synthétique de confiance des ménages}
-
-L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee.
-
-\end{encadre}
-
-Grâce à l'évaluation de plusieurs modèles, nous avons pu déterminer les hyperparamètres les plus pertinents%
+Grâce à l'évaluation de plusieurs modèles, nous avons pu déterminer les hyperparamètres les plus pertinents
 \footnote{
 $ep = 100$ pour le nombre d'\og \emph{epochs} \fg / $lr = 0,02$ pour le \og \emph{learning rate} \fg, ou taux d'apprentissage/ $w = 4$ pour la taille de la fenêtre (\emph{window}) de sélection des mots contextes / $dim = 100$ pour la dimension des vecteurs-mots (ou \emph{word-embeddings}).
 } au regard des données dont nous disposons (encadré \@ref(enc:encadre1)). 
@@ -171,9 +154,9 @@ Avant de nous attaquer au jeu de données complet, nous avons également évalu�
 ] : 
 
 \begin{itemize}
-\item Le coefficient de corrélation de Spearman avec le jugement humain est significatif (p-valeur proche de 0 \%) et assez élevé (0,495) ;
-\item La recherche des plus proches voisins par similarité cosinus donne des résultats proches de l'intuition pour quelques mots de référence évalués (bonjour, femme, samedi\dots) ;
-\item La projection de certains vecteurs-mots sur les deux premiers axes d'une ACP (figure \ref{fig:acp_gensim}) est de qualité ;
+\item Le coefficient de corrélation de Spearman avec le jugement humain est significatif (p-valeur proche de 0 \%) et assez élevé (0,495).
+\item La recherche des plus proches voisins par similarité cosinus donne des résultats proches de l'intuition pour quelques mots de référence évalués (bonjour, femme, samedi\dots).
+\item La projection de certains vecteurs-mots sur les deux premiers axes d'une ACP (figure \ref{fig:acp_gensim}) est de qualité.
 \item Les sommes vectorielles sur les vecteurs-mots présentent des résultats plus mitigés. L'exemple de  $\overrightarrow{Roi} - \overrightarrow{Homme} + \overrightarrow{Femme} = \overrightarrow{Reine}$ (figure \ref{fig:acp_reine}) semble plutôt fonctionner. 
 \end{itemize}
 
@@ -194,13 +177,34 @@ Avant de nous attaquer au jeu de données complet, nous avons également évalu�
 
 
 
+\begin{encadre}[true]{Données utilisées}\label{enc:encadre1}
+
+\small
+
+\textbf{Tweets mensuels}
+
+Ces données correspondent à un ensemble de tweets postés en France entre 2011 et 2018, supposés être représentatifs de l'ensemble de tweets nationaux publiés durant cette période. \\
+Pour entraîner notre modèle \emph{word2vec}, nous avons mobilisé un premier échantillon de 1,3 million de tweets. Un second échantillon, composé de 4 200 tweets mensuels sur la période 2011-2018, a été utilisé pour construire notre indice mensuel de sentiment. 
+
+\textbf{Tweets annotés sur les transports urbains}
+
+Cette base est composée d'un ensemble d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment ($1$ s'ils sont positifs, $0$ s'ils sont négatifs).\\
+Elle a été utilisée pour entraîner notre modèle d'analyse de sentiment.
+
+\textbf{Indicateur synthétique de confiance des ménages}
+
+L’indicateur synthétique de confiance des ménages provient de l'Enquête mensuelle de conjoncture auprès des ménages (Camme) de l’Insee.\\
+C'est l'indicateur que nous cherchons à prévoir à partir de notre indice mensuel de sentiment.
+
+\end{encadre}
+
 \newpage
 
 # Construction d'un indice mensuel de sentiment moyens des tweets {#sec:sentimentalAnalysis}
 
 Nous utilisons ici vecteurs-mots en sortie du modèle *word2vec*, couplé avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyens des tweet.
 
-Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($+1$ ou $0$) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
+Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($0$ ou $1$) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
 
 \begin{multicols}{2}
 
@@ -245,7 +249,7 @@ Toutefois, contrairement à l'indice du modèle 1, l'indice réalisé à partir 
 Il le cause au sens de Granger (p-valeur de 0,05).
 ]. 
 
-\begin{figure}[htp]
+\begin{figure}[!htp]
 \begin{center}
 \includegraphics[width =0.7\textwidth]{img/rmd-graphSentiments-1}
 \captionsetup{margin=0cm,format=hang,justification=justified}

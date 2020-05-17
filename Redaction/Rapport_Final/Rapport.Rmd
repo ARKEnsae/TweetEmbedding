@@ -886,7 +886,7 @@ Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal préd
 ].
 
 
-#### Test d'une modification de la source de la base de test 
+#### Test d'une modification de la source de la base de test {#subsec:basegit}
 
 Nous avons testé les deux modèles sur une nouvelle base de test de tweets annotés^[
 Cette base disponible sur github https://github.com/gamebusterz/French-Sentiment-Analysis-Dataset correspond à 1,5 million de tweets initialement en anglais associés à un sentiment. 
@@ -984,7 +984,11 @@ L'indicateur de sentiment issu du modèle *word2vec* cause au sens de Granger l'
 C'est-à-dire que la connaissance de l'évolution de notre second indicateur de sentiment apporte de l'information pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
 Ce n'est pas le cas pour le premier indicateur (référence) calculé uniquement à partir des sentiments des mots des tweets (p-valeur de 0,58), malgré la similitude entre ces deux modèles (partie \@ref(subsec:compseries)).
 
-Ainsi, l'exploitation des résultats de *word2vec* permet, contrairement au modèle de référence, de construire un indicateur de sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique de l'enquête Camme. 
+Ainsi, l'exploitation des résultats de *word2vec* permet, contrairement au modèle de référence, de construire un indicateur de sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique de l'enquête Camme^[
+Les mêmes résultats sont obtenus en construisant un indicateur de sentiment à partir d'un modèle logit entraîné sur la base présentée en \@ref(subsec:basegit).
+En revanche, l'indicateur obtenu avait de moins bons résultats en termes d'*accuracy* sur une base test de cette base et sur une base test de tweets annotés sur les transports urbains que le modèle entraîné sur tweets annotés sur les transports urbains.
+C'est pourquoi nous avons retenu ce dernier.
+]. 
 
 
 

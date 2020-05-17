@@ -145,11 +145,11 @@ $\phantom{}$%Si je ne fais pas ça il y a un bug avec le wrapfigure
 
 Grâce à l'évolution des méthodes d'apprentissage profond (\emph{Deep Learning}), l'appréhension du langage naturel est aujourd'hui devenue une discipline à part entière (\emph{Natural Language Processing}).
 Ce succès s'explique en partie grâce à l'émergence de techniques non supervisées d'apprentissage de représentation de structures linguistiques.
-Les méthodes de \emph{word embedding} («~plongement lexical~» en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissent dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches (au sens d'une distance définie).
+Les méthodes de \emph{word-embedding} («~plongement lexical~» en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissent dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches (au sens d'une distance définie).
 Les modèles \emph{word2vec}, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et sont ceux sur lesquels se concentrera notre projet.
 
 Dans ce projet de statistique appliquée, nous étudierons dans un premier temps en détail et implémenterons le modèle \emph{word2vec} (partie \ref{sec:word2vec}).
-Dans un deuxième temps, nous évaluerons la validité du modèle implémenté et l'appliquerons sur une base de données composée de plusieurs millions de tweets publiés en France entre 2013 et 2017 (partie \ref{sec:evaluation}).
+Dans un deuxième temps, nous évaluerons le modèle implémenté et l'appliquerons sur une base de données composée d'1,3 million de tweets publiés en France entre 2013 et 2017 (partie \ref{sec:evaluation}).
 Enfin, nous mobiliserons des techniques d'analyse de sentiment afin de créer des indicateurs qui pourront être comparés aux indicateurs produits dans la statistique publique, en particulier concernant l'opinion des ménages (partie \ref{sec:sentimentalAnalysis}). La figure \ref{fig:schemaRecap} résume l'ensemble de notre démarche.
 
 \vfill
@@ -414,7 +414,7 @@ Ils recommandent également de prendre \(K\in\{5,\dots,20\}\) pour les petites b
 \hypertarget{sec:evaluation}{%
 \section{Évaluation du modèle implémenté}\label{sec:evaluation}}
 
-Malgré l'utilisation généralisée des \emph{word embeddings}, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots.
+Malgré l'utilisation généralisée des \emph{word-embeddings}, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots.
 
 C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes empiriques.
 L'annexe \ref{annexe:commentEvaluer} décrit plus précisément les méthodes que nous avons retenues pour évaluer la qualité des vecteurs-mots.
@@ -746,8 +746,8 @@ Peut-être ce mot n'a-t-il pas suffisamment été entraîné (246 apparitions da
 \hypertarget{sec:sentimentalAnalysis}{%
 \section{Construction d'un indice mensuel de sentiment moyen des tweets}\label{sec:sentimentalAnalysis}}
 
-Afin de créer un indice mensuel de sentiment moyen des tweets, nous allons utiliser les vecteurs-mots en sortie du modèle \emph{word2vec} couplés avec une base de tweets annotée en termes de sentiment. Cette base contient un ensemble de tweets sur les transports urbains tous qualifiés de positifs ou négatifs .
-Nous comparerons ensuite cet indicateur avec indicateur synthétique de confiance des ménages (Camme, Insee).
+Afin de créer un indice mensuel de sentiment moyen des tweets, nous allons utiliser les vecteurs-mots obtenus en sortie du modèle \emph{word2vec} couplés avec une base de tweets annotée en termes de sentiment. Cette base contient un ensemble de tweets sur les transports urbains tous qualifiés de positifs ou négatifs .
+Nous comparerons ensuite cet indicateur avec l'indicateur synthétique de confiance des ménages (Camme, Insee).
 L'ensemble de ces données sont décrites dans l'encadré \ref{enc:encadre1}.
 
 \begin{encadre}[true]{Données utilisées}\label{enc:encadre1}
@@ -761,7 +761,7 @@ Nous disposons de 4 200 tweets pour tous les mois de la période sous-échantill
 
 \textbf{Tweets annotés sur les transports urbains}
 
-Cette base est composée d'un ensemble d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment.
+Cette base est composée d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment.
 Nous avons transformé cette annotation de façon à ce qu'une valeur de $+1$ soit associée à un tweet considéré comme positif et $-1$ à un tweet considéré comme négatif.
 
 
@@ -828,12 +828,8 @@ Avec :
 \end{itemize}
 
 Puis nous appliquons le critère de classification suivant pour prédire le sentiment \(S_{2,\gamma}(t) \in \{0,1\}\) du tweet \(t\) avec le seuil \(\gamma = 0,5\) :
-\[
-\begin{cases}
-S_{2,\gamma}(t) = 0 &  \text{ si} \quad \mathbb{P}(Y_i = 1 | X_{i}) < \gamma \\
-S_{2,\gamma}(t) = 1 &  \text{ si} \quad \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma
-\end{cases}
-\]
+
+\[S_{2,\gamma}(t) = \mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in [0,1]\]
 
 Afin de sélectionner le meilleur modèle, nous avons comparé 8 modèles comportant différentes spécifications en utilisant le critère de l'AUC (aire sous la courbe ROC\footnote{La courbe ROC permet de représenter pour l'ensemble des seuils possibles l'évolution du nombre de vrais positifs en fonction du nombre de faux positifs.
   L'AUC, l'aire sous cette courbe, est donc compris entre 0 et 1. Une valeur proche de 0,5 correspond à un modèle aléatoire. À l'inverse, une AUC proche de 1 correspond à un très bon modèle prédictif.}) par validation croisée\footnote{Nous avons réalisé une \emph{k-fold cross validation} qui est une technique permettant de limiter le surapprentissage sur la base de test.
@@ -917,8 +913,8 @@ L'idée n'est pas ici de modéliser mathématiquement le \emph{domain shift}\foo
   En revanche, cette distribution est modifiée si \(F\) est modifiée.} mais de remarquer que la base de tweets sur les transports semble qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé\footnote{Les mots «~bus~» (3800 occurrences), «~métro~» (820), «~SNCF~» (781), «~retard~» (411), «~ratp~» (237), «~gare~» (195), «~chauffeur~» (160)\dots sont parmi les plus employés dans les tweets de la base test.} mais également de part le ton particulièrement ironique de nombreux tweets\footnote{Comme en témoignent ces deux tweets «~1h de retard la SNCF, vous savez pas l'amour que je vous porte~» et «~J'ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas~».
   Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal prédits, 4 peuvent être utilisés pour manier l'ironie (rire, mdr, ptdr et mdrrr).}.
 
-\hypertarget{test-dune-modification-de-la-source-de-la-base-de-test}{%
-\paragraph{Test d'une modification de la source de la base de test}\label{test-dune-modification-de-la-source-de-la-base-de-test}}
+\hypertarget{subsec:basegit}{%
+\paragraph{Test d'une modification de la source de la base de test}\label{subsec:basegit}}
 
 Nous avons testé les deux modèles sur une nouvelle base de test de tweets annotés\footnote{Cette base disponible sur github \url{https://github.com/gamebusterz/French-Sentiment-Analysis-Dataset} correspond à 1,5 million de tweets initialement en anglais associés à un sentiment.
   Son désavantage est que la traduction est de mauvaise qualité et sûrement effectuée depuis un logiciel de traduction automatique.} indépendante des autres bases.
@@ -1007,7 +1003,9 @@ L'indicateur de sentiment issu du modèle \emph{word2vec} cause au sens de Grang
 C'est-à-dire que la connaissance de l'évolution de notre second indicateur de sentiment apporte de l'information pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
 Ce n'est pas le cas pour le premier indicateur (référence) calculé uniquement à partir des sentiments des mots des tweets (p-valeur de 0,58), malgré la similitude entre ces deux modèles (partie \ref{subsec:compseries}).
 
-Ainsi, l'exploitation des résultats de \emph{word2vec} permet, contrairement au modèle de référence, de construire un indicateur de sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique de l'enquête Camme.
+Ainsi, l'exploitation des résultats de \emph{word2vec} permet, contrairement au modèle de référence, de construire un indicateur de sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique de l'enquête Camme\footnote{Les mêmes résultats sont obtenus en construisant un indicateur de sentiment à partir d'un modèle logit entraîné sur la base présentée en \ref{subsec:basegit}.
+  En revanche, l'indicateur obtenu avait de moins bons résultats en termes d'\emph{accuracy} sur une base test de cette base et sur une base test de tweets annotés sur les transports urbains que le modèle entraîné sur tweets annotés sur les transports urbains.
+  C'est pourquoi nous avons retenu ce dernier.}.
 
 \hypertarget{discussion-et-prolongements}{%
 \section*{Discussion et prolongements}\label{discussion-et-prolongements}}
@@ -1036,7 +1034,7 @@ Il faudrait pour cela mobiliser un analyseur de sentiments performant pour les t
 Quelques avancées récentes, comme CamemBERT (\cite{Martin}), le cousin français de BERT entraîné sur 138 GB de texte français issu du web, pourrait par exemple être mobilisé.
 L'outil BERT de Google permet en effet non seulement de qualifier le sentiment global d'un texte mais également d'identifier de quel sujet il traite.
 Une étape de sélection de données semble en effet indispensable pour que les tweets annotés de la base d'entraînement soient en lien avec l'enquête Camme de l'Insee.
-Cela pourrait passer non seulement par l'analyse approfondie du contenu du tweet (notamment via l'utilisation de hashtags) mais également son auteur (médias, faux comptes, individus lambdas \dots).
+Cela pourrait passer non seulement par l'analyse approfondie du contenu du tweet (notamment via l'utilisation de hashtags) mais également son auteur (médias, faux comptes, individus lambdas\dots).
 
 En amont de \emph{word2vec}, un \textbf{prétraitement plus approfondi des tweets} pourrait contribuer à l'amélioration de la qualité des vecteurs-mots et à la réduction des mots inconnus.
 Les mots mal orthographiés (lettres en trop, oubli d'espace, mauvaise ponctuation\dots) accroissent en effet considérablement la taille du vocabulaire et la rareté des mots.
@@ -1061,7 +1059,7 @@ Au-delà de la compréhension et de l'implémentation du modèle, nous nous somm
 Il a été fascinant d'observer à quel point le modèle présente d'excellents résultats en termes de capture sémantiques des mots dans un texte.
 
 Dans la partie \ref{sec:sentimentalAnalysis} dédiée à l'analyse de sentiment, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant notre deuxième année à l'ENSAE (modèles de prédiction binaire, analyse de séries temporelles, minimisation du risque empirique / validation croisée\dots).
-L'entraînement et le test du modèle logit dont les prédicteurs correspondent aux dimensions des \emph{word-embedding} nous a permis d'observer qu'en plus de représenter la proximité entre mots, le modèle \emph{word2vec} permet de capter dans une certaine mesure le sentiment de phrases.
+L'entraînement et le test du modèle logit dont les prédicteurs correspondent aux dimensions des \emph{word-embedding} nous a permis de remarquer qu'en plus de représenter la proximité entre mots, le modèle \emph{word2vec} permet de capter dans une certaine mesure le sentiment de phrases.
 
 Bien sûr, la comparaison de l'indice mensuel de sentiment moyen des tweets que nous avons construit avec l'indicateur synthétique de confiance des ménages peut à première vue paraître «~décevante~» en raison des différences observées entre les deux séries.
 Toutefois, le test de causalité au sens de Granger nous indique que l'indice obtenu s'avère utile pour prédire l'indicateur Camme.
@@ -1310,7 +1308,7 @@ Les sentiments exprimés par les tweets pourraient donc être influencés par le
 
 Pour estimer l'effet jour ouvrable, nous utilisons l'approche de la méthode X-12ARIMA, notamment décrite dans \cite{L2018}.
 
-Supposons que le \(j\)\textsuperscript{ème} jour de la semaine a un effet \(\alpha_j\) où \(j=1\) désigne le lundi, \(j=2\) le mardi, \dots , et \(j=7\) le dimanche.
+Supposons que le \(j\)\textsuperscript{ème} jour de la semaine a un effet \(\alpha_j\) où \(j=1\) désigne le lundi, \(j=2\) le mardi, \dots, et \(j=7\) le dimanche.
 Chaque \(\alpha_j\) représente par exemple le sentiment moyen d'un jour \(j\).
 Si \(N_{jt}\) représente le nombre de jours \(j\) dans le mois \(t\), la longueur du mois \(t\) est alors \(N_t = \sum_{j=1}^{7} N_{jt}\) et l'effet cumulé pour ce mois (le sentiment moyen du mois) sera :
 \[

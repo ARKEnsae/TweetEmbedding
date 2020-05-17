@@ -123,7 +123,7 @@ Enfin, nous mobiliserons des techniques d'analyse de sentiment afin de créer de
 ## Le modèle *word2vec*, un modèle de *word-embedding*
 
 Le *Natural Language Processing* (NLP ou « traitement automatique du langage naturel ») est une branche du *machine learning* visant à analyser, traiter et reproduire le langage humain. 
-Les modèles de NLP *word2vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le *word-embedding* -- plongement lexical en français. 
+Les modèles de NLP *word2vec*, développés par une équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et utilisent le *word-embedding* --- plongement lexical en français. 
 
 ### Historique : de la sémantique vectorielle à *word2vec*
 
@@ -191,7 +191,7 @@ Comme décrit dans la partie \@ref(subsec:word2vec), l'approche *Skip-gram* peut
 
 - En entrée une matrice $W_e$ de taille $n\times dim$ ;
 
-- En sortie une matrice $W_S$ de taille $n\times dim$.
+- En sortie une matrice $W_s$ de taille $n\times dim$.
 
 Ces deux matrices sont initialisées en générant des lois normales $\mathcal N(0,1)$. Elles sont ensuite mises à jour, grâce aux couples `[focus, contexte]` construits à partir du contexte (partie \@ref(subsec:baseentrainement)), par un algorithme de descente de gradient.
 À la fin de l'algorithme, ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
@@ -734,7 +734,7 @@ Il est normalisé de manière à avoir une moyenne de 100 et un écart-type de 1
 
 ## Prédire le sentiment d’un tweet à partir des *word-embeddings*
 
-Nous cherchons dans cette partie à construire un modèle permettant de prédire le sentiment ($+1$ ou $0$) associé à un tweet à partir des mots qui le composent.
+Nous cherchons dans cette partie à construire un modèle permettant de prédire le sentiment ($0$ ou $1$) associé à un tweet à partir des mots qui le composent.
 Nous utilisons pour cela la base annotée sur les transports (encadré \@ref(enc:encadre1)).
 Nous comparerons deux approches : une première basée sur les sentiments moyens de chaque mot des tweets (partie \@ref(sec:sentiments)) qui servira de référence pour évaluer l'efficacité de la seconde approche basée sur les *word-embeddings* (partie \@ref(sec:wordembeddings)).
 
@@ -1184,7 +1184,7 @@ $$ p_{j|i} = \frac{
 
 La seconde étape de l'algorithme consiste à trouver le nouvel espace de projection à faible nombre de dimensions. 
 On appellera $g_i$ les $x_i$ projetés dans cet espace que l'on cherche à déterminer.
-On calcule maintenant les probabilité conditionnelles $q_{j|i}$ de choisir $g_j$ comme voisin de $g_i$ en supposant que les $(g_i)_i$ suivent cette fois-ci une distribution de *Student* -- d'où le nom de l'algorithme -- plutôt qu'une loi gaussienne^[Dans un espace à faible dimension, la dispersion des vecteurs est réduite. 
+On calcule maintenant les probabilité conditionnelles $q_{j|i}$ de choisir $g_j$ comme voisin de $g_i$ en supposant que les $(g_i)_i$ suivent cette fois-ci une distribution de *Student* --- d'où le nom de l'algorithme --- plutôt qu'une loi gaussienne^[Dans un espace à faible dimension, la dispersion des vecteurs est réduite. 
 La distribution de Student possède des queues plus épaisses que la loi normale, ce qui permet de mieux différencier les vecteurs distants des vecteurs similaires.]. 
 
 $$ q_{j|i} = \frac{(1+ (d_e(g_i - g_j))^2)^{-1}}{\sum_{k \neq i}{(1+ (d_e(g_i - g_k))^2)^{-1}}}$$

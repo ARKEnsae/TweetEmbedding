@@ -436,7 +436,7 @@ Les clusters apparaissent de manière plus évidente avec t-SNE.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=1\textwidth]{img/figures.png}
+\includegraphics[width=1\textwidth]{img/figures2.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
 \caption{Évaluation du modèle sur données fictives.}\label{fig:figure_evaluation}
 \end{center}

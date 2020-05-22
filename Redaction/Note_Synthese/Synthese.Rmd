@@ -55,7 +55,7 @@ options(enable_print_style = FALSE)
 library(shiny)
 ```
 
-\begin{textblock*}{\textwidth}(0cm,-7.8cm)
+\begin{textblock*}{\textwidth}(0cm,-7.5cm)
 \begin{center}
 \includegraphics[height=2.5cm]{img/LOGO-ENSAE.png}
 \end{center}
@@ -65,10 +65,10 @@ library(shiny)
 Grâce à l'évolution des méthodes d'apprentissage profond (*Deep Learning*), l'appréhension du langage naturel est aujourd'hui devenue une discipline à part entière (*Natural Language Processing*). 
 Ce succès s'explique en partie grâce à l'émergence de techniques non supervisées d'apprentissage de représentation de structures linguistiques. 
 Les méthodes de *word-embedding* (« plongement lexical » en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissent dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches (au sens d'une distance définie). 
-Les modèles *word2vec*, développés par une équipe de recherche chez Google, sont parmi les plus célèbres.
+Les variantes du modèle *word2vec*, développé par une équipe de recherche chez Google, sont parmi les plus célèbres.
 
 En partie \@ref(sec:word2vec), nous décrivons le modèle *word2vec* que nous avons implémenté grâce à la librairie `Pytorch` de Python. 
-Au-delà de la compréhension du modèle, nous nous sommes également initiés aux tests d’hyperparamètres et à son évaluation sur un corpus fictif (partie \@ref(sec:evaluation)) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et T-SNE et jugement humain). 
+Au-delà de la compréhension du modèle, nous nous sommes également initiés aux tests d’hyperparamètres et à son évaluation sur un corpus fictif (partie \@ref(sec:evaluation)) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et t-SNE et jugement humain). 
 Il a été fascinant d’observer à quel point le modèle présente d’excellents résultats en termes de capture sémantiques des mots dans un texte.
 
 
@@ -143,7 +143,7 @@ Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentati
 # Évaluation du modèle implémenté {#sec:evaluation}
 
 Malgré l'utilisation généralisée des *word embeddings*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. 
-C'est pourquoi nous avons évalué la qualité des vecteurs-mots obtenus en sortie de notre modèle *word2vec* à l'aide de méthodes empiriques : la similarité cosinus entre deux mots, la réduction de dimension de l'espace des vecteurs-mots (ACP, T-SNE) et l'évaluation par jugement humain. 
+C'est pourquoi nous avons évalué la qualité des vecteurs-mots obtenus en sortie de notre modèle *word2vec* à l'aide de méthodes empiriques : la similarité cosinus entre deux mots, la réduction de dimension de l'espace des vecteurs-mots (ACP, t-SNE) et l'évaluation par jugement humain. 
 
 Grâce à l'évaluation de plusieurs modèles, nous avons pu déterminer les hyperparamètres les plus pertinents
 \footnote{
@@ -181,7 +181,7 @@ Avant de nous attaquer au jeu de données complet, nous avons également évalu�
 
 \small
 
-\textbf{Tweets mensuels}
+\textbf{Tweets postés en France entre 2011 et 2018}
 
 Ces données correspondent à un ensemble de tweets postés en France entre 2011 et 2018, supposés être représentatifs de l'ensemble de tweets nationaux publiés durant cette période. \\
 Pour entraîner notre modèle \emph{word2vec}, nous avons mobilisé un premier échantillon de 1,3 million de tweets. Un second échantillon, composé de 4 200 tweets mensuels sur la période 2011-2018, a été utilisé pour construire notre indice mensuel de sentiment. 
@@ -204,11 +204,11 @@ C'est l'indicateur que nous cherchons à prévoir à partir de notre indice mens
 
 Nous utilisons ici vecteurs-mots en sortie du modèle *word2vec*, couplé avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyens des tweet.
 
-Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($0$ ou $1$) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
+Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($0$ si négatif ou $1$ si positif) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
 
 \begin{multicols}{2}
 
-\textbf{Modèle 1 : sentiment moyen des mots (référence)}
+\textbf{Modèle lexical : sentiment moyen des mots }
 
 Ce premier modèle de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
 Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera :
@@ -217,14 +217,16 @@ $$S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i 
 
 \vspace{2.5cm}
 
-\textbf{Modèle 2 : \emph{word-embeddings}}
+\textbf{Modèle logit : \emph{word-embeddings}}
 
 Ce deuxième modèle est une régression binaire avec comme prédicteurs chacune des 100 dimensions des vecteurs-mots. Les vecteurs-mots sont moyennés pour obtenir la représentation vectorielle du tweet : la  « \emph{sentence-embedding} ».
 Le sentiment prédit d'un tweet $t$ sera :
  $$S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in \{ 0,1 \}$$
 Avec : 
-$$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} 
-\quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)$$
+\footnotesize{
+$$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)$$
+}
+
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
 \item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
@@ -245,7 +247,7 @@ $$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 
 À partir de ces modèles, nous avons construit deux indicateurs de sentiment des tweets en calculant la moyenne mensuelle des prévisions des sentiments des *sentence-embeddings* des tweets (graphique \@ref(fig:bslogcam)), puis avons comparé ces indicateurs avec l'indicateur synthétique de confiance des ménages (Camme, Insee).
 
 Les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur Camme. 
-Toutefois, contrairement à l'indice du modèle 1, l'indice réalisé à partir du modèle 2 apporte une information significative pour prévoir l'évolution de l'indicateur Camme^[
+Toutefois, contrairement à l'indice issu du modèle lexical, l'indice issu du modèle logit apporte une information significative pour prévoir l'évolution de l'indicateur Camme^[
 Il le cause au sens de Granger (p-valeur de 0,05).
 ]. 
 
@@ -261,7 +263,7 @@ Il le cause au sens de Granger (p-valeur de 0,05).
 
 
 
-\begin{textblock*}{\textwidth}(5.5cm,-0.5cm)
+\begin{textblock*}{\textwidth}(5.5cm,-0.2cm)
 \begin{center}
 \begin{minipage}{0.7\textwidth}
 

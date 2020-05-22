@@ -59,7 +59,7 @@ colnames(donnes_calcul) <- c("La société française aujourd'hui me\nparaît pl
   "Je suis personnellement préoccupé(e)\npar la pauvreté.\n",
   "À l'avenir, les inégalités en France\nvont diminuer.\n",
   "Quand je pense à l'avenir, je suis\nplutôt optimiste pour moi-même.\n",
-  "Modèle word2vec (moyenne annuelle)")
+  "Modèle word-embedding (moyenne annuelle)")
 
 
 

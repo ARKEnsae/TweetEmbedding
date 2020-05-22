@@ -43,7 +43,7 @@ donnes_calcul <- scale(ts.intersect(modeles[,c(ind_retenu, "sncf")], data[,1:2])
 donnes_calcul_lag <- scale(ts.intersect(modeles[,c(ind_retenu, "sncf")], data_lag[,1:2]))
 colnames(donnes_calcul) <- 
     colnames(donnes_calcul_lag) <- 
-    c("Modèle word2vec","Modèle de référence",
+    c("Modèle word2vec","Modèle lexical",
       "Indicateur synthétique Camme (Brut)", "Indicateur synthétique Camme (CVS)"
     )
 
@@ -157,7 +157,7 @@ graph_cvs <- function(data, titre = NULL, sous_titre = NULL, legende = NULL, aff
 ```{r graphSentiments,fig.cap="test"}
 data_g <- donnes_calcul_lag[,c(3,1,2)]
 colnames(data_g) <-  c("Indicateur synthétique Camme (Brut) retardé",
-                       "Modèle word2vec","Modèle de référence")
+                       "Modèle word2vec","Modèle lexical")
 graph_glob(data_g)   +
     scale_colour_manual(breaks = colnames(data_g),
                         values = c("#D8766D", "#4B0055", "#7ED357"))+
@@ -179,7 +179,7 @@ cvs_w2vec <- graph_cvs(cvs_w2vec_ts)  +
 
 cvs_baseline_sncf_ts <- get_indicators(jx13(donnes_calcul[,2]),"y","sa")
 cvs_baseline_sncf_ts <- ts.union(cvs_baseline_sncf_ts[[1]], cvs_baseline_sncf_ts[[2]])
-colnames(cvs_baseline_sncf_ts) <- paste("Modèle de référence",c("(Brut)","(CVS)"))
+colnames(cvs_baseline_sncf_ts) <- paste("Modèle lexical",c("(Brut)","(CVS)"))
 cvs_baseline_sncf <- graph_cvs(cvs_baseline_sncf_ts)  +
     coord_cartesian(y = c(-2.5,2.5))
 cvs_camme / cvs_w2vec / cvs_baseline_sncf
@@ -239,7 +239,7 @@ graph_coefcvs <- function(data, titre = NULL, sous_titre = NULL, legende = NULL,
 }
 coef_sais <- ts.union(get_indicators(jx13(donnes_calcul[,1]),"s")[[1]],
                       get_indicators(jx13(donnes_calcul[,2]),"s")[[1]])
-colnames(coef_sais) <- c("Modèle word2vec", "Modèle de référence")
+colnames(coef_sais) <- c("Modèle word2vec", "Modèle lexical")
 graph_coefcvs(coef_sais,n_xlabel = 4,x_lab = "Dates") +
   geom_hline(yintercept = 0,linetype = "dotted") +
   facet_wrap(~periode,nrow=1)  +

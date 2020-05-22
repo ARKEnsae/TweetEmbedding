@@ -1,5 +1,6 @@
 \tikzstyle{myboxnorm} = [very thick,
-    rectangle, rounded corners, inner sep=2pt, inner ysep=3pt, right]
+    rectangle, rounded corners, inner sep=2pt, inner ysep=3pt, right,
+    align=center]
 \tikzstyle{myboxw2v} = [draw=red!50, fill=orange!10, myboxnorm]
 \tikzstyle{myboxmod} = [draw=blue!60!green, fill=blue!5, myboxnorm]
 \tikzstyle{myboxcomp} = [draw=green!50!black, fill=green!5, myboxnorm]
@@ -31,12 +32,12 @@
 
 % analyse de sentimentsentiment
 \node at (7,0) [myboxmod] (logit) {Modèle logit};
-\node at (7,-4.5) [myboxmod,text width=2cm] (baseline) {Modèle de référence};
+\node at (7,-4.5) [myboxmod,text width=2.22cm] (baseline) {Modèle lexical};
 
 % analyse de sentimentsentiment
-\node at (12,0) [myboxcomp,text width=4cm] (indsent) {Indices mensuels de sentiment des tweets};
+\node at (12,0) [myboxcomp,text width=3.8cm] (indsent) {Indices mensuels de \\sentiment des tweets};
 
-\node at (12,-4.5) [myboxcomp,text width=4cm] (camme) {Indicateur synthétique de confiance des
+\node at (12,-4.5) [myboxcomp,text width=3.8cm] (camme) {Indicateur synthétique \\de confiance des
 
 ménages (Insee)};
 
@@ -65,14 +66,16 @@ ménages (Insee)};
     
     moyen d'un mot};
 \draw[fleche] (bddsent.east)--++(2,0)--++(0,0.8)-|(logit.south);
-\draw[fleche] (we.east)--(logit.west);
+\draw[fleche] (we.east)--(logit.west)node[pos=0.89,text width=2.5cm]{\footnotesize \emph{sentence}
+  
+  \emph{embedding}};
 \draw[fleche] (logit.east)--
-  (indsent.west)node[pos=0.5,text width=2.5cm]{\footnotesize moyennes
+  (indsent.west)node[pos=0.62,text width=2.5cm]{\footnotesize moyennes
   
   mensuelles};
-\draw[fleche] (baseline.east)-|(11,0)--(indsent.west);
+\draw[fleche] (baseline.east)-|(9.6,0)--(indsent.west);
 \draw[fleche,<->] (indsent.south)--(camme.north) 
-  node[pos=.5,text width=2.5cm, right]{\footnotesize distance entre
+  node[pos=.5,text width=2.5cm, right=0.2cm]{\footnotesize distance entre
   
   indicateurs}
   node[pos=.5,text width=1.7cm, left]{\footnotesize prévision /

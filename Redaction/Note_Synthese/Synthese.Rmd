@@ -204,7 +204,7 @@ C'est l'indicateur que nous cherchons à prévoir à partir de notre indice mens
 
 Nous utilisons ici les vecteurs-mots en sortie du modèle *word2vec*, couplés avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyen des tweets.
 
-Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($0$ si négatif ou $1$ si positif) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparé en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
+Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($0$ si négatif ou $1$ si positif) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, la base de tweets annotés sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
 
 \begin{multicols}{2}
 

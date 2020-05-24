@@ -69,13 +69,13 @@ Les variantes du modèle *word2vec*, développé par une équipe de recherche ch
 
 En partie \@ref(sec:word2vec), nous décrivons le modèle *word2vec* que nous avons implémenté grâce à la librairie `Pytorch` de Python. 
 Au-delà de la compréhension du modèle, nous nous sommes également initiés aux tests d’hyperparamètres et à son évaluation sur un corpus fictif (partie \@ref(sec:evaluation)) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et t-SNE et jugement humain). 
-Il a été fascinant d’observer à quel point le modèle présente d’excellents résultats en termes de capture sémantiques des mots dans un texte.
+Il a été fascinant d’observer à quel point le modèle présente d’excellents résultats en termes de capture sémantique des mots dans un texte.
 
 
 
 
 Dans la partie \@ref(sec:sentimentalAnalysis), nous avons cherché à construire un indice mensuel de sentiment des tweets et à le comparer aux indicateurs produits dans la statistique publique. 
-L’entraînement et le test d'un modèle logit dont les prédicteurs correspondent aux dimensions des *word-embedding* nous a permis de remarquer qu’en plus de représenter la proximité entre mots, le modèle *word2vec* permet de capter dans une certaine mesure le sentiment de phrases. 
+L’entraînement et le test d'un modèle logit dont les prédicteurs correspondent aux dimensions des *word-embeddings* nous a permis de remarquer qu’en plus de représenter la proximité entre mots, le modèle *word2vec* permet de capter dans une certaine mesure le sentiment de phrases. 
 
 \begin{figure}[htb]
 \input{img/schema_recap.tex}
@@ -101,7 +101,7 @@ Il s'agit de représenter chaque mot par un vecteur dont la dimension est fixée
 <!-- \end{minipage} -->
 
 
-L'approche *Skip-gram* a pour objectif d'estimer, pour chaque mot du vocabulaire qualifié de **« contextes »**, la probabilité d'être proche d'un mot qualifié de **« focus »** (figure \@ref(fig:skipgram)).
+L'approche *Skip-gram* a pour objectif d'estimer, pour chaque mot du vocabulaire qualifié de **« contexte »**, la probabilité d'être proche d'un mot qualifié de **« focus »** (figure \@ref(fig:skipgram)).
 Ainsi, les mots qui apparaissent dans des contextes similaires (« bonjour » et « salut » par exemple) seront représentés par des vecteurs relativement proches dans l’espace vectoriel de définition de ces vecteurs. 
 
 
@@ -117,7 +117,7 @@ Ce n'est pas la prédiction en elle-même qui nous intéresse, mais plutôt le p
 
 Nous entraînons le réseau de neurones en le nourrissant de paires `[focus, contexte]` contenues dans les $n$ mots du vocabulaire des tweets.
 Pour cela, on tire au hasard^[
-Pour éviter que les mots trop fréquents, souvent peu informatifs, soient sur-entraînés, on effectue un tout d'abord un sous-échantillonnage (*subsampling*).
+Pour éviter que les mots trop fréquents, souvent peu informatifs, soient sur-entraînés, on effectue tout d'abord un sous-échantillonnage (*subsampling*).
 ] un mot focus pour lequel on tire un mot *contexte* au hasard dans une fenêtre $w$. 
 Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois. 
 Le nombre de fois que l'ensemble du corpus est parcouru est appelé *epochs*.
@@ -132,7 +132,7 @@ Le modèle *word2vec* a initialement été construit en utilisant une fonction d
 L'inconvénient de cette méthode est qu'elle est très gourmande en temps de calcul ($\mathcal O(n)$ par phrase). 
 L'algorithme a donc ensuite été amélioré en utilisant le *negative sampling*. 
 Dans cette approche, on utilise une fonction de perte sigmoïde. De plus, plutôt que de mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple `[focus, contexte]`, on tire $K$ mots au hasard du vocabulaire $(w_{neg,\,i})_{i=1..K}$ en considérant que ces mots ne seront pas des mots voisins de `focus`. 
-La complexité est ici bien plus faible que pour la fonction softmax ($\mathcal O(K)$ par phrase), ce qui correspond à un gain considérable en termes de temps de calcul.
+La complexité est ici bien plus faible que pour la fonction *softmax* ($\mathcal O(K)$ par phrase), ce qui correspond à un gain considérable en termes de temps de calcul.
 
 À la fin de l'algorithme, ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
 Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentation du $i$^ème^ mot du vocabulaire en dimension $dim$.
@@ -200,7 +200,7 @@ C'est l'indicateur que nous cherchons à prévoir à partir de notre indice mens
 
 \newpage
 
-# Construction d'un indice mensuel de sentiment moyens des tweets {#sec:sentimentalAnalysis}
+# Construction d'un indice mensuel de sentiment moyen des tweets {#sec:sentimentalAnalysis}
 
 Nous utilisons ici les vecteurs-mots en sortie du modèle *word2vec*, couplés avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyen des tweets.
 
@@ -230,7 +230,7 @@ $$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 
 \normalsize
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
-\item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
+\item $X_{i,1}, \dots, X_{i,n}$ les coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
 \item $\varepsilon_i$ le résidu de notre modèle de fonction de répartition $F_{\varepsilon}(x) = \frac{1}{1 + e^{-x}}$ (logit).
 \end{itemize}
 

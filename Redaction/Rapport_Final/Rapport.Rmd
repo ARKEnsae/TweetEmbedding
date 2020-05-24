@@ -374,7 +374,8 @@ Ils recommandent également de prendre $K\in\{5,\dots,20\}$ pour les petites bas
 
 Malgré l'utilisation généralisée des *word-embeddings*, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots. 
 C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes empiriques. 
-L'annexe \@ref(annexe:commentEvaluer) décrit plus précisément les méthodes que nous avons retenues pour évaluer la qualité des vecteurs-mots. 
+L'annexe \@ref(annexe:commentEvaluer) décrit plus précisément les méthodes que nous avons retenues pour évaluer la qualité des vecteurs-mots : la similarité cosinus entre deux mots, la réduction
+de dimension de l’espace des vecteurs-mots (ACP, t-SNE) et l’évaluation par jugement humain.
 
 ## Évaluation sur un corpus fictif {#sec:corpusFictif}
 
@@ -739,20 +740,20 @@ Nous comparerons deux approches : une première basée sur le lexique (*lexicon-
 
 ### Modèle lexical : prédiction à partir du sentiment moyen des mots  {#sec:sentiments}
 
-Ce premier modèle lexical de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
+Ce premier modèle lexical (*lexicon-based*) de prédiction du sentiment utilise l'information des tweets labelisés pour déterminer un sentiment moyen par mot.
 Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera :
 $$S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}$$
   avec $\gamma \in [-1,1]$ un seuil fixé, $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  le sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît. 
 
-Afin d'évaluer l'efficacité du modèle, nous séparons le corpus de la base de tweets sur les transports en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets)^[
+Afin d'évaluer l'efficacité du modèle, nous séparons la base de tweets annotés sur les transports en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets)^[
 13 \% des mots du vocabulaires et 1 \% des mots utilisés dans les tweets de la base test sont absents de la base d'entraînement. Pour ces mots, le sentiment moyen $\alpha_i$ est fixé à 0.
 ]. 
 La base d'entraînement sert à calculer les sentiments moyens des mots et à déterminer le $\gamma$ qui présente les meilleures performances, et la base de test permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un sentiment, que l'on compare au vrai sentiment.
 
 
 On choisit $\gamma$ tel que l'*accuracy* sur la base d'entraînement^[
-Dans notre base d'entraînement la proportion de tweets positifs (43 \%) est proche de la proportion de tweets négatifs (57 \%). 
-Il n'y a donc pas de problème de déséquilibre de classe : maximiser l'*accuracy* permet bien de maximiser la performance de notre algorithme.
+Dans notre base d'entraînement, la proportion de tweets positifs (43 \%) est proche de la proportion de tweets négatifs (57 \%). 
+Il n'y a donc pas de problème de déséquilibre des classes : maximiser l'*accuracy* permet bien de maximiser la performance de l'algorithme.
 ] --- c'est-à-dire le taux de tweets dont le sentiment est bien prédit --- soit maximale. On obtient $\gamma^* = -0,14$ (figure \ref{fig:max_baseline}). 
 En évaluant le modèle sur la base de test, l'*accuracy* vaut 89,1 \%. On constate une nette amélioration par rapport au cas où $\gamma = 0$ (70,5 \%), qui correspond au seuil « naturel » puisqu'il se situe au centre de l'intervalle des valeurs possibles pour $\alpha_i$. 
 
@@ -762,7 +763,7 @@ En évaluant le modèle sur la base de test, l'*accuracy* vaut 89,1 \%. On const
 \begin{center}
 \includegraphics[width=0.5\textwidth]{img/max_baseline.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Optimisation du seuil $\gamma$ pour le modèle à partir des sentiments moyens des mots.}\label{fig:max_baseline}
+\caption{Optimisation du seuil $\gamma$ pour le modèle lexical.}\label{fig:max_baseline}
 \end{center}
 \end{figure}
 
@@ -802,18 +803,18 @@ Les différences spécifications testées sont les suivantes :
 \begin{enumerate}
 \item \textbf{L’inclusion ou non des \emph{stop words}} (mots-vides). 
 Ces mots sont des mots communs qui, en général, n’apportent pas d’information cruciale dans l’analyse textuelle. 
-Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériorent même légèrement. 
-Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot-vide « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de $-0,25$).
+Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériore même légèrement. 
+Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de $-0,25$).
 
 \item \textbf{Le traitement des mots inconnus}. 
-La base qui a servi à entraîner le modèle des \textbf{word-embeddings} est différente de celle que l'on utilise pour la prédiction des sentiments.
-Ainsi, il existe des mots pour lesquels on ne connaît pas la représentation vectorielle. 
+La base qui a servi à constituer les \emph{word-embeddings} avec \emph{word2vec} est différente de celle que l'on utilise pour la prédiction des sentiments.
+Ainsi, il existe des mots dont on ne connaît pas la représentation vectorielle. 
 Deux options ont été retenues pour traiter ces mots. 
-La première est de retirer ces mots des tweets analysés afin qu'ils n’influent pas sur la décision du sentiment. 
+La première est de les retirer des tweets analysés afin qu'ils n’influent pas sur la décision du sentiment. 
 La seconde est de leur attribuer la valeur du vecteur correspondant aux mots rares (vecteur « lowfrequency », voir partie \ref{subsec:baseentrainement}) en partant du principe que s'ils sont absents du corpus d'entraînement du modèle \emph{word2vec}, ce sont bien des mots très peu fréquents. 
 C’est cette deuxième option qui semble donner des résultats légèrement meilleurs, ce qui peut signifier que l’on capte alors le fait que les mots peu fréquents ne sont en moyenne pas neutres (plutôt positifs ou négatifs\footnote{En utilisant le modèle logit retenu, la prévision d'une \emph{sentence-embedding} composée uniquement du mot « lowfrequency » donne $\widehat{\mathbb{P}}(Y_i = 1 | X_{lowfrequency}) = 0,87$, ce qui laisse supposer que les mots-rares ont une consonance davantage positive.}). 
 
-\item \textbf{La modélisation probit ou logit}. En plus de comparer les AUC des différentes spécifications ci-dessus, on compare à spécification fixée les modèles logit et probit avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les mêmes résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
+\item \textbf{La modélisation probit ou logit}. En plus de comparer les AUC des différentes spécifications ci-dessus, on compare à spécification fixée les modèles logit et probit avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les meilleurs résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
 
 \end{enumerate}
 
@@ -825,17 +826,17 @@ Comme dans la partie précédente, nous avons déterminé le seuil optimal sur l
 
 ### Les limites des modèles utilisés 
 
-La bonne performance du modèle lexical (sentiment moyen des mots par tweets) par rapport au modèle logit (sur les *word-embedding*) peut s'expliquer par plusieurs facteurs. 
+La bonne performance du modèle lexical (sentiment moyen des mots par tweet) par rapport au modèle logit (sur les *sentence-embeddings*) peut s'expliquer par plusieurs facteurs. 
 
 #### Les mots inconnus 
  
 Une première explication est la différence entre les deux modèles en termes de mots inconnus.
 Nous l'avons vu, pour le modèle lexical, 1,4 \% des mots utilisés dans les tweets de la base test des tweets les transports (13,2 \% du vocabulaire) sont absents de la base d'entraînement. 
-Pour le modèle basé sur les *word-embedding*, il faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. 
+Pour le modèle logit basé sur les *sentence-embeddings*, il faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. 
 Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent 4,6 \% des mots (36,2 \% du vocabulaire). 
 
 Toutefois, la présence de mots inconnus ne semble pas biaiser la prédiction du sentiment d'un tweet. 
-En effet, la distribution de la part des mots inconnus est étonnamment similaire selon si on se restreint aux tweets bien prédits ou à ceux mal prédits (figure \ref{fig:mots_inconnus}).
+En effet, la distribution de la part des mots inconnus est étonnamment similaire quand on se restreint aux tweets bien prédits et à ceux mal prédits (figure \ref{fig:mots_inconnus}).
 
 \begin{figure}[ht]
 \begin{center}
@@ -849,7 +850,7 @@ En effet, la distribution de la part des mots inconnus est étonnamment similair
 
 L'éventualité que le modèle lexical reproduise en partie le processus qui a été utilisé pour générer les sentiments de la base sur les transports urbains pourrait également être une explication de la surperformance du modèle lexical. 
 En effet, nous ne disposons pas de la méthodologie qui a permis d'annoter ces tweets et nous avons pu relever quelques incohérences dans les sentiments attribués à certains tweets. Cela peut laisser supposer que l'annotation n'a pas été purement manuelle.
-Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a en effet été qualifié de positif. 
+Comme de nombreux autres, le tweet ci-dessous, très vraisemblablement ironique, a par exemple été qualifié de positif. 
 
 \begin{quote}
 \LARGE \textbf{``}\normalsize \emph{C'est cool de payer un abonnement de 180 euros par mois pour attendre 1h le bus.} \LARGE \textbf{''}\normalsize
@@ -859,27 +860,27 @@ Comme de nombreux autres, le tweet très vraisemblablement ironique ci-dessous a
 #### Le *domain-shift*
 
 
-Une dernière explication possible pourrait être dû à ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. 
+Une dernière explication possible pourrait être ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. 
 Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}\footnote{Les éléments en lien avec le \emph{dataset shift}, et plus particulièrement le \emph{domain shift}, proviennent de \cite{Candela}}. 
 Bien que des solutions comme la correction de biais de sélection des échantillons, ou encore celle des données déséquilibrées, soient étudiées depuis de nombreuses décennies dans le monde de la statistique, certains autres problèmes, comme celui du changement de domaine (\emph{domain shift}) émergent depuis plus récemment suite à l’utilisation croissante des méthodes de \emph{machine learning}. 
 
 Le changement de domaine se caractérise par un changement de la nature, du « domaine » des données utilisées.
-Dans le cas de \emph{deep-learning} sur des données de photographie, il pourrait par exemple s’agir de traiter de corpus de photos prises par des appareil photo calibrés de manière différentes (contraste, luminosité\dots) .
-Dans notre cas précis, il s’agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets sur les transports urbains, qui portent sur un sujet très spécifique et pour lesquels certains mots ont peut-être une interprétation spécifique en termes de sentiments. 
+Dans le cas de \emph{deep-learning} sur des données de photographie, il pourrait par exemple s’agir de traiter de corpus de photos prises par des appareils photo calibrés de manières différentes (contraste, luminosité\dots) .
+Dans notre cas précis, il s’agit de la différence entre les données de tweets publiés en France entre 2013 et 2017 et les données de tweets sur les transports urbains. Ces derniers portent sur un sujet très spécifique et certains mots ont peut-être une interprétation spécifique en termes de sentiments. 
 Modéliser le *domain shift* implique donc d’estimer le passage d’une représentation à une autre en utilisant des informations de distribution^[
-La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le *domain shift* lié à l’utilisation d’appareil photos différents.
+La correction gamma (représentation paramétrique non linéaire de l’intensité des pixels) est par exemple une manière de pouvoir traiter le *domain shift* lié à l’utilisation d’appareils photo différents.
 ].
 
 L’idée n’est pas ici de modéliser mathématiquement le *domain shift*^[
-En quelque mot, pour modéliser mathématiquement un *domain shift* on considérerait une variable latente « idéale » $x_0$ (une base de tweets de référence), jamais observée mais qui influerait sur $y$ (l’indice mensuel).
-Nous observons uniquement $x$ telle $x=F(x_0)$ avec $F$ qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données $x$ utilisée. 
-La distribution $\mathbb P(y\mid x_0)$ (de  l’indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisée (base annotée sur les transports urbains et base de tweets postés en France entre 2013 et 2017). 
+En quelques mots, pour modéliser mathématiquement un *domain shift* on considérerait une variable latente « idéale » $x_0$ (une base de tweets de référence), jamais observée mais qui influerait sur $y$ (l’indice mensuel).
+Nous observons uniquement $x$ telle que $x=F(x_0)$ avec $F$ qui représente la transformation de la base de tweets de référence à la base de tweets réellement utilisée, qui peut varier en fonction de la base de données $x$ utilisée. 
+La distribution $\mathbb P(y\mid x_0)$ (de  l’indice mensuel sachant le jeu de tweets idéal utilisé) est considérée comme étant la même pour les deux jeux de tweets utilisés (base annotée sur les transports urbains et base de tweets postés en France entre 2013 et 2017). 
 En revanche, cette distribution est modifiée si $F$ est modifiée.
 ] mais de remarquer que la base de tweets sur les transports semble qualitativement être une base particulière : de part le vocabulaire spécifique qui y est employé^[
 Les mots « bus » (3800 occurrences), « métro » (820), « SNCF » (781), « retard » (411), « ratp » (237), « gare » (195), « chauffeur » (160)\dots sont parmi les plus employés dans les tweets de la base test.
 ] mais également de part le ton particulièrement ironique de nombreux tweets^[
 Comme en témoignent ces deux tweets « 1h de retard la SNCF, vous savez pas l’amour que je vous porte » et « J’ai passé 20 superbes minutes dans le RER collé à des gens que je ne connaissais pas ». 
-Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal prédits, 4 peuvent être utilisés pour manier l’ironie (rire, mdr, ptdr et mdrrr).
+Par ailleurs, parmi les 10 mots qui appartiennent le plus à des tweets mal prédits, 4 peuvent être utilisés pour manier l’ironie (rire, mdr, ptdr et mdrrr).
 ].
 
 
@@ -888,15 +889,15 @@ Par ailleurs parmi les 10 mots qui appartiennent le plus à des tweets mal préd
 Nous avons testé les deux modèles sur une nouvelle base de test de tweets annotés^[
 Cette base disponible sur github https://github.com/gamebusterz/French-Sentiment-Analysis-Dataset correspond à 1,5 million de tweets initialement en anglais associés à un sentiment. 
 Son désavantage est que la traduction est de mauvaise qualité et sûrement effectuée depuis un logiciel de traduction automatique.] indépendante des autres bases. 
-Avec cette nouvelle base, l'*accuracy* du modèle basé sur les *word-embedding* est cette fois-ci supérieure à celle de l'approche lexicale (61,9 \% contre 55,9 \%).  
+Avec cette nouvelle base, l'*accuracy* du modèle basé sur les *sentence-embeddings* est cette fois-ci supérieure à celle de l'approche lexicale (61,9 \% contre 55,9 \%).  
 
-Cette nouvelle base test permet certainement de corriger une partie des biais évoqués plus haut qui pouvaient expliquer la surperformance du modèle lexical par rapport au modèle utilisant les vecteurs mots : 
+Cette nouvelle base test permet certainement de corriger une partie des biais évoqués plus haut qui pouvaient expliquer la surperformance du modèle lexical par rapport au modèle logit utilisant les vecteurs-mots : 
 
 - La base de test de « github », bien qu’assez mal traduite, ne semble pas à notre connaissance avoir été annotée par des techniques d’analyse de sentiment similaires au modèle lexical ;
 
 - Ses tweets sont nombreux et semblent traiter de sujets divers contrairement aux tweets sur les transports, plus ciblés ;
 
-- Le modèle de *word-embeddings* semble mieux réagir à la présence de mots inconnus, ici plus nombreux que précédemment^[
+- Le modèle logit sur les *sentence-embeddings* semble mieux réagir à la présence de mots inconnus, ici plus nombreux que précédemment^[
 52,0 \% des mots du vocabulaire et 12,7 \% des mots de la base test de github ne sont pas dans la base d’entraînement sur les transports et 52,8  \% des mots du vocabulaire et 13,0 \% des mots ne sont ni dans la base d’entraînement de tweets sur les transports ni dans le vocabulaire des \emph{word-embeddings}. 
 Ainsi, les mots de la base test « github » qui ne sont pas dans la base d’entraînement « transports » sont rarement dans les vecteurs-mots de \emph{word2vec}.
 ], que le modèle lexical. 
@@ -915,37 +916,31 @@ C'est pourquoi les deux indicateurs seront centrés réduits sur la période 201
 Pour le comparer à notre indicateur synthétique, il est donc nécessaire de le retarder (i.e. : de le décaler d'un mois pour que la valeur du mois $m$ corresponde à la publication du mois $m+1$).
 
 - Notre indicateur de sentiment est brut, il n'est donc pas corrigé des variations saisonnières et des jours ouvrables (CVS-CJO). 
-*A contrario*, l'indicateur synthétique issu de l'enquête Camme peut-être considéré comme CVS-CJO puisqu'il est construit à partir de soldes d'opinion CVS-CJO. 
+*A contrario*, l'indicateur synthétique issu de l'enquête Camme peut être considéré comme CVS-CJO puisqu'il est construit à partir de soldes d'opinion CVS-CJO. 
 Pour comparer notre indicateur à l'indicateur issu de Camme, deux solutions sont possibles :
 
   1. Corriger notre indicateur de sentiment des variations saisonnières et des jours ouvrables.
   Pour cela nous avons utilisé la méthode X-12ARIMA (annexe \@ref(annexe:cvscjo)).
     
   2. Utiliser un indicateur synthétique brut issu de Camme. 
-  Pour cela, nous avons construit un nouvel indicateur synthétique en appliquant, aux soldes d'opinion bruts, les poids associés à chaque variable CVS-CJO de l'indicateur publié par l'Insee^[
+  Pour cela, nous avons construit un nouvel indicateur synthétique en appliquant aux soldes d'opinion bruts les poids associés à chaque variable CVS-CJO de l'indicateur publié par l'Insee^[
   Pour connaître ces poids, nous avons reproduit l'analyse factorielle utilisée pour construire l'indicateur synthétique publié par l'Insee. Faire une analyse factorielle statique revient à faire une moyenne pondérée des 8 soldes d'opinion centrés-réduits.
   ]. 
 
   Lorsque cela est possible, nous privilégierons la seconde solution : supprimer la saisonnalité serait enlever une information importante pour l'analyse de l'évolution des sentiments. 
   Toutefois, de nombreuses méthodes économétriques ne sont applicables que sur les séries stationnaires et donc désaisonnalisées, c'est pourquoi nous utiliserons dans ces cas la première approche. 
-  
-  
-
-<!-- - (Re)Dire rapidement comment on passe du modèle logit à la construction de l’indicateur mensuel (en gros on fait la moyenne des sentiments des tweets par mois).  Et parler du fait que l’on retarde Camme pour la cohérence temporelles entre les deux. -->
-<!-- - Graphique : superposer les séries : baseline SNCF, logit, Camme sur un graphique renormalisé par moyenne et écart-type (0,1).  -->
-<!-- [- tests de racine unitaire nous indique que nos séries doivent davantage être utilisées en différences pour être analysées ? Faire le graphique des séries différenciées ? Si sert plus tard dans l’argumentaire…] -->
 
 ### Comparaison entre les séries {#subsec:compseries}
 
-Le graphique \@ref(fig:bslogcam) présente l'indicateur de sentiment construit à partir de notre modèle *word2vec*, celui construit à partir du modèle lexical et l'indicateur synthétique brut issu de l'enquête Camme (retardé).
+Le graphique \@ref(fig:bslogcam) présente l'indicateur de sentiment construit à partir des *sentence-embeddings*, celui construit à partir du modèle lexical et l'indicateur synthétique brut issu de l'enquête Camme (retardé).
 Même si les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur issu de l'enquête Camme, on observe plusieurs évolutions similaires (par exemple le pic entre mars et octobre 2012). 
-Par ailleurs, l'indicateur construit à partir du modèle lexical parait plus bruité que l'indicateur de sentiment construit à partir de notre modèle *word2vec*.
-Cela peut venir du fait que, dans les tweets utilisés pour construire les indicateurs mensuels, il y a bien plus de mots inconnus au modèle lexical basé sur les tweets sur les transports urbains (20,7 \%) qu'à notre modèle *word2vec* qui comporte de nombreux *vecteurs-mots* (13,6 \%).
+Par ailleurs, l'indicateur construit à partir du modèle lexical parait plus bruité que l'indicateur de sentiment sur les *word-embeddings*.
+Cela peut venir du fait que, dans les tweets utilisés pour construire les indicateurs mensuels, il y a bien plus de mots inconnus dans le modèle lexical basé sur les tweets sur les transports (20,7 \%) que dans le modèle logit qui comporte de nombreux *vecteurs-mots* (13,6 \%).
 
 \begin{figure}[htp]
 {\centering \includegraphics[width =\textwidth]{img/rmd-graphSentiments-1}}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Indicateur synthétique brut de confiance des ménages de l'enquête Camme (retardé) et indicateurs mensuels de sentiment construits à partir de nos modèles logit et lexical.}\label{fig:bslogcam}
+\caption{Indicateur synthétique brut de confiance des ménages de l'enquête Camme (retardé) et indicateurs mensuels de sentiment construits à partir de nos modèles logit \emph{word-embedding} et lexical.}\label{fig:bslogcam}
 \footnotesize
 \emph{Note de lecture : tous les indicateurs sont centrés-réduits (de moyenne nulle et de variance unitaire) entre janvier 2011 et décembre 2018.}
 
@@ -955,16 +950,10 @@ Cet indicateur est retardé : la valeur au mois $m$ correspond à la publication
 
 
 Afin de regarder les similitudes entre nos indicateurs de sentiment et l'indicateur Camme, nous utilisons un algorithme de déformation temporelle dynamique --- *Dynamic Time Warping* (DTW) (voir par exemple \cite{dtw} pour son implémentation en \faRProject{} que nous utilisons ici).
-Cet algorithme permet de calculer une distance entre deux séries temporelles robuste aux différentes amplitudes et aux décalages temporels. 
-Ainsi, la distance entre une série et la même série retardée sera nulle (les deux séries représentent la même information) alors que ce ne serait pas le cas si on utilisait d'autres distances, comme la distance euclidienne.
-Cette méthode conclut sur le fait que la similarité entre l'indicateur Camme et notre indicateur de sentiment issu du modèle lexical est légèrement plus grande que celle entre l'indicateur Camme et l'indicateur de sentiment calculé à partir de notre modèle *word2vec*. 
+Cet algorithme permet de calculer une distance entre deux séries temporelles robuste aux différences d'amplitude et aux décalages temporels. 
+Ainsi, la distance entre une série et la même série retardée sera nulle (les deux séries représentent la même information) alors que cela ne serait pas le cas si on utilisait d'autres distances, comme la distance euclidienne.
+Cette méthode conclut sur le fait que la similarité entre l'indicateur Camme et notre indicateur de sentiment issu du modèle lexical est légèrement plus grande que celle entre l'indicateur Camme et l'indicateur de sentiment calculé à partir du modèle logit sur les *sentence-embeddings*. 
 
-
-
-<!-- - Analyse des proximités entre séries.  -->
-<!-- * Algorithme de distance « élaboré » (Kendall je crois) indique que les deux séries (baseline SNCF et notre indicateur word2vec) sont tout aussi loin de Camme -->
-<!-- * les séries Camme et Reg_log ne sont pas cointégrées et ne semblent donc pas avoir d’informations communes (faire la même chose entre Camme et baseline SNCF ?) -->
-<!-- - Analyse de la saisonnalité de la série logit : très peu de saisonnalité (dire que c’est la même chose pour Camme). Pas d’effet longueur de mois, type de jour et effet pâques (tester la même chose sur CAMME et baseline pour voir si on arrive aux  même conclusions ? ). Si vraiment on voulait voir un effet, on pourrait dire que les mois les plus optimistes sont avril et octobres et le plus pessimiste : septembre.  -->
 
 ### Et dans une optique de prévision ?
 
@@ -973,22 +962,22 @@ Nous allons donc étudier dans quelle mesure nos indicateurs permettent de prév
 
 
 Dans cette partie, afin que les résultats économétriques soient valides, il faut que les séries soient stationnaires.
-La figure \@ref(fig:bslogcam) suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par les tests de Philipps-Perron et KPSS), y compris lorsqu'ils sont désaisonnalisés. 
+La figure \@ref(fig:bslogcam) suggère la présence d'une tendance stochastique dans tous les indicateurs (confirmée par les tests de Philipps-Perron et KPSS), y compris lorsqu'ils sont désaisonnalisés.
 C'est pourquoi nous différencions les séries désaisonnalisées pour les rendre stationnaires.
 
 
-L'indicateur de sentiment issu du modèle *word2vec* cause au sens de Granger l'indicateur synthétique issus de l'enquête Camme (p-valeur de 0,05).
+L'indicateur de sentiment issu du modèle logit sur les *sentence-embeddings* cause au sens de Granger l'indicateur synthétique issu de l'enquête Camme (p-valeur de 0,05).
 C'est-à-dire que la connaissance de l'évolution de notre second indicateur de sentiment apporte de l'information pour prévoir l'évolution de l'indicateur synthétique de l'enquête Camme.
-Ce n'est pas le cas pour le premier indicateur calculé à partir du modèle lexical (p-valeur de 0,58), malgré la similitude entre ces deux modèles (partie \@ref(subsec:compseries)).
+Ce n'est pas le cas pour le premier indicateur calculé à partir du modèle lexical (p-valeur de 0,58).
 
 Ainsi, l'exploitation des résultats de *word2vec* permet, contrairement au modèle lexical, de construire un indicateur de sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique de l'enquête Camme.
 En construisant un indicateur de sentiment à partir d'un modèle logit entraîné sur la base présentée en \@ref(subsec:basegit), nous aboutissons à des conclusions semblables pour cette partie \@ref(sec:camme)^[
-En revanche, les mots inconnus y sont plus fréquents et le modèle obtenu présente de moins bons résultats en termes d'*accuracy* à la fois sur une base test issue cette base mais également provenant de la base sur les transports urbains.
+En revanche, les mots inconnus y sont plus fréquents et le modèle obtenu présente de moins bons résultats en termes d'*accuracy* à la fois sur une base test issue de cette base mais également provenant de la base sur les transports urbains.
 ]. 
 
 # Discussion et prolongements {.unnumbered} 
 
-Ce travail révèle que l'utilisation d'une méthode de *word-embedding* entraînée sur des tweets permet, grâce à un modèle simple, de construire un indicateur de sentiment pouvant être comparé à des indices d'opinion produits grâce à des enquêtes de la statistique publique. 
+Ce travail révèle que l'utilisation d'une méthode de *word-embedding* entraînée sur des tweets permet, grâce à un modèle simple, de construire un indicateur de sentiment pouvant être comparé à des indices d'opinion produits par des enquêtes de la statistique publique. 
 En comparant nos résultats à l'indicateur synthétique de confiance des ménages produit par l'Insee, nous avons montré qu'exploiter les représentations vectorielles des mots améliorait de façon significative les résultats, puisque cela permet la construction d'un indicateur de sentiment utile pour obtenir une estimation avancée des résultats de cette enquête.
 Toutefois, les évolutions temporelles de ces deux séries demeurent très différentes et nos résultats peuvent être prolongés en de nombreux points.   
 
@@ -1020,7 +1009,7 @@ Les mots mal orthographiés (lettres en trop, oubli d'espace, mauvaise ponctuati
 Cette correction doit toutefois être effectuée avec précaution : les différentes orthographes d'un même mot peuvent parfois refléter des sentiments différents. 
 Par exemple, « lol », « LOL » et « loool » sont peut-être utilisées dans des contextes différents : ironie, blagues, rires\dots 
 
-Certains modèles ont montré que de considérer les mots comme étant des séquences d’unités de sous-mots^[ On représente un mot non seulement comme lui-même mais aussi grâce à des sacs de $n$-grammes constitutifs. Si $n = 3$, « WHERE » est représenté non seulement par `<where>` mais également `<wh, whe, her, ere, re>`.], améliore certaines tâches d’apprentissage comme par exemple les traductions (\cite{Sennrich}). 
+Certains modèles ont montré que de considérer les mots comme étant des séquences d’unités de sous-mots^[On représente un mot non seulement comme lui-même mais aussi grâce à des sacs de $n$-grammes constitutifs. Si $n = 3$, « WHERE » est représenté non seulement par `<where>` mais également `<wh, whe, her, ere, re>`.], améliore certaines tâches d’apprentissage comme par exemple les traductions (\cite{Sennrich}). 
 L'extension *fasttext*^[
 La bibliothèque open-source https://fasttext.cc/ permet de télécharger des modèles pré-entraînés dans 157 langues différentes.
 ] (\cite{Bojanowski}) de *word2vec* modélise ce principe et permet ainsi un meilleur traitement des mots rares.
@@ -1041,7 +1030,7 @@ Il a été fascinant d’observer à quel point le modèle présente d’excelle
 
 
 Dans la partie \@ref(sec:sentimentalAnalysis) dédiée à l’analyse de sentiment, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant notre deuxième année à l'ENSAE (modèles de prédiction binaire, analyse de séries temporelles, minimisation du risque empirique / validation croisée\dots).
-L’entraînement et le test du modèle logit dont les prédicteurs correspondent aux dimensions des *word-embedding* nous a permis de remarquer qu’en plus de représenter la proximité entre mots, le modèle *word2vec* permet de capter dans une certaine mesure le sentiment de phrases. 
+L’entraînement et le test du modèle logit dont les prédicteurs correspondent aux dimensions des *word-embeddings* nous a permis de remarquer qu’en plus de représenter la proximité entre mots, le modèle *word2vec* permet de capter dans une certaine mesure le sentiment de phrases. 
 
 
 Bien sûr, la comparaison de l’indice mensuel de sentiment moyen des tweets que nous avons construit avec l’indicateur synthétique de confiance des ménages peut à première vue paraître « décevante » en raison des différences observées entre les deux séries.
@@ -1075,7 +1064,7 @@ Il existe différents types de distances. Chacune d'elles possède des propriét
 <!-- https://arxiv.org/pdf/1510.02675.pdf donne des résultats un peu plus clairs sur le lien entre fréquence et longueur -->
 - **la distance euclidienne** : $d_{e}(\vec{u},\vec{v}) = \left\| \vec{u} - \vec{v}  \right\|_2$  
 Un problème est que la longueur du vecteur mot, captée dans le cas de la distance euclidienne, est positivement corrélée à la fréquence d'apparition du mot (\cite{Schakel}). Cette information peut s'avérer utile dans l'analyse de la signification des mots, notamment lorsque l'on effectue des opérations sur les vecteurs (comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov}).  
-Toutefois, cette dépendance à la fréquence d'apparition peut également fausser l'analyse. C'est pourquoi nous avons choisi, par la suite, de normaliser les vecteurs : 
+Toutefois, cette dépendance à la fréquence d'apparition peut également fausser l'analyse. C'est pourquoi il est utile de normaliser les vecteurs : 
 $$ d_{e}(\vec{u},\vec{v}) = \left\| \frac{\vec{u}}{\left\| \vec{u} \right\|_2} - \frac{\vec{v}}{\left\| \vec{v} \right\|_2}  \right\|_2$$
 - **la similarité cosinus** : $d_{c}(\vec{u}, \vec{v}) = \frac{\vec{u}.\vec{v}}{\left\| \vec{u} \right\|_2  \left\| \vec{v} \right\|_2 }$.  
 La similarité cosinus correspond au produit scalaire entre les deux vecteurs normalisés. Elle mesure ainsi l'angle formé entre deux vecteurs-mots.  
@@ -1097,7 +1086,7 @@ On note $X = (x_{ij})$ la matrice de taille $(n,p)$ des données brutes, où $x_
 
 - L'*espace des individus*, de dimension $p$, auquel on associe la métrique $M$ utilisée pour le produit scalaire. Dans la suite nous utiliserons $M =I_p$ la matrice identité. La norme et le produit scalaire associés à $M$ sont donc euclidiens.
 
-- L'*espace des variables*, de dimension $n$, auquel associe la métrique $N=diag(p_1,...,p_n)$ avec $\sum_{i=1}^np_i=1$. La matrice $N$ représente le poids donné à chaque individu. Par simplification nous utiliserons ici des poids uniformes : $N=\frac{1}{n}I_n$. Afin de donner le même poids à toutes les variables, chaque variable est centrée-réduite : cela revient à centrer-réduire les colonnes de notre matrice $X$. Nous notons $Z =\bar X= (z_{ij})$  la matrice des données centrées et réduites^[Nous travaillons ici dans le cadre d'une ACP normée où la matrice $X$ a été centrée puis réduite. La réduction de $X$ a modifié les distances initiales entre individus ($\langle z_i,z_{i'}\rangle_M \neq \langle x_i,x_{i'}\rangle_M$). Cela n'aurait pas été le cas si la matrice $X$ avait été uniquement centrée (ACP non normée).].
+- L'*espace des variables*, de dimension $n$, auquel associe la métrique $N=diag(p_1,...,p_n)$ avec $\sum_{i=1}^np_i=1$. La matrice $N$ représente le poids donné à chaque individu. Par simplification, nous utiliserons ici des poids uniformes : $N=\frac{1}{n}I_n$. Afin de donner le même poids à toutes les variables, chaque variable est centrée-réduite : cela revient à centrer-réduire les colonnes de notre matrice $X$. Nous notons $Z =\bar X= (z_{ij})$  la matrice des données centrées et réduites^[Nous travaillons ici dans le cadre d'une ACP normée où la matrice $X$ a été centrée puis réduite. La réduction de $X$ a modifié les distances initiales entre individus ($\langle z_i,z_{i'}\rangle_M \neq \langle x_i,x_{i'}\rangle_M$). Cela n'aurait pas été le cas si la matrice $X$ avait été uniquement centrée (ACP non normée).].
 
 Pour toute métrique $D$ ($D=N$ ou $D=M$), on associe le produit scalaire  $\langle x,y\rangle_{D} = {}^t\!xD y$. 
 La construction des axes de l'ACP est faite par projection orthogonale. 
@@ -1144,7 +1133,7 @@ On peut montrer que $\forall k < q$ :
 - les $Zv_k$ ne sont pas corrélés entre eux.
 
 On obtient alors la matrice $F = ZV$ des nouvelles coordonnées factorielles des individus, avec $V = (v_1,\dots,v_q)$  la matrice des vecteurs propres. 
-Nous utilisons ici l'ACP en vue d'identifier les individus (ici, nos mots) qui sont proches. Pour ce faire, il suffit de représenter les coordonnées factorielles de la matrice $F$ dans des repères, en général en 2 dimensions pour une question de lisibilité. Deux mots apparaissant dans des contextes similaires seront proches sur ce repère et orientés dans la même direction.  
+Nous utilisons ici l'ACP en vue d'identifier les individus (ici, nos mots) qui sont proches. Pour ce faire, il suffit de représenter les coordonnées factorielles de la matrice $F$ dans des repères, en général en deux dimensions pour une question de lisibilité. Deux mots apparaissant dans des contextes similaires seront proches sur ce repère et orientés dans la même direction.  
 
 <!-- Soit ne pas en parler soit le rajouter sur l'ACP --> 
 
@@ -1180,7 +1169,7 @@ La distribution de Student possède des queues plus épaisses que la loi normale
 
 $$ q_{j|i} = \frac{(1+ (d_e(g_i - g_j))^2)^{-1}}{\sum_{k \neq i}{(1+ (d_e(g_i - g_k))^2)^{-1}}}$$
 
-Afin d'obtenir les $g_i$, on minimise, par descente de gradient, la divergence de Kullback–Leibler entre les distributions de probabilité P et Q des $p_{ij}$ et $q_{ij}$ définis par :
+Afin d'obtenir les $g_i$, on minimise, par descente de gradient, la divergence de Kullback–Leibler entre les distributions de probabilité P et Q des $p_{ij}$ et $q_{ij}$ définie par :
 $$KL(P,Q) = \sum_{i \neq j} { p_{ij} \log{\frac{p_{ij}}{q_{ij}}}} \qquad\text{avec}\qquad p_{ij} = \frac{p_{i|j} + p_{j|i}}{2n}$$ 
 
 Comme dans l'algorithme de l'ACP, l'algorithme de t-SNE nous permet d'obtenir une nouvelle projection des $x_i$. 
@@ -1241,7 +1230,7 @@ avec $q_{1-\frac{\alpha}{2}}$ le quantile d'ordre $1-\frac{\alpha}{2}$ d'une loi
 La figure \@ref(fig:cvscjo) compare les séries brutes et corrigées des variations saisonnières et des jours ouvrables (CVS-CJO) des trois indicateurs étudiés. 
 Même si les séries brutes semblent très proches des séries désaisonnalisées, la présence de saisonnalité est confirmée par le F-test proposé par \cite{lytras}.
 
-Dans cette annexe nous présentons de quelle manière nous désaisonnalisons nos deux indicateurs de sentiment calculés à partir des tweets.
+Dans cette annexe, nous présentons la manière dont nous désaisonnalisons nos deux indicateurs de sentiment calculés à partir des tweets.
 Pour rappel, l'indicateur synthétique de confiance des ménages publié par l'Insee grâce à l'enquête Camme est calculé à partir de soldes d'opinion CVS-CJO, c'est pourquoi on considère ici qu'il est CVS-CJO. 
 L'indicateur brut associé correspond à l'indicateur que l'on obtient en utilisant les mêmes soldes d'opinion et les mêmes coefficients que dans l'indicateur publié par l'Insee mais en utilisant les soldes d'opinion bruts plutôt que CVS-CJO.
 

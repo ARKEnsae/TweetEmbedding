@@ -202,9 +202,9 @@ C'est l'indicateur que nous cherchons à prévoir à partir de notre indice mens
 
 # Construction d'un indice mensuel de sentiment moyens des tweets {#sec:sentimentalAnalysis}
 
-Nous utilisons ici vecteurs-mots en sortie du modèle *word2vec*, couplé avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyens des tweet.
+Nous utilisons ici les vecteurs-mots en sortie du modèle *word2vec*, couplés avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyen des tweets.
 
-Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($0$ si négatif ou $1$ si positif) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
+Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment ($0$ si négatif ou $1$ si positif) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, le corpus de la base de tweets sur les transports a été séparé en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
 
 \begin{multicols}{2}
 
@@ -227,6 +227,7 @@ Avec :
 $$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)$$
 }
 
+\normalsize
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
 \item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
@@ -263,7 +264,7 @@ Il le cause au sens de Granger (p-valeur de 0,05).
 
 
 
-\begin{textblock*}{\textwidth}(5.5cm,-0.2cm)
+\begin{textblock*}{\textwidth}(5.5cm,-0.5cm)
 \begin{center}
 \begin{minipage}{0.7\textwidth}
 

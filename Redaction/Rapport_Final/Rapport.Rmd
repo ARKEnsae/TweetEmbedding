@@ -53,12 +53,6 @@ options(enable_print_style = FALSE)
 library(shiny)
 ```
 
-<!-- Analyse statistique et empirique des modèles -->
-<!-- de Word-Embedding sur Twitter -->
-
-<!-- Word-Embedding et Indice de sentiment avec Twitter -->
-
-<!-- Word-Embedding pour construire un indice de sentiment avec Twitter  -->
 
 \begin{textblock*}{\textwidth}(0cm,-21cm)
 \begin{center}
@@ -85,7 +79,11 @@ https://github.com/ARKEnsae/TweetEmbedding
 
 \end{textblock*}
 
+\thispagestyle{empty}
+
 \newpage 
+
+\newpage\setcounter{page}{1}
 
 
 # Introduction {.unnumbered}
@@ -103,7 +101,6 @@ La figure \@ref(fig:schemaRecap) résume l'ensemble de notre démarche.
 
 
 \vspace{2cm}
-<!-- \vfill -->
 
 \begin{figure}[!htb]
 \input{img/schema_recap.tex}
@@ -154,7 +151,7 @@ C'est cette approche que nous étudions dans ce projet et dans la suite de ce ra
 \includegraphics[width=.6\textwidth]{img/cbow_skip_gram.png}
 \end{center}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Architecture des modèles *Continuous bags of words* (CBOW) et *Skip-gram*.}\label{fig:cbowskipgram}
+\caption{Architecture des modèles \emph{Continuous bags of words} (CBOW) et \emph{Skip-gram}.}\label{fig:cbowskipgram}
 %\vspace{-0.3cm}
 \footnotesize
 \emph{Source : \cite{Mikolov}}
@@ -232,8 +229,6 @@ Si $w=2$ alors le mot focus tiré ne peut pas être « pensez » puisque dans 
 
 Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois. Le nombre de fois que l'ensemble du corpus est parcouru est appelé *epochs*.
 
-<!-- Informatiquement, il est plus aisé de gérer des entiers que des chaînes de caractères. Ainsi, une fois le vocabulaire construit (i.e. : le vecteur contenant l'ensemble des mots du corpus), plutôt que de manipuler des mots nous manipulerons des entiers faisant référence à l'indice du mot dans le vocabulaire. Ainsi, lorsque nous parlerons du couple `[focus, contexte]` nous parlerons aussi bien des mots -->
-  
 
 ### Descente de gradient {#subsec:descentedegradient}
 
@@ -246,7 +241,7 @@ avec $\eta$ le taux d'apprentissage (un hyperparamètre à fixer) et $Loss(\thet
 
 Le modèle *word2vec* a initialement été construit en utilisant une fonction de perte dérivée de la fonction *softmax* (voir partie \@ref(subsec:softmax) et \cite{Mikolov}). L'algorithme a ensuite été amélioré en utilisant le *negative sampling*  (voir partie \@ref(subsec:negsampling) et \cite{MikolovNS}).
 
-#### Version softmax {#subsec:softmax}
+#### Version *softmax* {#subsec:softmax}
 
 Soit $w_1,\,\dots,\,w_T$ les mots utilisés pour entraîner le modèle. L'objectif du modèle *Skip-gram* est, étant donné un mot focus, de prévoir quels sont les mots voisins contextes dans une certaine fenêtre $w$. Mathématiquement, on cherche à maximiser la quantité :
 \begin{equation}
@@ -258,9 +253,9 @@ où :
 - les $w_{t+j}$ sont les mots voisins de $w_t$ ($w_t$ est donc un mot focus et $w_{t+j}$ un mot contexte) ; 
 
 -  $\mathbb P(w_{t+j}\vert w_{t})$ est la probabilité d'observer le mot contexte $w_{t+j}$ sachant que l'on a observé le mot focus $w_t$.
-Cette quantité est calculée en fonction des matrices $W_e$ et $W_s$ à partir de la fonction softmax
+Cette quantité est calculée en fonction des matrices $W_e$ et $W_s$ à partir de la fonction *softmax*
 ^[
-Étant donné le vecteur $z=(z_1,\,\dots,\,z_n)$ la fonction softmax est la fonction qui à $z$ associe le vecteur dont la $j$^ème^ coordonnée est égale à $\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}$.
+Étant donné le vecteur $z=(z_1,\,\dots,\,z_n)$ la fonction *softmax* est la fonction qui à $z$ associe le vecteur dont la $j$^ème^ coordonnée est égale à $\frac{\exp(z_j)}{\sum_{i=1}^n\exp(z_i)}$.
 ]. 
 En notant $n$ la taille du vocabulaire et $W_{e,w_i}$ et $W_{s,w_i}$ les représentations vectorielles du mot $w_i$ respectivement dans la matrice d'entrée et de sortie, cette probabilité est égale à^[
 Dans tout le rapport, nous utiliserons la notation $^{t}X$ pour désigner la transposée de la matrice $X$.
@@ -286,20 +281,9 @@ L'inconvénient de cette méthode est qu'elle est très gourmande en temps de ca
 En effet, pour chaque couple `[focus, contexte]`, la complexité du calcul de $\log\mathbb P(w_{contexte}\vert w_{focus})$ est proportionnelle à la taille du vocabulaire.
 La taille du vocabulaire pouvant être très grande (par exemple, dans notre base de tweets, cette taille est de 70 330), le temps de calcul peut vite devenir très important. 
 
-<!-- - La complexité du calcul de $\nabla_\theta \log\mathbb P(w_{contexte}\vert w_{focus})$ dans l'étape de descente de gradient est aussi proportionnelle à la taille du vocabulaire. \colorbox{BurntOrange}{à conserver ? Alain} -->
-
 C'est pourquoi la version *softmax* est très peu utilisée dans les implémentations de *Skip-gram*. Une approche alternative, le *negative sampling* avec une fonction sigmoïde, moins gourmande en temps de calcul, est alors souvent préférée^[
 Une autre alternative à l'approche *softmax* parfois utilisée est l'approche *hierarchical softmax* qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à $\log_2n$ mais reste plus importante que celle de l'approche *negative sampling*.
 ].
-
-<!-- data = torch.matmul(input[focus,], torch.t(output)) -->
-<!-- #log_probs = F.log_softmax(data, dim=0) -->
-<!-- #loss = F.nll_loss(log_probs.view(1,-1), torch.tensor([context])) -->
-<!-- # Il semble que cela combine les deux précédentes fonctions :  -->
-<!-- # https://pytorch.org/docs/stable/nn.functional.html#cross-entropy -->
-<!-- loss = F.cross_entropy(data.view(1,-1), torch.tensor([context])) -->
-
-<!-- Version plus ancienne (voir mikolov 2013a), sans negative sampling -->
 
 #### Version *negative sampling* {#subsec:negsampling}
 
@@ -313,10 +297,8 @@ Cependant, puisque la taille du vocabulaire est très grande, on considère que 
 L'approche *softmax* peut être vue comme un problème de classification multiclasses : étant donné un mot `focus`, on estime la probabilité que les autres mots soient parmi ses voisins (chaque classe étant un mot du vocabulaire).
 L'idée du *negative sampling* est de transformer ce problème de classification multiclasses en un problème de classification binaire d'une variable $D$ : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors $D=1$ (`mot2` est positif et est le `contexte`), sinon $D=0$ (`mot2` est négatif, il appartient à $(w_{neg,\,i})_{i=1..K}$). 
 
-<!-- Predicting the next word is like predicting the class. That is, such a network is just a "standard" multinomial (multi-class) classifier. And this network must have as many output neurons as classes there are. When classes are actual words, the number of neurons is, well, huge. -->
-
 On cherche donc à maximiser $\mathbb P(D=1\vert w_{focus},w_{contexte})$ et $\mathbb P(D=0\vert w_{focus},w_{neg,\,i})$.
-Pour estimer ces probabilités, on utilise une fonction sigmoïde plutôt que la fonction softmax :
+Pour estimer ces probabilités, on utilise une fonction sigmoïde plutôt que la fonction *softmax* :
 $$
 \mathbb P(D=1\vert w_{focus},w_{contexte})=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}}) = 
 \frac{1}{1+\exp(-W_{e,w_{focus}}{}^tW_{s,w_{contexte}})}
@@ -348,7 +330,7 @@ Loss_{2}=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
 \log
 \sigma (-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}})
 $$
-La complexité est ici bien plus faible que pour la fonction softmax puisqu'elle est proportionnelle à $K$.
+La complexité est ici bien plus faible que pour la fonction *softmax* puisqu'elle est proportionnelle à $K$.
 
 \cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution $P$ pour générer les mots négatifs est telle que :
 $$
@@ -359,16 +341,6 @@ $$
 avec $z(w_i)$ la fréquence d'apparition du mot $w_i$.
 
 Ils recommandent également de prendre $K\in\{5,\dots,20\}$ pour les petites bases de données et $K\in\{2,\dots,5\}$ pour les grandes bases de données. Dans ce projet, nous utiliserons $K=5$ : pour chaque couple `[focus, contexte]` nous tirons donc 5 mots négatifs.
-
-<!-- En plus d'être moins coûteuse en temps de calcul, cette méthode permet aussi de corriger la sur-estimation des poids des mots contextes tirés au hasard par rapport à l'approche softmax. En effet, on cherche à minimiser la proximité des mots négatifs au mot focus. -->
-<!-- Cette méthode permet d’une part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu’elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus (negatives samples), mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de loss. Elle est d’autre part moins coûteuse en temps de calcul puisqu’elle permet d’actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les negatives samples) -->
-
-<!-- mikolov 2013b -->
-<!-- Tomas Mikolov, Ilya Sutskever, Kai Chen, Gregory S. Corrado, and Jeffrey Dean. Distributed representations of words and phrases and their compositionality. In NIPS, 2013. -->
-
-<!-- Deux avantages : évite de surpondérer les mots trop fréquent et temps de calcul -->
-<!-- C’est pourquoi nous avons en seconde étape implémenté une version plus élaborée du modèle grâce à la méthode du negative sampling. Cette méthode permet d’une part de corriger la sur-estimation des poids des mots contextes tirés au hasard puisqu’elle implique de tirer également au hasard des mots qui ne sont pas dans le contexte du mot focus (negatives samples), mots pour lesquels on va chercher à minimiser leur proximité au mot focus dans la fonction de loss. Elle est d’autre part moins coûteuse en temps de calcul puisqu’elle permet d’actualiser uniquement une partie de la matrice de poids (celle qui concerne le mot contexte et les negatives samples). -->
-
 
 # Évaluation du modèle implémenté {#sec:evaluation}
 
@@ -486,9 +458,7 @@ C’est à partir de cette base empilée de 6x65 lignes moins les données manqu
 ### Nombre d'epochs, taille de fenêtre et taux d'apprentissage
 
 
-Pour cette première série de tests d'hyperparamètres, nous avons fixé la dimension des *word-embeddings* à 50
-<!-- ^[En réalisant les mêmes tests sur uniquement 100 000 tweets, puis en testant une dimension de *word-embeddings* de 20, les effets observés et commentés ici se confirment.]   -->
-et évalué l'impact du nombre d'epochs, de la taille de la fenêtre et du taux d'apprentissage (figure \ref{fig:evaluation_1}) . 
+Pour cette première série de tests d'hyperparamètres, nous avons fixé la dimension des *word-embeddings* à 50 et évalué l'impact du nombre d'epochs, de la taille de la fenêtre et du taux d'apprentissage (figure \ref{fig:evaluation_1}) . 
 
 \begin{figure}[htp]
 \begin{center}
@@ -1052,6 +1022,8 @@ Alors que *word2vec* privilégie l’utilisation de « n-grammes » (avec l’
 # (APPENDIX) Appendix {-}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
+\setcounter{page}{0}
+\pagenumbering{roman}
  
 # Comment évaluer le modèle ? {#annexe:commentEvaluer}
 
@@ -1271,8 +1243,6 @@ Dans notre cas, puisque les tweets sont tirés à des jours fixes, il n'y a pas 
 En revanche, il pourrait y avoir un effet type de jour : on peut par exemple supposer que les thèmes traités par les tweets, et donc les sentiments, sont différents en fonction du jour de la semaine. 
 Les sentiments exprimés par les tweets pourraient donc être influencés par les types de jours échantillonnés pour tirer aléatoirement les tweets.
 
-<!-- Si on veut simplifier on peut supprimer à partir d'ici  -->
-
 Pour estimer l'effet jour ouvrable, nous utilisons l'approche de la méthode X-12ARIMA, notamment décrite dans \cite{L2018}.
 
 Supposons que le $j$^ème^ jour de la semaine a un effet $\alpha_j$ où $j=1$ désigne le lundi, $j=2$ le mardi, \dots, et $j=7$ le dimanche. 
@@ -1325,7 +1295,6 @@ y_t=\beta_0 LY_t + \tilde\beta_1 \left(\sum_{j=1}^{5}N_{jt} - (N_{6t} + N_{7t})\
 
 Dans notre cas, puisqu'il n'y a pas d'effet longueur du mois nous omettons le régresseur $LY_t$ dans \@ref(eq:eqcjotd) et \@ref(eq:eqcjowd). On considère qu'il y a un effet jours ouvrables significatif lorsque $\exists i\in \{1,2,\dots,6\}\::\:\beta_i\ne0$ ou lorsque $\tilde\beta_1\ne0$.
 
-<!-- Si on veut simplifier on peut supprimer jusqu'ici. -->
 
 \faArrowCircleRight{} Pour nos indicateurs de sentiment (construits à partir des modèles logit et lexical), nous ne détectons pas d'effet jours ouvrables. 
 Cela ne signifie pas pour autant que le type de jour n'a pas d'effet sur nos indicateurs de sentiment, mais que nous n'arrivons pas à en estimer un.
@@ -1370,8 +1339,6 @@ L'étude de ceux de l'indicateur calculé à partir du modèle *word2vec* suggè
 \emph{La composante saisonnière a été estimée par la méthode X-12ARIMA.}
 \end{figure}
 
-
-<!-- Finalement je ne parle pas des tests de saisonnalité et des contributions des différentes composantes à la série initale : l'annexe devenait trop grande. -->
 
 
 

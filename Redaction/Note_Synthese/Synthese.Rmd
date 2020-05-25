@@ -92,13 +92,11 @@ Bien que l'indice obtenu s'avère utile pour prédire l'indicateur synthétique 
 Les modèles *word2vec*, développés par une équipe de recherche chez Google, sont parmi les plus célèbres modèles de *Natural Language Processing* qui utilisent le *word-embedding* --- plongement lexical en français.
 Il s'agit de représenter chaque mot par un vecteur dont la dimension est fixée par la valeur d’un hyperparamètre. 
 
-<!-- \begin{minipage}{\textwidth} -->
 \begin{wrapfigure}[15]{r}[0pt]{0cm}
 \includegraphics[width=5cm]{img/skip_gram.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Architecture\newline du modèle Skip-gram.}\label{fig:skipgram}
+\caption{Architecture\newline du modèle \emph{Skip-gram}.}\label{fig:skipgram}
 \end{wrapfigure}
-<!-- \end{minipage} -->
 
 
 L'approche *Skip-gram* a pour objectif d'estimer, pour chaque mot du vocabulaire qualifié de **« contexte »**, la probabilité d'être proche d'un mot qualifié de **« focus »** (figure \@ref(fig:skipgram)).

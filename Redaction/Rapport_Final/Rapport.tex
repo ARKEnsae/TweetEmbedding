@@ -147,9 +147,9 @@ lexical~» en français) permettent de représenter chaque mot d'un
 dictionnaire par un vecteur de nombres réels afin que les mots qui
 apparaissent dans des contextes similaires possèdent des vecteurs
 correspondants qui sont relativement proches (au sens d'une distance
-définie). Les modèles \emph{word2vec}, développés par une équipe de
-recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et
-sont ceux sur lesquels se concentrera notre projet.
+définie). Les variantes du modèle \emph{word2vec}, développé par une
+équipe de recherche chez Google (\cite{Mikolov}), sont parmi les plus
+célèbres et sont ceux sur lesquels se concentrera notre projet.
 
 Dans ce projet de statistique appliquée, nous étudierons dans un premier
 temps en détail et implémenterons le modèle \emph{word2vec} (partie
@@ -168,7 +168,7 @@ La figure \ref{fig:schemaRecap} résume l'ensemble de notre démarche.
 \begin{figure}[!htb]
 \input{img/schema_recap.tex}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Des tweets à la construction d'indices mensuels de sentiment : synthèse de la démarche suivie dans ce projet.}\label{fig:schemaRecap}
+\caption{Synthèse de notre démarche : construire un indice mensuel de sentiment à partir de tweets.}\label{fig:schemaRecap}
 \end{figure}
 
 \newpage
@@ -181,10 +181,10 @@ La figure \ref{fig:schemaRecap} résume l'ensemble de notre démarche.
 
 Le \emph{Natural Language Processing} (NLP ou «~traitement automatique
 du langage naturel~») est une branche du \emph{machine learning} visant
-à analyser, traiter et reproduire le langage humain. Les modèles de NLP
-\emph{word2vec}, développés par une équipe de recherche chez Google
-(\cite{Mikolov}), sont parmi les plus célèbres et utilisent le
-\emph{word-embedding} --- plongement lexical en français.
+à analyser, traiter et reproduire le langage humain. Les différentes
+variantes du modèle de NLP \emph{word2vec}, développé par une équipe de
+recherche chez Google (\cite{Mikolov}), sont parmi les plus célèbres et
+utilisent le \emph{word-embedding} --- plongement lexical en français.
 
 \subsubsection{\texorpdfstring{Historique : de la sémantique vectorielle
 à
@@ -192,10 +192,10 @@ du langage naturel~») est une branche du \emph{machine learning} visant
 
 La «~sémantique vectorielle~» est née dans les années 1950\footnote{L'ouvrage
   \cite{Jurafsky} permet de retracer avec une grande richesse
-  l'évolution des méthodes de NLP.}. C'est une méthode algébrique de
-représentation d'un document visant à réaliser des tâches diverses
+  l'évolution des méthodes de NLP.}. Il s'agit d'une méthode algébrique
+de représentation d'un document visant à réaliser des tâches diverses
 (détecter le plagiat, filtrer des articles\dots). Il est alors
-nécessaire de capter de nombreux types de proximités entre mots : les
+nécessaire de capter de nombreux types de proximité entre mots : les
 synonymes (automobile / voiture), antonymes (froid / chaud),
 connotations positives \emph{versus} négatives (heureux / triste), etc.
 
@@ -214,7 +214,7 @@ grâce à des très grandes matrices, dites \emph{sparses}, dont les
 dimensions correspondaient à la taille du vocabulaire (contenant donc
 beaucoup de 0). Les méthodes de \emph{word-embedding} qui sont ensuite
 apparues ont permis de représenter chaque mot d'un dictionnaire par un
-vecteur de nombres réels denses (peu de 0) de plus faible dimension (en
+vecteur de nombres réels dense (peu de 0) de plus faible dimension (en
 général entre 50 et 1000). Si la réduction de dimension rend les
 vecteurs-mots moins facilement interprétables, elle a pour grand
 avantage de faciliter et d'accélérer les tâches d'apprentissage
@@ -240,7 +240,7 @@ Les mots qui apparaissent dans des contextes similaires («~bonjour~» et
 «~salut~» par exemple) seront représentés par des vecteurs relativement
 proches dans l'espace vectoriel de définition de ces vecteurs. Dans la
 même logique, \emph{word2vec} permet également de réaliser des
-opérations vectorielles, comme dans l'exemple, souvent cité :
+opérations vectorielles, comme dans l'exemple suivant souvent cité :
 \(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}\)
 qui provient de \cite{Mikolov}.
 
@@ -261,10 +261,11 @@ Deux architectures du modèle \emph{word2vec} existent (graphique
 \end{itemize}
 
 \begin{figure}[htp]
-\centering
+\begin{center}
 \includegraphics[width=.6\textwidth]{img/cbow_skip_gram.png}
+\end{center}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Architecture des modèles Continuous bags of words (CBOW) et Skip-gram.}\label{fig:cbowskipgram}
+\caption{Architecture des modèles *Continuous bags of words* (CBOW) et *Skip-gram*.}\label{fig:cbowskipgram}
 %\vspace{-0.3cm}
 \footnotesize
 \emph{Source : \cite{Mikolov}}
@@ -276,10 +277,10 @@ focus\footnote{Comme dans les premiers modèles sémantiques dits
   \emph{sparses}.}, nous entraînons un réseau de neurones sur une tâche
 annexe : on construit un classifieur dont la tâche de prédiction est
 binaire pour chacun des mots du vocabulaire et répond à la question
-(dans le cas Skip-gram) «~Est-ce que ce mot contexte est susceptible
-d'être voisin du mot focus ?~». Ce n'est pas la prédiction en elle-même
-qui nous intéresse, mais plutôt le poids du classifieur en sortie du
-modèle qui correspondra aux \emph{word-embeddings}.
+(dans le cas \emph{Skip-gram}) «~Est-ce que ce mot contexte est
+susceptible d'être voisin du mot focus ?~». Ce n'est pas la prédiction
+en elle-même qui nous intéresse, mais plutôt le poids du classifieur en
+sortie du modèle qui correspondra aux \emph{word-embeddings}.
 
 Les voisins d'un mot focus reposent sur un hyperparamètre : la fenêtre
 (\emph{window} ou \(w\)). Pour \(w = p\), les voisins du mot focus sont
@@ -310,16 +311,17 @@ le corpus est considéré comme une donnée d'entraînement implicitement
 supervisée, ce qui nous évite d'avoir à mobiliser des corpus annexes
 annotés.
 
-\subsection{L'algorithme Skip-gram}\label{sec:skipgram}
+\subsection{\texorpdfstring{L'algorithme
+\emph{Skip-gram}}{L'algorithme Skip-gram}}\label{sec:skipgram}
 
 L'objectif de cette partie est de décrire le fonctionnement de
-l'approche Skip-gram.
+l'approche \emph{Skip-gram}.
 
 Dans la suite de ce projet nous noterons \(n\) la taille du vocabulaire
-(i.e. : le nombre de mots différents) et \(dim\) la dimension retenue
-pour les \emph{word-embeddings}. Comme décrit dans la partie
-\ref{subsec:word2vec}, l'approche \emph{Skip-gram} peut être vue comme
-un réseau de neurones à deux couches avec :
+(i.e. : le nombre de mots différents utilisés dans les tweets) et
+\(dim\) la dimension retenue pour les \emph{word-embeddings}. Comme
+décrit dans la partie \ref{subsec:word2vec}, l'approche \emph{Skip-gram}
+peut être vue comme un réseau de neurones à deux couches avec :
 
 \begin{itemize}
 \item
@@ -330,7 +332,7 @@ un réseau de neurones à deux couches avec :
 
 Ces deux matrices sont initialisées en générant des lois normales
 \(\mathcal N(0,1)\). Elles sont ensuite mises à jour, grâce aux couples
-\texttt{{[}focus,\ contexte{]}} construits à partir du contexte (partie
+\texttt{{[}focus,\ contexte{]}} construits à partir du corpus (partie
 \ref{subsec:baseentrainement}), par un algorithme de descente de
 gradient. À la fin de l'algorithme, ce sont ces matrices qui donneront
 la représentation vectorielle des mots du vocabulaire. Ainsi, la ligne
@@ -345,7 +347,7 @@ tout en minuscule, remplaçons les ponctuations par des espaces, mais
 laissons tous les chiffres et les accents. Chaque phrase\footnote{Dans
   notre cas une phrase correspond à un tweet, même si ce tweet peut être
   composé de plusieurs phrases.} est ensuite \emph{tokénisée} par la
-chaîne de caractère correspondant à un espace \texttt{"\ "} : on
+chaîne de caractères correspondant à un espace \texttt{"\ "} : on
 considère qu'il y a autant de mots de que chaînes de caractères séparées
 par un espace\footnote{Les mots composés sont donc considérés comme
   plusieurs mots distincts.}. Par exemple, la phrase :
@@ -378,20 +380,20 @@ traitements sont effectués :
   (\emph{subsampling}). Pour chaque mot \(w_i\) on note \(z(w_i)\) la
   proportion d'apparition de ce mot, c'est-à-dire le rapport entre le
   nombre de fois que ce mot apparaît et le nombre total de mots. La
-  probabilité de garder un mot le mot \(w_i\) est donnée par : \[
+  probabilité de garder le mot \(w_i\) est donnée par : \[
   \mathbb P(w_i) = \min\left\{\left(1+\sqrt{\frac{z(w_i)}{q}}  \right)
   \times
   \frac{q}{z(w_i)},1\right\}
   \] Le paramètre \(q\) appelé «~sample~» --- échantillonnage ---
   contrôle le nombre de mots sous-échantillonnés (plus il est grand,
   plus la probabilité de garder le mot \(w_i\) est grande). Si \(q\)
-  vaut 0,001 (valeur par défaut) alors par exemples :
+  vaut 0,001 (valeur par défaut) alors par exemple :
 
   \begin{itemize}
   \tightlist
   \item
     \(\mathbb P(w_i) = 1\) (\(w_i\) est toujours gardé) lorsque
-    \(z(w_i)\leq 0,0026\), c'est-à-dire si \(w_i\) représentent moins de
+    \(z(w_i)\leq 0,0026\), c'est-à-dire si \(w_i\) représente moins de
     0,26 \% du nombre total de mots.\\
   \item
     \(\mathbb P(w_i) = 0,5\) (50 \% de chance de garder \(w_i\)) lorsque
@@ -420,8 +422,8 @@ et ne pas l'être dans une autre.
     mots sous-échantillonnés, alors aucun couple n'est retenu pour cette
     phrase.}. Par exemple, nous supposons que dans la phrase
   \texttt{{[}que,\ pensez,\ vous,\ de,\ ce,\ projet,\ i,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}},
-  les mots sous-échantillonnés sont les mots en position 2, 5, 6, 8, 9,
-  10, 11, 12, 13, 14. Pour mieux comprendre, nous remplaçons les mots
+  les mots sous-échantillonnés sont les mots en positions 2, 5, 6, 8, 9,
+  10, 11, 12, 13 et 14. Pour mieux comprendre, nous remplaçons les mots
   non échantillonnés par «~nonsubsampled~». La phrase devient alors
   \texttt{{[}nonsubsampled,\ pensez,\ nonsubsampled,\ nonsubsampled,\ ce,\ projet,\ nonsubsampled,\ e,\ qu,\ avez,\ vous,\ retenu,\ en,\ 10min{]}}.
   Si \(w=2\) alors le mot focus tiré ne peut pas être «~pensez~» puisque
@@ -436,7 +438,7 @@ que l'ensemble du corpus est parcouru est appelé \emph{epochs}.
 
 \subsubsection{Descente de gradient}\label{subsec:descentedegradient}
 
-Pour chaque couple \texttt{{[}focus,\ contexte{]}}, les matrice \(W_e\)
+Pour chaque couple \texttt{{[}focus,\ contexte{]}}, les matrices \(W_e\)
 et \(W_s\) sont mises à jour par descente de gradient. C'est-à-dire que
 les matrices \(\theta^{(t)} = W_e\) et \(\theta^{(t)} = W_s\) obtenues
 après la \(t\)\textsuperscript{ème} itération de l'algorithme sont mises
@@ -454,9 +456,9 @@ amélioré en utilisant le \emph{negative sampling} (voir partie
 \paragraph{Version softmax}\label{subsec:softmax}
 
 Soit \(w_1,\,\dots,\,w_T\) les mots utilisés pour entraîner le modèle.
-L'objectif du modèle Skip-gram est, étant donné un mot focus, de prévoir
-quels sont les mots voisins contextes dans une certaine fenêtre \(w\).
-Mathématiquement, on cherche à maximiser la quantité :
+L'objectif du modèle \emph{Skip-gram} est, étant donné un mot focus, de
+prévoir quels sont les mots voisins contextes dans une certaine fenêtre
+\(w\). Mathématiquement, on cherche à maximiser la quantité :
 
 \begin{equation}
 \frac 1 T\sum_{t=1}^T\sum_{-w\leq j \leq w,\,j\ne 0} \log \mathbb P(w_{t+j}\vert w_{t})
@@ -481,8 +483,8 @@ où :
   taille du vocabulaire et \(W_{e,w_i}\) et \(W_{s,w_i}\) les
   représentations vectorielles du mot \(w_i\) respectivement dans la
   matrice d'entrée et de sortie, cette probabilité est égale à\footnote{Dans
-    tout le rapport nous utiliserons la notation \(^{t}X\) pour désigner
-    la transposée de la matrice \(X\).} : \[
+    tout le rapport, nous utiliserons la notation \(^{t}X\) pour
+    désigner la transposée de la matrice \(X\).} : \[
   \mathbb P(w_{contexte}\vert w_{focus}) = 
   \frac{
   \exp(W_{e,w_{focus}}\times {}^tW_{s,w_{contexte}})
@@ -508,14 +510,14 @@ taille du vocabulaire. La taille du vocabulaire pouvant être très grande
 temps de calcul peut vite devenir très important.
 
 C'est pourquoi la version \emph{softmax} est très peu utilisée dans les
-implémentations de Skip-gram. Une approche alternative, \emph{negative
-sampling} avec une fonction sigmoïde, moins gourmande en temps de
-calcul, est alors souvent préférée\footnote{Une autre alternative à
-  l'approche \emph{softmax} parfois utilisée est l'approche
-  \emph{hierarchical softmax} qui se base sur l'utilisation d'arbres
-  binaires de classification. La complexité de cet algorithme est
-  proportionnelle à \(\log_2n\) mais reste plus importante que celle de
-  l'approche \emph{negative sampling}.}.
+implémentations de \emph{Skip-gram}. Une approche alternative, le
+\emph{negative sampling} avec une fonction sigmoïde, moins gourmande en
+temps de calcul, est alors souvent préférée\footnote{Une autre
+  alternative à l'approche \emph{softmax} parfois utilisée est
+  l'approche \emph{hierarchical softmax} qui se base sur l'utilisation
+  d'arbres binaires de classification. La complexité de cet algorithme
+  est proportionnelle à \(\log_2n\) mais reste plus importante que celle
+  de l'approche \emph{negative sampling}.}.
 
 \paragraph{\texorpdfstring{Version \emph{negative
 sampling}}{Version negative sampling}}\label{subsec:negsampling}
@@ -532,21 +534,22 @@ représentations vectorielles des mots pour chaque couple
 \texttt{{[}focus,\ contexte{]}}, on tire \(K\) mots au hasard du
 vocabulaire \((w_{neg,\,i})_{i=1..K}\), selon une loi \(P\) (définie
 plus tard), en considérant que ces mots ne seront pas des mots voisins
-de \texttt{focus}\footnote{Il est bien sûr possible que parmi les mots
-  tirés au hasard il y ait des mots qui soient vraiment dans le
+de \texttt{focus}\footnote{Il est bien sûr possible que, parmi les mots
+  tirés au hasard, il y ait des mots qui soient vraiment dans le
   contexte. Cependant, puisque la taille du vocabulaire est très grande,
   on considère que cette erreur est négligeable.}.
 
 L'approche \emph{softmax} peut être vue comme un problème de
-classification multiclasses : étant donné un mot \texttt{focus}, on
+classification multiclasse : étant donné un mot \texttt{focus}, on
 estime la probabilité que les autres mots soient parmi ses voisins
 (chaque classe étant un mot du vocabulaire). L'idée du \emph{negative
-sampling} est de transformer ce problème de classification multiclasses
+sampling} est de transformer ce problème de classification multiclasse
 en un problème de classification binaire d'une variable \(D\) : pour
 chaque couple \texttt{{[}focus,\ mot2{]}}, on cherche à déterminer si
 \texttt{mot2} est dans le contexte de \texttt{focus}. Si c'est le cas,
-alors \(D=1\) (mot2 est positif et est le \texttt{contexte}), sinon
-\(D=0\) (mot2 est négatif, il appartient à \((w_{neg,\,i})_{i=1..K}\)).
+alors \(D=1\) (\texttt{mot2} est positif et est le \texttt{contexte}),
+sinon \(D=0\) (\texttt{mot2} est négatif, il appartient à
+\((w_{neg,\,i})_{i=1..K}\)).
 
 On cherche donc à maximiser
 \(\mathbb P(D=1\vert w_{focus},w_{contexte})\) et
@@ -582,7 +585,7 @@ Loss_{2}=-\log\sigma (W_{e,w_{focus}}{}^tW_{s,w_{contexte}})
 \log
 \sigma (-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}})
 \] La complexité est ici bien plus faible que pour la fonction softmax
-puiqu'elle est proportionnelle à \(K\).
+puisqu'elle est proportionnelle à \(K\).
 
 \cite{MikolovNS} trouvent, empiriquement, que la meilleure distribution
 \(P\) pour générer les mots négatifs est telle que : \[
@@ -600,18 +603,19 @@ couple \texttt{{[}focus,\ contexte{]}} nous tirons donc 5 mots négatifs.
 
 Malgré l'utilisation généralisée des \emph{word-embeddings}, très peu de
 travaux théoriques expliquent ce qui est réellement capturé par ces
-représentations de mots.
-
-C'est pourquoi ce modèle est principalement évalué à l'aide de méthodes
-empiriques. L'annexe \ref{annexe:commentEvaluer} décrit plus précisément
-les méthodes que nous avons retenues pour évaluer la qualité des
-vecteurs-mots.
+représentations de mots. C'est pourquoi ce modèle est principalement
+évalué à l'aide de méthodes empiriques. L'annexe
+\ref{annexe:commentEvaluer} décrit plus précisément les méthodes que
+nous avons retenues pour évaluer la qualité des vecteurs-mots : la
+similarité cosinus entre deux mots, la réduction de dimension de
+l'espace des vecteurs-mots (ACP, t-SNE) et l'évaluation par jugement
+humain.
 
 \subsection{Évaluation sur un corpus fictif}\label{sec:corpusFictif}
 
-Avant de nous attaquer au jeu de données complet décrit dans la
-prochaine section, nous avons évalué notre modèle sur un corpus fictif
-afin de nous assurer de sa robustesse et de sa validité.
+Avant de nous attaquer au jeu de données complet décrit dans la partie
+\ref{sec:hyperparametres}, nous avons évalué notre modèle sur un corpus
+fictif afin de nous assurer de sa robustesse et de sa validité.
 
 Nous générons tout d'abord 10 groupes de mots, chacun composé d'un
 couple de référence de mots proches (du type
@@ -625,7 +629,7 @@ mots de la manière suivante :
 \begin{itemize}
 \tightlist
 \item
-  on tire au hasard 1 des 10 groupes de mots;
+  on tire au hasard 1 des 10 groupes de mots ;
 \item
   au sein de ce groupe, on tire au hasard 1 des 2 mots «~référence~» et
   5 des 10 mots contextes associés ;
@@ -651,12 +655,13 @@ avons mis en œuvre les différentes techniques d'évaluation\footnote{À
 partir de ce corpus fictif.
 
 Les résultats semblent concluants : la similarité cosinus montre bien
-une forte corrélation entre les mots focus et contexte (i.e. : les mots
-d'un même \og groupe \fg) du corpus fictif et une faible corrélation
-avec les mots bruits (tableau \ref{table:tableau_evaluation}). L'ACP et
-l'algorithme t-SNE permettent également de montrer graphiquement cette
-proximité (figure~\ref{fig:figure_evaluation}). Les clusters
-apparaissent de manière plus évidente avec t-SNE.
+une forte corrélation entre les mots références et contextes (i.e. : les
+mots d'un même \og groupe \fg) du corpus fictif et une faible
+corrélation avec les mots bruits (tableau
+\ref{table:tableau_evaluation}). L'ACP et l'algorithme t-SNE permettent
+également de montrer graphiquement cette proximité
+(figure~\ref{fig:figure_evaluation}). Les clusters apparaissent de
+manière plus évidente avec t-SNE.
 
 \begin{table}[!h]
 \begin{center}
@@ -715,12 +720,12 @@ attachés à identifier les hyperparamètres les plus pertinents au regard
 des données dont nous disposons.
 
 Ces données correspondent à un ensemble de 1,3 million de
-tweets\footnote{Ces tweets, achetés à twitter, sont la propriété de
+tweets\footnote{Ces tweets, fournis par Twitter, sont la propriété de
   l'Inria.} postés en France entre 2013 et 2017, supposés être
 représentatifs de l'ensemble de tweets nationaux publiés durant cette
 période.
 
-Le modèle \emph{word2vec} version Skip-gram, décrit en partie
+Le modèle \emph{word2vec} version \emph{Skip-gram}, décrit en partie
 \ref{sec:word2vec}, fait en effet intervenir un certain nombre
 d'hyperparamètres parmi lesquels :
 
@@ -775,9 +780,9 @@ la mesure de la similarité cosinus\footnote{Nous avons également évalué
 partir de notre modèle à l'évaluation subjective de cette proximité par
 des individus. En outre, un même modèle est lancé six fois (six
 \og seeds \fg{} différentes) afin de construire des intervalles de
-confiance de la matière décrite précédemment, en empilant les six
-échantillons de mesure de proximités correspondant aux six
-implémentations d'un même modèle\footnote{Pour chaque modèle, nous
+confiance de la matière décrite en partie \ref{sec:jugementHumain}, en
+empilant les six échantillons de mesure de proximités correspondant aux
+six implémentations d'un même modèle\footnote{Pour chaque modèle, nous
   calculons les statistiques de rang des 65 paires de mots de la base de
   jugement humain ainsi que le rang des similarités cosinus des mots
   obtenus en sortie du modèle. Nous réalisons ces actions pour les six
@@ -802,7 +807,7 @@ d'epochs, de la taille de la fenêtre et du taux d'apprentissage
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
-\emph{Note : Paramètres utilisés : dim = 50\newline
+\emph{Note : Paramètre utilisé : dim = 50\newline
 Le trait horizontal correspond au coefficient de Spearman calculé sur les échantillons empilés des six modèles et la barre verticale à l'intervalle de confiance associé.}
 \end{figure}
 
@@ -863,14 +868,13 @@ On cherche cette fois-ci à évaluer l'effet de la dimension des
 \cite{Pennington}), la qualité des représentations vectorielles
 s'améliore à mesure que l'on augmente la taille du vecteur, mais
 seulement jusqu'à atteindre 300 dimensions\footnote{La dimension des
-  vecteurs doit également être adaptée à la taille du vocabulaire. Un
-  des articles fondateurs de word2vec (\cite{Mikolov}) recommande donc
-  d'augmenter à la fois la dimension des vecteurs et la quantité de
-  données d'apprentissage. Par exemple, avec un vocabulaire d'une
-  centaine de mots, il serait inefficace d'utiliser des projections en
-  grande dimension (risque de surapprentissage).}. Après 300 dimensions,
-la qualité des vecteurs commence à diminuer et le temps de calcul
-augmente considérablement.
+  vecteurs doit également être adaptée à la taille du vocabulaire.
+  \cite{Mikolov} recommande donc d'augmenter à la fois la dimension des
+  vecteurs et la quantité de données d'apprentissage. Par exemple, avec
+  un vocabulaire d'une centaine de mots, il serait inefficace d'utiliser
+  des projections en grande dimension (risque de surapprentissage).}.
+Après 300 dimensions, la qualité des vecteurs commence à diminuer et le
+temps de calcul augmente considérablement.
 
 \begin{figure}[htp]
 \begin{center}
@@ -935,7 +939,7 @@ allez (0,43) & vidéo (0,39) & 3 (0,43) & \includegraphics[height=4mm]{img/emoji
 \vspace{-0.3cm}
 \footnotesize
 \emph{Note : Paramètres utilisés : ep = 80 / w = 4 / lr = 0,02 / dim = 100 / base : 100 000 tweets\newline
-La similarité cosinus de chaque paire de mots est renseignée entre les parenthèses.}
+La similarité cosinus de chaque paire de mots est renseignée entre parenthèses.}
 
 \end{table}
 
@@ -955,7 +959,7 @@ le modèle \texttt{Gensim} entraîné sur l'ensemble des tweets (partie
 \subsubsection{\texorpdfstring{Avec le modèle
 \texttt{Gensim}}{Avec le modèle Gensim}}\label{sec:gensimresultats}
 
-Le modèle \texttt{Gensim} (entraînés avec les paramètres w~=~4,
+Le modèle \texttt{Gensim} (entraîné avec les paramètres w~=~4,
 lr~=~0,02, dim~=~100 et ep~=~100) donne des résultats encore plus
 convaincants que précédemment, ayant été davantage entraîné, et sur un
 corpus plus fourni (ensemble des tweets). En effet, les vecteurs-mots en
@@ -970,7 +974,7 @@ peu) été entraînés (figure \ref{fig:acp_freq_ark}).
 \begin{minipage}{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{img/acp_freq_gensim.png}
-  \captionof{figure}{Position des mots en fonction de\newline leur nombre d'occurrences (Modèle \texttt{Gensim}).}
+  \captionof{figure}{Position des mots en fonction de\newline leur nombre d'occurrences (modèle \texttt{Gensim}).}
   \label{fig:acp_freq_gensim}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
@@ -1055,7 +1059,7 @@ La similarité cosinus de chaque paire de mots est renseignée entre les parenth
 \end{minipage}
 \footnotesize
 \emph{Note : Paramètres utilisés : ep = 100 / w = 4 / lr = 0,02 / dim = 100.\newline
-Les mots en vert correspondent à ceux présents dans l'opération, le mot en rouge le mot que l'on serait supposé trouver et les mots en orange les 10 mots les plus proches du résultat de l'opération vectorielle.}
+Les mots en vert correspondent à ceux à gauche de l'opération, le mot en rouge à celui que l'on serait supposé trouver et les mots en orange les 10 mots les plus proches du résultat de l'opération vectorielle.}
 \end{figure}
 
 Enfin, nous avons réalisé des opérations sur les mots-vecteurs. Si
@@ -1077,7 +1081,8 @@ par rapport aux autres villes. Peut-être ce mot n'a-t-il pas
 suffisamment été entraîné (246 apparitions dans les tweets contre 46 433
 pour Lyon par exemple) pour que le vecteur-mot obtenu soit pertinent, ou
 peut-être que, dans les tweets mobilisés, le mot \og Rome \fg{}
-s'utilise dans un contexte différent de l'article de Mikolov.
+s'utilise dans un contexte différent que le corpus utilisé dans
+\cite{Mikolov}.
 
 \section{Construction d'un indice mensuel de sentiment moyen des
 tweets}\label{sec:sentimentalAnalysis}
@@ -1103,7 +1108,7 @@ Nous disposons de 4 200 tweets pour tous les mois de la période sous-échantill
 \textbf{Tweets annotés sur les transports urbains}
 
 Cette base est composée d'environ 23 000 tweets qui concernent les transports urbains (trains SNCF, métros et bus de la RATP) annotés en termes de sentiment.
-Nous avons transformé cette annotation de façon à ce qu'une valeur de $+1$ soit associée à un tweet considéré comme positif et $0$ à un tweet considéré comme négatif.
+Nous avons transformé cette annotation de manière à associer une valeur de $+1$ à un tweet considéré comme positif et de $0$ à un tweet considéré comme négatif.
 
 
 \textbf{Indicateur synthétique de confiance des ménages}
@@ -1115,24 +1120,27 @@ Il s’interprète surtout en évolution et il est normalisé de manière à avo
 
 \end{encadre}
 
-\subsection{\texorpdfstring{Prédire le sentiment d'un tweet à partir des
-\emph{word-embeddings}}{Prédire le sentiment d'un tweet à partir des word-embeddings}}\label{pruxe9dire-le-sentiment-dun-tweet-uxe0-partir-des-word-embeddings}
+\subsection{Prédire le sentiment d'un
+tweet}\label{pruxe9dire-le-sentiment-dun-tweet}
 
 Nous cherchons dans cette partie à construire un modèle permettant de
-prédire le sentiment (\(0\) ou \(1\)) associé à un tweet à partir des
-mots qui le composent. Nous utilisons pour cela la base annotée sur les
-transports (encadré \ref{enc:encadre1}). Nous comparerons deux approches
-: une première basée sur les sentiments moyens de chaque mot des tweets
-(partie \ref{sec:sentiments}) qui servira de référence pour évaluer
-l'efficacité de la seconde approche basée sur les \emph{word-embeddings}
-(partie \ref{sec:wordembeddings}).
+prédire le sentiment (\(0\) pour négatif ou \(1\) pour positif) associé
+à un tweet à partir des mots qui le composent. Nous utilisons pour cela
+la base annotée sur les transports (encadré \ref{enc:encadre1}). Nous
+comparerons deux approches : une première basée sur le lexique
+(\emph{lexicon-based}) et plus précisément sur les sentiments moyens de
+chaque mot des tweets (partie \ref{sec:sentiments}) qui servira de
+référence pour évaluer l'efficacité de la seconde approche basée sur une
+régression binaire sur les \emph{word-embeddings} (partie
+\ref{sec:wordembeddings}).
 
-\subsubsection{Prédiction à partir du sentiment moyen des
-mots}\label{sec:sentiments}
+\subsubsection{Modèle lexical : prédiction à partir du sentiment moyen
+des mots}\label{sec:sentiments}
 
-Ce premier modèle de prédiction du sentiment utilise l'information des
-tweets labelisés pour déterminer un sentiment moyen par mot. Le
-sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
+Ce premier modèle lexical (\emph{lexicon-based}) de prédiction du
+sentiment utilise l'information des tweets labelisés pour déterminer un
+sentiment moyen par mot. Le sentiment prédit d'un tweet \(t\) composé de
+\(n\) mots sera :
 \[S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}\]
 avec \(\gamma \in [-1,1]\) un seuil fixé,
 \(\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]\) le
@@ -1140,40 +1148,40 @@ sentiment moyen du mot \(i\) calculé à partir du nombre de tweets
 positifs (\(nb_+(i)\)) et négatifs (\(nb_-(i)\)) dans lesquels il
 apparaît.
 
-Afin d'évaluer l'efficacité du modèle, nous séparons le corpus de la
-base de tweets sur les transports en une base d'entraînement (environ 16
-000 tweets) et une base de test (environ 7 000 tweets)\footnote{13 \%
-  des mots du vocabulaires et 1 \% des mots utilisés dans les tweets de
-  la base test sont absents de la base d'entraînement. Pour ces mots, le
+Afin d'évaluer l'efficacité du modèle, nous séparons la base de tweets
+annotés sur les transports en une base d'entraînement (environ 16 000
+tweets) et une base de test (environ 7 000 tweets)\footnote{13 \% des
+  mots du vocabulaires et 1 \% des mots utilisés dans les tweets de la
+  base test sont absents de la base d'entraînement. Pour ces mots, le
   sentiment moyen \(\alpha_i\) est fixé à 0.}. La base d'entraînement
 sert à calculer les sentiments moyens des mots et à déterminer le
-\(\gamma\) qui présente les meilleurs performances, et la base de test
+\(\gamma\) qui présente les meilleures performances, et la base de test
 permet d'estimer le modèle, c'est-à-dire prédire pour chaque tweet un
 sentiment, que l'on compare au vrai sentiment.
 
 On choisit \(\gamma\) tel que l'\emph{accuracy} sur la base
-d'entraînement\footnote{Dans notre base d'entraînement la proportion de
+d'entraînement\footnote{Dans notre base d'entraînement, la proportion de
   tweets positifs (43 \%) est proche de la proportion de tweets négatifs
-  (57 \%). Il n'y a donc pas de problème de déséquilibre de classe :
+  (57 \%). Il n'y a donc pas de problème de déséquilibre des classes :
   maximiser l'\emph{accuracy} permet bien de maximiser la performance de
-  notre algorithme.} --- c'est-à-dire le taux de tweets dont le
-sentiment est bien prédit --- soit maximale. On obtient
-\(\gamma^* = -0,14\) (figure \ref{fig:max_baseline}). En évaluant le
-modèle sur la base de test, l'\emph{accuracy} vaut 89,1 \%. On constate
-une nette amélioration par rapport au cas où \(\gamma = 0\) (70,5 \%),
-qui correspond au seuil «~naturel~» puisqu'il se situe au centre de
-l'intervalle des valeurs possibles pour \(\alpha_i\).
+  l'algorithme.} --- c'est-à-dire le taux de tweets dont le sentiment
+est bien prédit --- soit maximale. On obtient \(\gamma^* = -0,14\)
+(figure \ref{fig:max_baseline}). En évaluant le modèle sur la base de
+test, l'\emph{accuracy} vaut 89,1 \%. On constate une nette amélioration
+par rapport au cas où \(\gamma = 0\) (70,5 \%), qui correspond au seuil
+«~naturel~» puisqu'il se situe au centre de l'intervalle des valeurs
+possibles pour \(\alpha_i\).
 
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{img/max_baseline.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Optimisation du seuil $\gamma$ pour le modèle à partir des sentiments moyens des mots.}\label{fig:max_baseline}
+\caption{Optimisation du seuil $\gamma$ pour le modèle lexical.}\label{fig:max_baseline}
 \end{center}
 \end{figure}
 
-\subsubsection{\texorpdfstring{Prédiction à partir des
-\emph{word-embeddings}}{Prédiction à partir des word-embeddings}}\label{sec:wordembeddings}
+\subsubsection{\texorpdfstring{Modèle logit : prédiction à partir des
+\emph{word-embeddings}}{Modèle logit : prédiction à partir des word-embeddings}}\label{sec:wordembeddings}
 
 Nous nous intéressons maintenant à un modèle basé sur l'utilisation de
 nos \emph{word-embeddings}. Pour cela, nous utilisons un modèle de
@@ -1194,7 +1202,7 @@ Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \r
 
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
-\item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
+\item $X_{i,1}, \dots, X_{i,n}$ les coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
 \item $\varepsilon_i$ le résidu de notre modèle, de fonction de répartition $F_{\varepsilon}$ qui vaudra $F_{\varepsilon}(x) = \frac{1}{1 + e^{-x}}$ dans le cas d'un modèle logit et $F_{\varepsilon}(x) = \Phi(x)$ (fonction de répartition d'une loi $\mathcal{N}(0, 1)$) dans le cas d'un modèle probit. 
 \end{itemize}
 
@@ -1224,18 +1232,18 @@ suivantes :
 \begin{enumerate}
 \item \textbf{L’inclusion ou non des \emph{stop words}} (mots-vides). 
 Ces mots sont des mots communs qui, en général, n’apportent pas d’information cruciale dans l’analyse textuelle. 
-Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériorent même légèrement. 
-Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot-vide « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de $-0,25$).
+Les comparaisons de modèles indiquent qu’enlever ces mots n’améliore pas les performances de prédiction et les détériore même légèrement. 
+Cela peut s’expliquer par le fait que certains mots-vides renseignent sur un sentiment comme par exemple le mot « pas » qui pourrait contribuer à qualifier des tweets de négatifs (son sentiment moyen dans le corpus est de $-0,25$).
 
 \item \textbf{Le traitement des mots inconnus}. 
-La base qui a servi à entraîner le modèle des \textbf{word-embeddings} est différente de celle que l'on utilise pour la prédiction des sentiments.
-Ainsi, il existe des mots pour lesquels on ne connaît pas la représentation vectorielle. 
+La base qui a servi à constituer les \emph{word-embeddings} avec \emph{word2vec} est différente de celle que l'on utilise pour la prédiction des sentiments.
+Ainsi, il existe des mots dont on ne connaît pas la représentation vectorielle. 
 Deux options ont été retenues pour traiter ces mots. 
-La première est de retirer ces mots des tweets analysés afin qu'ils n’influent pas sur la décision du sentiment. 
+La première est de les retirer des tweets analysés afin qu'ils n’influent pas sur la décision du sentiment. 
 La seconde est de leur attribuer la valeur du vecteur correspondant aux mots rares (vecteur « lowfrequency », voir partie \ref{subsec:baseentrainement}) en partant du principe que s'ils sont absents du corpus d'entraînement du modèle \emph{word2vec}, ce sont bien des mots très peu fréquents. 
 C’est cette deuxième option qui semble donner des résultats légèrement meilleurs, ce qui peut signifier que l’on capte alors le fait que les mots peu fréquents ne sont en moyenne pas neutres (plutôt positifs ou négatifs\footnote{En utilisant le modèle logit retenu, la prévision d'une \emph{sentence-embedding} composée uniquement du mot « lowfrequency » donne $\widehat{\mathbb{P}}(Y_i = 1 | X_{lowfrequency}) = 0,87$, ce qui laisse supposer que les mots-rares ont une consonance davantage positive.}). 
 
-\item \textbf{La modélisation probit ou logit}. En plus de comparer les AUC des différentes spécifications ci-dessus,  on compare à spécification fixée les modèles logit et probit avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les mêmes résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
+\item \textbf{La modélisation probit ou logit}. En plus de comparer les AUC des différentes spécifications ci-dessus, on compare à spécification fixée les modèles logit et probit avec des critères économétriques (AIC, BIC). C’est le modèle logit qui permet d’obtenir les meilleurs résultats, quels que soient les choix faits par ailleurs concernant les mot-vides et les mots inconnus.
 
 \end{enumerate}
 
@@ -1248,31 +1256,31 @@ L'\emph{accuracy} de ce modèle est de 69,8 \%\footnote{Cette valeur de
   de d'entraînement et comme celui-ci était très proche de 0,5
   (\(\gamma^* = 0,49\)), pour une \emph{accuracy} de seulement 70,0 \%,
   nous avons conservé le seuil médian de \(0,5\).}, valeur inférieure au
-modèle de référence de la partie \ref{sec:sentiments} (89,1 \%).
+modèle lexical (89,1 \%).
 
 \subsubsection{Les limites des modèles
 utilisés}\label{les-limites-des-moduxe8les-utilisuxe9s}
 
-La bonne performance du modèle de référence (sentiment moyen des mots
-par tweets) par rapport au modèle mobilisant les \emph{word-embedding}
+La bonne performance du modèle lexical (sentiment moyen des mots par
+tweet) par rapport au modèle logit (sur les \emph{sentence-embeddings})
 peut s'expliquer par plusieurs facteurs.
 
 \paragraph{Les mots inconnus}\label{les-mots-inconnus}
 
 Une première explication est la différence entre les deux modèles en
-termes de mots inconnus. Nous l'avons vu, pour le modèle de référence,
-1,4 \% des mots utilisés dans les tweets de la base test des tweets les
+termes de mots inconnus. Nous l'avons vu, pour le modèle lexical, 1,4 \%
+des mots utilisés dans les tweets de la base test des tweets sur les
 transports (13,2 \% du vocabulaire) sont absents de la base
-d'entraînement. Pour le modèle basé sur les \emph{word-embedding}, il
-faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne
-disposons pas de vecteurs-mots. Ainsi, les mots inconnus sont bien plus
-nombreux puisqu'ils représentent 4,6 \% des mots (36,2 \% du
-vocabulaire).
+d'entraînement. Pour le modèle logit basé sur les
+\emph{sentence-embeddings}, il faut mécaniquement ajouter aux mots
+inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots.
+Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent
+4,6 \% des mots (36,2 \% du vocabulaire).
 
 Toutefois, la présence de mots inconnus ne semble pas biaiser la
 prédiction du sentiment d'un tweet. En effet, la distribution de la part
-des mots inconnus est étonnamment similaire selon si on se restreint aux
-tweets bien prédits ou à ceux mal prédits (figure
+des mots inconnus est étonnamment similaire quand on se restreint aux
+tweets bien prédits et à ceux mal prédits (figure
 \ref{fig:mots_inconnus}).
 
 \begin{figure}[ht]
@@ -1287,15 +1295,15 @@ tweets bien prédits ou à ceux mal prédits (figure
 transports
 urbains}\label{le-processus-dannotation-utilisuxe9-pour-les-tweets-sur-les-transports-urbains}
 
-L'éventualité que la méthode de référence reproduise en partie le
-processus qui a été utilisé pour générer les sentiments de la base sur
-les transports urbains pourrait également être une explication de la
-surperformance du modèle de référence. En effet, nous ne disposons pas
-de la méthodologie qui a permis d'annoter ces tweets et nous avons pu
-relever quelques incohérences dans les sentiments attribués à certains
-tweets. Cela peut laisser supposer que l'annotation n'a pas été purement
-manuelle. Comme de nombreux autres, le tweet très vraisemblablement
-ironique ci-dessous a en effet été qualifié de positif.
+L'éventualité que le modèle lexical reproduise en partie le processus
+qui a été utilisé pour générer les sentiments de la base sur les
+transports urbains pourrait également être une explication de la
+surperformance du modèle lexical. En effet, nous ne disposons pas de la
+méthodologie qui a permis d'annoter ces tweets et nous avons pu relever
+quelques incohérences dans les sentiments attribués à certains tweets.
+Cela peut laisser supposer que l'annotation n'a pas été purement
+manuelle. Comme de nombreux autres, le tweet ci-dessous, très
+vraisemblablement ironique, a par exemple été qualifié de positif.
 
 \begin{quote}
 \LARGE \textbf{``}\normalsize \emph{C'est cool de payer un abonnement de 180 euros par mois pour attendre 1h le bus.} \LARGE \textbf{''}\normalsize
@@ -1304,11 +1312,11 @@ ironique ci-dessous a en effet été qualifié de positif.
 \paragraph{\texorpdfstring{Le
 \emph{domain-shift}}{Le domain-shift}}\label{le-domain-shift}
 
-Une dernière explication possible pourrait être du à ce qu'on appelle le
+Une dernière explication possible pourrait être ce qu'on appelle le
 \emph{« domain shift »} ou changement de domaine. Les techniques
 d'apprentissage automatique sont souvent confrontées à un défi majeur :
 le fait que les modèles soient entraînés sur des données différentes de
-celles que l'on va effectivement utiliser : c'est ce que l'on appelle le
+celles que l'on va effectivement utiliser, c'est ce que l'on appelle le
 \emph{dataset shift}\footnote{Les éléments en lien avec le \emph{dataset shift}, et plus particulièrement le \emph{domain shift}, proviennent de \cite{Candela}}.
 Bien que des solutions comme la correction de biais de sélection des
 échantillons, ou encore celle des données déséquilibrées, soient
@@ -1320,30 +1328,30 @@ l'utilisation croissante des méthodes de \emph{machine learning}.
 Le changement de domaine se caractérise par un changement de la nature,
 du «~domaine~» des données utilisées. Dans le cas de
 \emph{deep-learning} sur des données de photographie, il pourrait par
-exemple s'agir de traiter de corpus de photos prises par des appareil
-photo calibrés de manière différentes (contraste, luminosité\dots) .
+exemple s'agir de traiter de corpus de photos prises par des appareils
+photo calibrés de manières différentes (contraste, luminosité\dots) .
 Dans notre cas précis, il s'agit de la différence entre les données de
 tweets publiés en France entre 2013 et 2017 et les données de tweets sur
-les transports urbains, qui portent sur un sujet très spécifique et pour
-lesquels certains mots ont peut-être une interprétation spécifique en
-termes de sentiments. Modéliser le \emph{domain shift} implique donc
+les transports urbains. Ces derniers portent sur un sujet très
+spécifique et certains mots ont peut-être une interprétation spécifique
+en termes de sentiments. Modéliser le \emph{domain shift} implique donc
 d'estimer le passage d'une représentation à une autre en utilisant des
 informations de distribution\footnote{La correction gamma
   (représentation paramétrique non linéaire de l'intensité des pixels)
   est par exemple une manière de pouvoir traiter le \emph{domain shift}
-  lié à l'utilisation d'appareil photos différents.}.
+  lié à l'utilisation d'appareils photo différents.}.
 
 L'idée n'est pas ici de modéliser mathématiquement le \emph{domain
-shift}\footnote{En quelque mot, pour modéliser mathématiquement un
+shift}\footnote{En quelques mots, pour modéliser mathématiquement un
   \emph{domain shift} on considérerait une variable latente «~idéale~»
   \(x_0\) (une base de tweets de référence), jamais observée mais qui
   influerait sur \(y\) (l'indice mensuel). Nous observons uniquement
-  \(x\) telle \(x=F(x_0)\) avec \(F\) qui représente la transformation
-  de la base de tweets de référence à la base de tweets réellement
-  utilisée, qui peut varier en fonction de la base de données \(x\)
-  utilisée. La distribution \(\mathbb P(y\mid x_0)\) (de l'indice
+  \(x\) telle que \(x=F(x_0)\) avec \(F\) qui représente la
+  transformation de la base de tweets de référence à la base de tweets
+  réellement utilisée, qui peut varier en fonction de la base de données
+  \(x\) utilisée. La distribution \(\mathbb P(y\mid x_0)\) (de l'indice
   mensuel sachant le jeu de tweets idéal utilisé) est considérée comme
-  étant la même pour les deux jeux de tweets utilisée (base annotée sur
+  étant la même pour les deux jeux de tweets utilisés (base annotée sur
   les transports urbains et base de tweets postés en France entre 2013
   et 2017). En revanche, cette distribution est modifiée si \(F\) est
   modifiée.} mais de remarquer que la base de tweets sur les transports
@@ -1355,7 +1363,7 @@ vocabulaire spécifique qui y est employé\footnote{Les mots «~bus~» (3800
 part le ton particulièrement ironique de nombreux tweets\footnote{Comme
   en témoignent ces deux tweets «~1h de retard la SNCF, vous savez pas
   l'amour que je vous porte~» et «~J'ai passé 20 superbes minutes dans
-  le RER collé à des gens que je ne connaissais pas~». Par ailleurs
+  le RER collé à des gens que je ne connaissais pas~». Par ailleurs,
   parmi les 10 mots qui appartiennent le plus à des tweets mal prédits,
   4 peuvent être utilisés pour manier l'ironie (rire, mdr, ptdr et
   mdrrr).}.
@@ -1370,36 +1378,36 @@ tweets annotés\footnote{Cette base disponible sur github
   un sentiment. Son désavantage est que la traduction est de mauvaise
   qualité et sûrement effectuée depuis un logiciel de traduction
   automatique.} indépendante des autres bases. Avec cette nouvelle base,
-l'\emph{accuracy} du modèle basé sur les \emph{word-embedding} est cette
-fois-ci supérieure à celle de l'approche de référence (61,9 \% contre
+l'\emph{accuracy} du modèle basé sur les \emph{sentence-embeddings} est
+cette fois-ci supérieure à celle de l'approche lexicale (61,9 \% contre
 55,9 \%).
 
 Cette nouvelle base test permet certainement de corriger une partie des
 biais évoqués plus haut qui pouvaient expliquer la surperformance du
-modèle de référence par rapport au modèle utilisant les vecteurs mots~:
+modèle lexical par rapport au modèle logit utilisant les vecteurs-mots~:
 
 \begin{itemize}
 \item
   La base de test de «~github~», bien qu'assez mal traduite, ne semble
   pas à notre connaissance avoir été annotée par des techniques
-  d'analyse de sentiment similaires à la méthode de référence ;
+  d'analyse de sentiment similaires au modèle lexical ;
 \item
   Ses tweets sont nombreux et semblent traiter de sujets divers
   contrairement aux tweets sur les transports, plus ciblés ;
 \item
-  Le modèle de \emph{word-embeddings} semble mieux réagir à la présence
-  de mots inconnus, ici plus nombreux que précédemment\footnote{52,0 \%
-    des mots du vocabulaire et 12,7 \% des mots de la base test de
-    github ne sont pas dans la base d'entraînement sur les transports et
-    52,8 \% des mots du vocabulaire et 13,0 \% des mots ne sont ni dans
-    la base d'entraînement de tweets sur les transports ni dans le
-    vocabulaire des \emph{word-embeddings}. Ainsi, les mots de la base
-    test «~github~» qui ne sont pas dans la base d'entraînement
-    «~transports~» sont rarement dans les vecteurs-mots de
-    \emph{word2vec}.}, que le modèle de référence. Comme il présente une
-  efficacité similaire à lorsqu'il était évalué sur une autre base de
-  test, il semble être plus général et s'adapter à des tweets aux
-  contenus plus variés.
+  Le modèle logit sur les \emph{sentence-embeddings} semble mieux réagir
+  à la présence de mots inconnus, ici plus nombreux que
+  précédemment\footnote{52,0 \% des mots du vocabulaire et 12,7 \% des
+    mots de la base test de github ne sont pas dans la base
+    d'entraînement sur les transports et 52,8 \% des mots du vocabulaire
+    et 13,0 \% des mots ne sont ni dans la base d'entraînement de tweets
+    sur les transports ni dans le vocabulaire des
+    \emph{word-embeddings}. Ainsi, les mots de la base test «~github~»
+    qui ne sont pas dans la base d'entraînement «~transports~» sont
+    rarement dans les vecteurs-mots de \emph{word2vec}.}, que le modèle
+  lexical. Comme il présente une efficacité similaire à lorsqu'il était
+  évalué sur une autre base de test, il semble être plus général et
+  s'adapter à des tweets aux contenus plus variés.
 \end{itemize}
 
 \subsection{Sentiments des tweets et enquête de conjoncture auprès des
@@ -1430,8 +1438,8 @@ prendre en considération :
   la publication du mois \(m+1\)).
 \item
   Notre indicateur de sentiment est brut, il n'est donc pas corrigé des
-  varations saisonnières et des jours ouvrables (CVS-CJO). \emph{A
-  contrario}, l'indicateur synthétique issu de l'enquête Camme peut-être
+  variations saisonnières et des jours ouvrables (CVS-CJO). \emph{A
+  contrario}, l'indicateur synthétique issu de l'enquête Camme peut être
   considéré comme CVS-CJO puisqu'il est construit à partir de soldes
   d'opinion CVS-CJO. Pour comparer notre indicateur à l'indicateur issu
   de Camme, deux solutions sont possibles :
@@ -1445,9 +1453,9 @@ prendre en considération :
   (annexe \ref{annexe:cvscjo}).
 \item
   Utiliser un indicateur synthétique brut issu de Camme. Pour cela, nous
-  avons construit un nouvel indicateur synthétique en appliquant, aux
-  soldes d'opinion bruts, les poids associés à chaque variable CVS-CJO
-  de l'indicateur publié par l'Insee\footnote{Pour connaître ces poids,
+  avons construit un nouvel indicateur synthétique en appliquant aux
+  soldes d'opinion bruts les poids associés à chaque variable CVS-CJO de
+  l'indicateur publié par l'Insee\footnote{Pour connaître ces poids,
     nous avons reproduit l'analyse factorielle utilisée pour construire
     l'indicateur synthétique publié par l'Insee. Faire une analyse
     factorielle statique revient à faire une moyenne pondérée des 8
@@ -1464,23 +1472,23 @@ dans ces cas la première approche.
 \subsubsection{Comparaison entre les séries}\label{subsec:compseries}
 
 Le graphique \ref{fig:bslogcam} présente l'indicateur de sentiment
-construit à partir de notre modèle \emph{word2vec}, celui construit à
-partir du modèle de référence et l'indicateur synthétique brut issu de
+construit à partir des \emph{sentence-embeddings}, celui construit à
+partir du modèle lexical et l'indicateur synthétique brut issu de
 l'enquête Camme (retardé). Même si les tendances des deux indicateurs de
 sentiment diffèrent de celle de l'indicateur issu de l'enquête Camme, on
 observe plusieurs évolutions similaires (par exemple le pic entre mars
 et octobre 2012). Par ailleurs, l'indicateur construit à partir du
-modèle de référence parait plus bruité que l'indicateur de sentiment
-construit à partir de notre modèle \emph{word2vec}. Cela peut venir du
-fait que, dans les tweets utilisés pour construire les indicateurs
-mensuels, il y a bien plus de mots inconnus au modèle de référence basé
-sur les tweets sur les transports urbains (20,7 \%) qu'à notre modèle
-\emph{word2vec} qui comporte de nombreux \emph{vecteurs-mots} (13,6 \%).
+modèle lexical parait plus bruité que l'indicateur de sentiment sur les
+\emph{word-embeddings}. Cela peut venir du fait que, dans les tweets
+utilisés pour construire les indicateurs mensuels, il y a bien plus de
+mots inconnus dans le modèle lexical basé sur les tweets sur les
+transports (20,7 \%) que dans le modèle logit qui comporte de nombreux
+\emph{vecteurs-mots} (13,6 \%).
 
 \begin{figure}[htp]
 {\centering \includegraphics[width =\textwidth]{img/rmd-graphSentiments-1}}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Indicateur synthétique brut de confiance des ménages de l'enquête Camme (retardé) et indicateurs mensuels de sentiment construits à partir de notre modèle \emph{word2vec} et à partir de notre modèle de référence.}\label{fig:bslogcam}
+\caption{Indicateur synthétique brut de confiance des ménages de l'enquête Camme (retardé) et indicateurs mensuels de sentiment construits à partir de nos modèles logit \emph{word-embedding} et lexical.}\label{fig:bslogcam}
 \footnotesize
 \emph{Note de lecture : tous les indicateurs sont centrés-réduits (de moyenne nulle et de variance unitaire) entre janvier 2011 et décembre 2018.}
 
@@ -1493,15 +1501,15 @@ l'indicateur Camme, nous utilisons un algorithme de déformation
 temporelle dynamique --- \emph{Dynamic Time Warping} (DTW) (voir par
 exemple \cite{dtw} pour son implémentation en \faRProject{} que nous
 utilisons ici). Cet algorithme permet de calculer une distance entre
-deux séries temporelles robuste aux différentes amplitudes et aux
+deux séries temporelles robuste aux différences d'amplitude et aux
 décalages temporels. Ainsi, la distance entre une série et la même série
 retardée sera nulle (les deux séries représentent la même information)
-alors que ce ne serait pas le cas si on utilisait d'autres distances,
+alors que cela ne serait pas le cas si on utilisait d'autres distances,
 comme la distance euclidienne. Cette méthode conclut sur le fait que la
 similarité entre l'indicateur Camme et notre indicateur de sentiment
-issu du modèle de référence est légèrement plus grande que celle entre
-l'indicateur Camme et l'indicateur de sentiment calculé à partir de
-notre modèle \emph{word2vec}.
+issu du modèle lexical est légèrement plus grande que celle entre
+l'indicateur Camme et l'indicateur de sentiment calculé à partir du
+modèle logit sur les \emph{sentence-embeddings}.
 
 \subsubsection{Et dans une optique de prévision
 ?}\label{et-dans-une-optique-de-pruxe9vision}
@@ -1519,17 +1527,16 @@ tous les indicateurs (confirmée par les tests de Philipps-Perron et
 KPSS), y compris lorsqu'ils sont désaisonnalisés. C'est pourquoi nous
 différencions les séries désaisonnalisées pour les rendre stationnaires.
 
-L'indicateur de sentiment issu du modèle \emph{word2vec} cause au sens
-de Granger l'indicateur synthétique issus de l'enquête Camme (p-valeur
-de 0,05). C'est-à-dire que la connaissance de l'évolution de notre
-second indicateur de sentiment apporte de l'information pour prévoir
-l'évolution de l'indicateur synthétique de l'enquête Camme. Ce n'est pas
-le cas pour le premier indicateur (référence) calculé uniquement à
-partir des sentiments des mots des tweets (p-valeur de 0,58), malgré la
-similitude entre ces deux modèles (partie \ref{subsec:compseries}).
+L'indicateur de sentiment issu du modèle logit sur les
+\emph{sentence-embeddings} cause au sens de Granger l'indicateur
+synthétique issu de l'enquête Camme (p-valeur de 0,05). C'est-à-dire que
+la connaissance de l'évolution de notre second indicateur de sentiment
+apporte de l'information pour prévoir l'évolution de l'indicateur
+synthétique de l'enquête Camme. Ce n'est pas le cas pour le premier
+indicateur calculé à partir du modèle lexical (p-valeur de 0,58).
 
 Ainsi, l'exploitation des résultats de \emph{word2vec} permet,
-contrairement au modèle de référence, de construire un indicateur de
+contrairement au modèle lexical, de construire un indicateur de
 sentiment anticipé d'un mois utile pour prévoir l'indicateur synthétique
 de l'enquête Camme. En construisant un indicateur de sentiment à partir
 d'un modèle logit entraîné sur la base présentée en
@@ -1537,7 +1544,7 @@ d'un modèle logit entraîné sur la base présentée en
 cette partie \ref{sec:camme}\footnote{En revanche, les mots inconnus y
   sont plus fréquents et le modèle obtenu présente de moins bons
   résultats en termes d'\emph{accuracy} à la fois sur une base test
-  issue cette base mais également provenant de la base sur les
+  issue de cette base mais également provenant de la base sur les
   transports urbains.}.
 
 \section*{Discussion et
@@ -1547,7 +1554,7 @@ prolongements}\label{discussion-et-prolongements}
 Ce travail révèle que l'utilisation d'une méthode de
 \emph{word-embedding} entraînée sur des tweets permet, grâce à un modèle
 simple, de construire un indicateur de sentiment pouvant être comparé à
-des indices d'opinion produits grâce à des enquêtes de la statistique
+des indices d'opinion produits par des enquêtes de la statistique
 publique. En comparant nos résultats à l'indicateur synthétique de
 confiance des ménages produit par l'Insee, nous avons montré
 qu'exploiter les représentations vectorielles des mots améliorait de
@@ -1589,8 +1596,8 @@ d'identifier de quel sujet il traite. Une étape de sélection de données
 semble en effet indispensable pour que les tweets annotés de la base
 d'entraînement soient en lien avec l'enquête Camme de l'Insee. Cela
 pourrait passer non seulement par l'analyse approfondie du contenu du
-tweet (notamment via l'utilisation de hashtags) mais également son
-auteur (médias, faux comptes, individus lambdas\dots).
+tweet (notamment via l'utilisation de \emph{hashtags}) mais également
+son auteur (médias, faux comptes, individus lambdas\dots).
 
 En amont de \emph{word2vec}, un \textbf{prétraitement plus approfondi
 des tweets} pourrait contribuer à l'amélioration de la qualité des
@@ -1637,9 +1644,9 @@ compréhension et de l'implémentation du modèle, nous nous sommes
 également initiés aux tests d'hyperparamètres et à son évaluation sur un
 corpus fictif (partie \ref{sec:evaluation}) grâce à plusieurs méthodes
 (calculs de similarités cosinus, opérations vectorielles sur les mots,
-méthodes de réduction de dimension ACP et T-SNE et jugement humain). Il
+méthodes de réduction de dimension ACP et t-SNE et jugement humain). Il
 a été fascinant d'observer à quel point le modèle présente d'excellents
-résultats en termes de capture sémantiques des mots dans un texte.
+résultats en termes de capture sémantique des mots dans un texte.
 
 Dans la partie \ref{sec:sentimentalAnalysis} dédiée à l'analyse de
 sentiment, nous avons pu appliquer sur un cas concret plusieurs méthodes
@@ -1647,7 +1654,7 @@ sentiment, nous avons pu appliquer sur un cas concret plusieurs méthodes
 binaire, analyse de séries temporelles, minimisation du risque empirique
 / validation croisée\dots). L'entraînement et le test du modèle logit
 dont les prédicteurs correspondent aux dimensions des
-\emph{word-embedding} nous a permis de remarquer qu'en plus de
+\emph{word-embeddings} nous a permis de remarquer qu'en plus de
 représenter la proximité entre mots, le modèle \emph{word2vec} permet de
 capter dans une certaine mesure le sentiment de phrases.
 
@@ -1666,7 +1673,7 @@ Par ailleurs, les bases d'entraînement et de test utilisées pour
 entraîner le modèle comportent de nombreuses limites
 (\emph{domain-shift}, processus d'annotation, mots inconnus).
 L'identification de ces limites invite à de nombreuses pistes
-d'amélioration identifiées dans la partie précédente.
+d'amélioration précisées dans la partie précédente.
 
 Les méthodes d'apprentissage étant en perpétuelle évolution, le modèle
 \emph{word2vec} mis en exergue en 2013, connaît déjà des
@@ -1711,8 +1718,8 @@ traité. Nous avons ici retenu deux distances classiquement utilisées :
   \(\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}\)
   dans \cite{Mikolov}).\\
   Toutefois, cette dépendance à la fréquence d'apparition peut également
-  fausser l'analyse. C'est pourquoi nous avons choisi, par la suite, de
-  normaliser les vecteurs :
+  fausser l'analyse. C'est pourquoi il est utile de normaliser les
+  vecteurs :
   \[ d_{e}(\vec{u},\vec{v}) = \left\| \frac{\vec{u}}{\left\| \vec{u} \right\|_2} - \frac{\vec{v}}{\left\| \vec{v} \right\|_2}  \right\|_2\]
 \item
   \textbf{la similarité cosinus} :
@@ -1764,10 +1771,10 @@ individu. Mathématiquement, pour définir l'ACP, on définit deux espaces
   nous utiliserons \(M =I_p\) la matrice identité. La norme et le
   produit scalaire associés à \(M\) sont donc euclidiens.
 \item
-  L'\emph{espace des variables}, de dimension \(n\), auquel associe la
-  métrique \(N=diag(p_1,...,p_n)\) avec \(\sum_{i=1}^np_i=1\). La
+  L'\emph{espace des variables}, de dimension \(n\), auquel on associe
+  la métrique \(N=diag(p_1,...,p_n)\) avec \(\sum_{i=1}^np_i=1\). La
   matrice \(N\) représente le poids donné à chaque individu. Par
-  simplification nous utiliserons ici des poids uniformes :
+  simplification, nous utiliserons ici des poids uniformes :
   \(N=\frac{1}{n}I_n\). Afin de donner le même poids à toutes les
   variables, chaque variable est centrée-réduite : cela revient à
   centrer-réduire les colonnes de notre matrice \(X\). Nous notons
@@ -1849,7 +1856,7 @@ factorielles des individus, avec \(V = (v_1,\dots,v_q)\) la matrice des
 vecteurs propres. Nous utilisons ici l'ACP en vue d'identifier les
 individus (ici, nos mots) qui sont proches. Pour ce faire, il suffit de
 représenter les coordonnées factorielles de la matrice \(F\) dans des
-repères, en général en 2 dimensions pour une question de lisibilité.
+repères, en général en deux dimensions pour une question de lisibilité.
 Deux mots apparaissant dans des contextes similaires seront proches sur
 ce repère et orientés dans la même direction.
 
@@ -1906,7 +1913,7 @@ de l'algorithme --- plutôt qu'une loi gaussienne\footnote{Dans un espace
 
 Afin d'obtenir les \(g_i\), on minimise, par descente de gradient, la
 divergence de Kullback--Leibler entre les distributions de probabilité P
-et Q des \(p_{ij}\) et \(q_{ij}\) définis par :
+et Q des \(p_{ij}\) et \(q_{ij}\) définie par :
 \[KL(P,Q) = \sum_{i \neq j} { p_{ij} \log{\frac{p_{ij}}{q_{ij}}}} \qquad\text{avec}\qquad p_{ij} = \frac{p_{i|j} + p_{j|i}}{2n}\]
 
 Comme dans l'algorithme de l'ACP, l'algorithme de t-SNE nous permet
@@ -1985,20 +1992,20 @@ indicateurs étudiés. Même si les séries brutes semblent très proches des
 séries désaisonnalisées, la présence de saisonnalité est confirmée par
 le F-test proposé par \cite{lytras}.
 
-Dans cette annexe nous présentons de quelle manière nous
-désaisonnalisons nos deux indicateurs de sentiment calculés à partir des
-tweets. Pour rappel, l'indicateur synthétique de confiance des ménages
-publié par l'Insee grâce à l'enquête Camme est calculé à partir de
-soldes d'opinion CVS-CJO, c'est pourquoi on considère ici qu'il est
-CVS-CJO. L'indicateur brut associé correspond à l'indicateur que l'on
-obtient en utilisant les mêmes soldes d'opinion et les mêmes
-coefficients que dans l'indicateur publié par l'Insee mais en utilisant
-les soldes d'opinion bruts plutôt que CVS-CJO.
+Dans cette annexe, nous présentons la manière dont nous désaisonnalisons
+nos deux indicateurs de sentiment calculés à partir des tweets. Pour
+rappel, l'indicateur synthétique de confiance des ménages publié par
+l'Insee grâce à l'enquête Camme est calculé à partir de soldes d'opinion
+CVS-CJO, c'est pourquoi on considère ici qu'il est CVS-CJO. L'indicateur
+brut associé correspond à l'indicateur que l'on obtient en utilisant les
+mêmes soldes d'opinion et les mêmes coefficients que dans l'indicateur
+publié par l'Insee mais en utilisant les soldes d'opinion bruts plutôt
+que CVS-CJO.
 
 \begin{figure}[htp]
 {\centering\includegraphics[width = \textwidth]{img/rmd-graphCVS-1}}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Comparaison des séries brutes et CVS-CJO de l'indicateur synthétique de confiance des ménages de l'enquête Camme et des indicateurs mensuels de sentiment que nous avons construits à partir de nos deux modèles (celui utilisant  \emph{word2vec} et le modèle référence).}\label{fig:cvscjo}
+\caption{Comparaison des séries brutes et CVS-CJO de l'indicateur synthétique de confiance des ménages de l'enquête Camme et des indicateurs mensuels de sentiment que nous avons construits à partir des modèles logit et lexical.}\label{fig:cvscjo}
 \footnotesize
 
 \emph{L'indicateur Camme brut correspond à l'indicateur que l'on obtient en utilisant les mêmes soldes d'opinion et les mêmes coefficients que dans l'indicateur synthétique publié par l'Insee mais en utilisant les soldes d'opinion bruts plutôt que CVS-CJO.}
@@ -2128,9 +2135,8 @@ omettons le régresseur \(LY_t\) dans \eqref{eq:eqcjotd} et
 significatif lorsque \(\exists i\in \{1,2,\dots,6\}\::\:\beta_i\ne0\) ou
 lorsque \(\tilde\beta_1\ne0\).
 
-\faArrowCircleRight{} Pour nos indicateurs de sentiment (modèle
-logistique à partir de \emph{word2vec} ou modèle de référence construit
-à partir du sentiment moyen des mots), nous ne détectons pas d'effet
+\faArrowCircleRight{} Pour nos indicateurs de sentiment (construits à
+partir des modèles logit et lexical), nous ne détectons pas d'effet
 jours ouvrables. Cela ne signifie pas pour autant que le type de jour
 n'a pas d'effet sur nos indicateurs de sentiment, mais que nous
 n'arrivons pas à en estimer un. Cela peut venir de la méthode de
@@ -2181,15 +2187,15 @@ différentes composantes.
 Le graphique \ref{fig:coefcvscjo} trace l'évolution des coefficients
 saisonniers pour nos indicateurs de sentiment. L'évolution des
 coefficients saisonniers de l'indicateur de sentiment calculé à partir
-modèle de référence suggère que la saisonnalité de cette série est
-faible. L'étude de ceux de l'indicateur calculé à partir du modèle
+du modèle lexical suggère que la saisonnalité de cette série est faible.
+L'étude de ceux de l'indicateur calculé à partir du modèle
 \emph{word2vec} suggère que les tweets sont globalement plus pessimistes
 en février et mars, et plus optimistes en avril, août et décembre.
 
 \begin{figure}[htp]
 {\centering\includegraphics[width = \textwidth]{img/rmd-graphCoefCVS-1}}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Composantes saisonnières des indicateurs mensuels de sentiment que nous avons construits à partir de nos deux modèles (celui utilisant  \emph{word2vec} et le modèle référence).}\label{fig:coefcvscjo}
+\caption{Composantes saisonnières des indicateurs mensuels de sentiment que nous avons construits à partir de nos deux modèles (logit et lexical).}\label{fig:coefcvscjo}
 \footnotesize
 
 \emph{La composante saisonnière a été estimée par la méthode X-12ARIMA.}
@@ -2204,7 +2210,7 @@ en février et mars, et plus optimistes en avril, août et décembre.
 \begin{thebibliography}{999}
 \bibitem[Bengio \emph{et al} (2003)]{Bengio} Bengio, Y., Ducharme, R., Vincent, P., Janvin, C. (2003). A Neural Probabilistic Language Model. JMLR, 3:1137–1155. \url{https://papers.nips.cc/paper/1839-a-neural-probabilistic-language-model.pdf}.
 \bibitem[Bojanowski et al. (2017)]{Bojanowski} Bojanowski, P., Grave, E., Joulin, A., \& Mikolov, T. (2017). Enriching word vectors with subword information. Transactions of the Association for Computational Linguistics, 5, 135-146. \url{https://www.mitpressjournals.org/doi/abs/10.1162/tacl_a_00051}.
-\bibitem[Boumedyen Billami \& Gala (2017)]{Boumedyen} Boumedyen Billami, M.,  Gala, N (2017). Création et validation de signatures sémantiques : application à la mesure de similarité sémantique et à la substitution lexicale. TALN 2017. \url{https://hal.archives-ouvertes.fr/hal-01528117/document}.
+\bibitem[Boumedyen Billami \& Gala (2017)]{Boumedyen} Boumedyen Billami, M., Gala, N (2017). Création et validation de signatures sémantiques : application à la mesure de similarité sémantique et à la substitution lexicale. TALN 2017. \url{https://hal.archives-ouvertes.fr/hal-01528117/document}.
 \bibitem[Candela et al. (2009)]{Candela} Candela, J. Q., Sugiyama, M., Schwaighofer, A., \& Lawrence, N. D. (2009) Dataset shift in machine learning. The MIT Press, 1, 5. \url{http://www.acad.bg/ebook/ml/The.MIT.Press.Dataset.Shift.in.Machine.Learning.Feb.2009.eBook-DDU.pdf}.
 \bibitem[Hutter, Hoos \& Leyton-Brown (2014)]{Hutter} Hutter, F., Hoos, H., Leyton-Brown, K., (2014). An Efficient Approach for Assessing Hyperparameter Importance. PMLR 32(1):754-762. \url{http://proceedings.mlr.press/v32/hutter14.pdf}.
 \bibitem[Jurafsky \& Martin (2019)]{Jurafsky} Jurafsky, D., Martin, J. H. (2019). Speech and Language Processing (3rd ed. draft). Prentice Hall. \url{https://web.stanford.edu/~jurafsky/slp3/edbook_oct162019.pdf}.
@@ -2214,11 +2220,11 @@ en février et mars, et plus optimistes en avril, août et décembre.
 \bibitem[Levy \& Golberg (2014)]{Levy2} Levy, O., Golberg, Y. (2014). Dependency-based word embeddings. ACL. \url{http://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization.pdf}.
 \bibitem[Lytras \emph{et al} (2007)]{lytras} Lytras, D. P., Feldpausch, R. M., Bell, W. R (2007). Determining Seasonality: A Comparison of Diagnostics from X-12-ARIMA, U.S. Census Bureau, presented at ICES III, June, 2007. \url{https://www.census.gov/ts/papers/ices2007dpl.pdf}.
 \bibitem[Martin et al. (2019)]{Martin} Martin, L., Muller, B., Suárez, P. J. O., Dupont, Y., Romary, L., de la Clergerie, É. V., \& Sagot, B. (2019). CamemBERT: a Tasty French Language Model. arXiv preprint arXiv:1911.03894. \url{https://arxiv.org/abs/1911.03894}.
-\bibitem[Mikolov \emph{et al} (2013a)]{Mikolov} Mikolov, T.,  Chen, K., Corrado, G., Dean, J. (2013a). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
+\bibitem[Mikolov \emph{et al} (2013a)]{Mikolov} Mikolov, T., Chen, K., Corrado, G., Dean, J. (2013a). Efficient Estimation of Word Representations in Vector Space. arXiv:1301.3781. \url{https://arxiv.org/pdf/1301.3781.pdf}.
 \bibitem[Mikolov \emph{et al} (2013b)]{MikolovNS} Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., and Dean, J. (2013b). Distributed representations of words and phrases and their compositionality, arXiv:1310.4546. \url{https://arxiv.org/pdf/1310.4546.pdf}.
 \bibitem[Pennington, Socher \& Manning (2014)]{Pennington} Pennington, J., Socher, R., Manning, C. D., (2014).  Glove: global vectors for word representation. Proc. of EMNLP,1532 – 1543. \url{https://www.aclweb.org/anthology/D14-1162.pdf}.
-\bibitem[{\v R}eh{\r u}{\v r}ek \& Sojka (2010)]{Rehurek} {\v R}eh{\r u}{\v r}ek, R.,  Sojka, P. (2010). Software Framework for Topic Modelling with Large Corpora. Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. p. 46--50, 5 pp. ISBN 2-9517408-6-7. \url{https://is.muni.cz/publication/884893/en}.
-\bibitem[Rubenstein \& Goodenough (1965)]{Rubenstein} Rubenstein, H.,  Goodenough, J. B. (1965). Contextual Correlates of Synonymy. Commun. ACM, 8 (10), 627–633. \url{https://dl.acm.org/doi/10.1145/365628.365657}.
+\bibitem[{\v R}eh{\r u}{\v r}ek \& Sojka (2010)]{Rehurek} {\v R}eh{\r u}{\v r}ek, R., Sojka, P. (2010). Software Framework for Topic Modelling with Large Corpora. Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. p. 46--50, 5 pp. ISBN 2-9517408-6-7. \url{https://is.muni.cz/publication/884893/en}.
+\bibitem[Rubenstein \& Goodenough (1965)]{Rubenstein} Rubenstein, H., Goodenough, J. B. (1965). Contextual Correlates of Synonymy. Commun. ACM, 8 (10), 627–633. \url{https://dl.acm.org/doi/10.1145/365628.365657}.
 \bibitem[Schakel \& Wilson (2015)]{Schakel} Schakel, A. M., Wilson, B. J. (2015). Measuring Word Significance using Distributed Representations of Words. arXiv:1508.02297. \url{https://arxiv.org/pdf/1508.02297v1.pdf}.
 \bibitem[Sennrich, Haddow \& Birch (2015)]{Sennrich} Sennrich, R., Haddow, B., \& Birch, A. (2015). Neural machine translation of rare words with subword units. arXiv preprint arXiv:1508.07909. \url{https://arxiv.org/pdf/1508.07909.pdf}.
 \bibitem[Tormene \emph{et al} (2008)]{dtw} Tormene P, Giorgino T, Quaglini S, Stefanelli M (2008). “Matching

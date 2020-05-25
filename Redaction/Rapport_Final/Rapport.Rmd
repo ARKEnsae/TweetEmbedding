@@ -154,7 +154,7 @@ C'est cette approche que nous étudions dans ce projet et dans la suite de ce ra
 \includegraphics[width=.6\textwidth]{img/cbow_skip_gram.png}
 \end{center}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Architecture des modèles Continuous bags of words (CBOW) et Skip-gram.}\label{fig:cbowskipgram}
+\caption{Architecture des modèles *Continuous bags of words* (CBOW) et *Skip-gram*.}\label{fig:cbowskipgram}
 %\vspace{-0.3cm}
 \footnotesize
 \emph{Source : \cite{Mikolov}}
@@ -162,7 +162,7 @@ C'est cette approche que nous étudions dans ce projet et dans la suite de ce ra
 
 
 
-Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition des mots contextes voisins d’un mot focus^[Comme dans les premiers modèles sémantiques dits *sparses*.], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire pour chacun des mots du vocabulaire et répond à la question (dans le cas Skip-gram) « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ».
+Pour transformer chaque mot en un vecteur, au lieu de simplement compter les fréquences d’apparition des mots contextes voisins d’un mot focus^[Comme dans les premiers modèles sémantiques dits *sparses*.], nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire pour chacun des mots du vocabulaire et répond à la question (dans le cas *Skip-gram*) « Est-ce que ce mot contexte est susceptible d’être voisin du mot focus ? ».
 Ce n'est pas la prédiction en elle-même qui nous intéresse, mais plutôt le poids du classifieur en sortie du modèle qui correspondra aux *word-embeddings*. 
 
 Les voisins d’un mot focus reposent sur un hyperparamètre : la fenêtre (*window* ou $w$). 
@@ -181,9 +181,9 @@ Dans notre exemple : ` [statistique, professeur], [statistique, de] `\dots
 Ainsi, la grande force du modèle d’apprentissage *word2vec* est qu’il est « auto-supervisé ». 
 En effet, comme nous avons vu plus haut, le corpus est considéré comme une donnée d'entraînement implicitement supervisée, ce qui nous évite d’avoir à mobiliser des corpus annexes annotés.
 
-## L’algorithme Skip-gram {#sec:skipgram}
+## L’algorithme *Skip-gram* {#sec:skipgram}
 
-L'objectif de cette partie est de décrire le fonctionnement de l'approche Skip-gram. 
+L'objectif de cette partie est de décrire le fonctionnement de l'approche *Skip-gram*. 
 
 Dans la suite de ce projet nous noterons $n$ la taille du vocabulaire (i.e. : le nombre de mots différents utilisés dans les tweets) et $dim$ la dimension retenue pour les *word-embeddings*.
 Comme décrit dans la partie \@ref(subsec:word2vec), l'approche *Skip-gram* peut être vue comme un réseau de neurones à deux couches avec :
@@ -200,7 +200,7 @@ Ainsi, la ligne $i$ de la matrice $W=\frac{W_e+W_s}{2}$ donnera la représentati
 
 Peu de traitements sont effectués sur la base initiale : nous mettons tout en minuscule, remplaçons les ponctuations par des espaces, mais laissons tous les chiffres et les accents. 
 Chaque phrase^[Dans notre cas une phrase correspond à un tweet, même si ce tweet peut être composé de plusieurs phrases.]
-est ensuite *tokénisée* par la chaîne de caractère correspondant à un espace `" "` : on considère qu'il y a autant de mots de que chaînes de caractères séparées par un espace^[Les mots composés sont donc considérés comme plusieurs mots distincts.]. Par exemple, la phrase :
+est ensuite *tokénisée* par la chaîne de caractères correspondant à un espace `" "` : on considère qu'il y a autant de mots de que chaînes de caractères séparées par un espace^[Les mots composés sont donc considérés comme plusieurs mots distincts.]. Par exemple, la phrase :
 \begin{quote}
 \LARGE \textbf{``}\normalsize \emph{Que pensez-vous de CE projet?(i.e. : qu'avez-vous retenu en 10min ?)} \LARGE \textbf{''}\normalsize
 \end{quote}
@@ -210,15 +210,15 @@ Nous effectuons enfin un traitement sur les mots rares. Si un mot apparaît stri
 
 Comme décrit dans la partie \@ref(subsec:word2vec), les couples `[focus, contexte]` dépendent d'un hyperparamètre : la fenêtre $w$. Pour éviter que les mots trop fréquents, souvent peu informatifs (comme les pronoms personnels), soient sur-entraînés, deux traitements sont effectués :
 
-1. Pour chaque phrase on effectue un sous-échantillonnage (*subsampling*). Pour chaque mot $w_i$ on note $z(w_i)$ la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparaît et le nombre total de mots. La probabilité de garder un mot le mot $w_i$ est donnée par : 
+1. Pour chaque phrase on effectue un sous-échantillonnage (*subsampling*). Pour chaque mot $w_i$ on note $z(w_i)$ la proportion d'apparition de ce mot, c'est-à-dire le rapport entre le nombre de fois que ce mot apparaît et le nombre total de mots. La probabilité de garder le mot $w_i$ est donnée par : 
 $$
 \mathbb P(w_i) = \min\left\{\left(1+\sqrt{\frac{z(w_i)}{q}}  \right)
 \times
 \frac{q}{z(w_i)},1\right\}
 $$
-Le paramètre $q$ appelé « sample » --- échantillonnage --- contrôle le nombre de mots sous-échantillonnés (plus il est grand, plus la probabilité de garder le mot $w_i$ est grande). Si $q$ vaut 0,001 (valeur par défaut) alors par exemples :  
+Le paramètre $q$ appelé « sample » --- échantillonnage --- contrôle le nombre de mots sous-échantillonnés (plus il est grand, plus la probabilité de garder le mot $w_i$ est grande). Si $q$ vaut 0,001 (valeur par défaut) alors par exemple :  
 
-    - $\mathbb P(w_i) = 1$ ($w_i$ est toujours gardé) lorsque $z(w_i)\leq 0,0026$, c'est-à-dire si $w_i$ représentent moins de 0,26 \% du nombre total de mots.  
+    - $\mathbb P(w_i) = 1$ ($w_i$ est toujours gardé) lorsque $z(w_i)\leq 0,0026$, c'est-à-dire si $w_i$ représente moins de 0,26 \% du nombre total de mots.  
     - $\mathbb P(w_i) = 0,5$ (50 \% de chance de garder $w_i$) lorsque $z(w_i)=0,00746$.  
     - $\mathbb P(w_i) = 0,033$ (3,3 \% chance de garder $w_i$) lorsque $z(w_i)=1,0$ (si le corpus n'est constitué que du mot $w_i$, ce qui serait bien sûr absurde).
     
@@ -237,7 +237,7 @@ Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble 
 
 ### Descente de gradient {#subsec:descentedegradient}
 
-Pour chaque couple `[focus, contexte]`, les matrice $W_e$ et $W_s$ sont mises à jour par descente de gradient. 
+Pour chaque couple `[focus, contexte]`, les matrices $W_e$ et $W_s$ sont mises à jour par descente de gradient. 
 C'est-à-dire que les matrices $\theta^{(t)} = W_e$ et $\theta^{(t)} = W_s$ obtenues après la $t$^ème^ itération de l'algorithme sont mises à jour par l'équation :
 $$
 \theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta Loss(\theta^{(t)})
@@ -248,7 +248,7 @@ Le modèle *word2vec* a initialement été construit en utilisant une fonction d
 
 #### Version softmax {#subsec:softmax}
 
-Soit $w_1,\,\dots,\,w_T$ les mots utilisés pour entraîner le modèle. L'objectif du modèle Skip-gram est, étant donné un mot focus, de prévoir quels sont les mots voisins contextes dans une certaine fenêtre $w$. Mathématiquement, on cherche à maximiser la quantité :
+Soit $w_1,\,\dots,\,w_T$ les mots utilisés pour entraîner le modèle. L'objectif du modèle *Skip-gram* est, étant donné un mot focus, de prévoir quels sont les mots voisins contextes dans une certaine fenêtre $w$. Mathématiquement, on cherche à maximiser la quantité :
 \begin{equation}
 \frac 1 T\sum_{t=1}^T\sum_{-w\leq j \leq w,\,j\ne 0} \log \mathbb P(w_{t+j}\vert w_{t})
 (\#eq:objSoftMax)
@@ -288,7 +288,7 @@ La taille du vocabulaire pouvant être très grande (par exemple, dans notre bas
 
 <!-- - La complexité du calcul de $\nabla_\theta \log\mathbb P(w_{contexte}\vert w_{focus})$ dans l'étape de descente de gradient est aussi proportionnelle à la taille du vocabulaire. \colorbox{BurntOrange}{à conserver ? Alain} -->
 
-C'est pourquoi la version *softmax* est très peu utilisée dans les implémentations de Skip-gram. Une approche alternative, le *negative sampling* avec une fonction sigmoïde, moins gourmande en temps de calcul, est alors souvent préférée^[
+C'est pourquoi la version *softmax* est très peu utilisée dans les implémentations de *Skip-gram*. Une approche alternative, le *negative sampling* avec une fonction sigmoïde, moins gourmande en temps de calcul, est alors souvent préférée^[
 Une autre alternative à l'approche *softmax* parfois utilisée est l'approche *hierarchical softmax* qui se base sur l'utilisation d'arbres binaires de classification. La complexité de cet algorithme est proportionnelle à $\log_2n$ mais reste plus importante que celle de l'approche *negative sampling*.
 ].
 
@@ -310,8 +310,8 @@ Il est bien sûr possible que, parmi les mots tirés au hasard, il y ait des mot
 Cependant, puisque la taille du vocabulaire est très grande, on considère que cette erreur est négligeable.
 ]. 
 
-L'approche *softmax* peut être vue comme un problème de classification multiclasses : étant donné un mot `focus`, on estime la probabilité que les autres mots soient parmi ses voisins (chaque classe étant un mot du vocabulaire).
-L'idée du *negative sampling* est de transformer ce problème de classification multiclasses en un problème de classification binaire d'une variable $D$ : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors $D=1$ (`mot2` est positif et est le `contexte`), sinon $D=0$ (`mot2` est négatif, il appartient à $(w_{neg,\,i})_{i=1..K}$). 
+L'approche *softmax* peut être vue comme un problème de classification multiclasse : étant donné un mot `focus`, on estime la probabilité que les autres mots soient parmi ses voisins (chaque classe étant un mot du vocabulaire).
+L'idée du *negative sampling* est de transformer ce problème de classification multiclasse en un problème de classification binaire d'une variable $D$ : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors $D=1$ (`mot2` est positif et est le `contexte`), sinon $D=0$ (`mot2` est négatif, il appartient à $(w_{neg,\,i})_{i=1..K}$). 
 
 <!-- Predicting the next word is like predicting the class. That is, such a network is just a "standard" multinomial (multi-class) classifier. And this network must have as many output neurons as classes there are. When classes are actual words, the number of neurons is, well, huge. -->
 
@@ -456,7 +456,7 @@ Une fois nous être assurés de la bonne implémentation du modèle (partie \@re
 Ces données correspondent à un ensemble de 1,3 million de tweets^[Ces tweets, fournis par Twitter, sont la propriété de l'Inria.] 
 postés en France entre 2013 et 2017, supposés être représentatifs de l'ensemble de tweets nationaux publiés durant cette période. 
 
-Le modèle *word2vec* version Skip-gram, décrit en partie \@ref(sec:word2vec), fait en effet intervenir un certain nombre d'hyperparamètres parmi lesquels : 
+Le modèle *word2vec* version *Skip-gram*, décrit en partie \@ref(sec:word2vec), fait en effet intervenir un certain nombre d'hyperparamètres parmi lesquels : 
 \begin{itemize}
 \item $ep$ : le nombre d'\og \emph{epochs} \fg{} ;
 \item $lr$ ou $\alpha$ : le \og \emph{learning rate} \fg, ou taux d'apprentissage ;
@@ -784,7 +784,7 @@ $$
 Avec : 
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
-\item $X_{i,1}, \dots, X_{i,n}$ des coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
+\item $X_{i,1}, \dots, X_{i,n}$ les coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
 \item $\varepsilon_i$ le résidu de notre modèle, de fonction de répartition $F_{\varepsilon}$ qui vaudra $F_{\varepsilon}(x) = \frac{1}{1 + e^{-x}}$ dans le cas d'un modèle logit et $F_{\varepsilon}(x) = \Phi(x)$ (fonction de répartition d'une loi $\mathcal{N}(0, 1)$) dans le cas d'un modèle probit. 
 \end{itemize}
 
@@ -831,7 +831,7 @@ La bonne performance du modèle lexical (sentiment moyen des mots par tweet) par
 #### Les mots inconnus 
  
 Une première explication est la différence entre les deux modèles en termes de mots inconnus.
-Nous l'avons vu, pour le modèle lexical, 1,4 \% des mots utilisés dans les tweets de la base test des tweets les transports (13,2 \% du vocabulaire) sont absents de la base d'entraînement. 
+Nous l'avons vu, pour le modèle lexical, 1,4 \% des mots utilisés dans les tweets de la base test des tweets sur les transports (13,2 \% du vocabulaire) sont absents de la base d'entraînement. 
 Pour le modèle logit basé sur les *sentence-embeddings*, il faut mécaniquement ajouter aux mots inconnus ceux pour lesquels nous ne disposons pas de vecteurs-mots. 
 Ainsi, les mots inconnus sont bien plus nombreux puisqu'ils représentent 4,6 \% des mots (36,2 \% du vocabulaire). 
 
@@ -861,7 +861,7 @@ Comme de nombreux autres, le tweet ci-dessous, très vraisemblablement ironique,
 
 
 Une dernière explication possible pourrait être ce qu'on appelle le \emph{« domain shift »} ou changement de domaine. 
-Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser : c’est ce que l’on appelle le \emph{dataset shift}\footnote{Les éléments en lien avec le \emph{dataset shift}, et plus particulièrement le \emph{domain shift}, proviennent de \cite{Candela}}. 
+Les techniques d'apprentissage automatique sont souvent confrontées à un défi majeur : le fait que les modèles soient entraînés sur des données différentes de celles que l’on va effectivement utiliser, c’est ce que l’on appelle le \emph{dataset shift}\footnote{Les éléments en lien avec le \emph{dataset shift}, et plus particulièrement le \emph{domain shift}, proviennent de \cite{Candela}}. 
 Bien que des solutions comme la correction de biais de sélection des échantillons, ou encore celle des données déséquilibrées, soient étudiées depuis de nombreuses décennies dans le monde de la statistique, certains autres problèmes, comme celui du changement de domaine (\emph{domain shift}) émergent depuis plus récemment suite à l’utilisation croissante des méthodes de \emph{machine learning}. 
 
 Le changement de domaine se caractérise par un changement de la nature, du « domaine » des données utilisées.
@@ -1026,7 +1026,7 @@ Enfin, l'utilisation de **modèles d'analyse de sentiment plus élaborés**, com
 Ce projet très riche nous a permis de partir à la découverte des méthodes d’apprentissage par réseaux de neurones, via le modèle *word2vec*. 
 Nous nous sommes imprégnés de son fonctionnement et l’avons implémenté dans son ensemble grâce à la librairie `Pytorch` de Python (partie \@ref(sec:word2vec)). 
 Au-delà de la compréhension et de l’implémentation du modèle, nous nous sommes également initiés aux tests d’hyperparamètres et à son évaluation sur un corpus fictif (partie \@ref(sec:evaluation)) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et t-SNE et jugement humain). 
-Il a été fascinant d’observer à quel point le modèle présente d’excellents résultats en termes de capture sémantiques des mots dans un texte.
+Il a été fascinant d’observer à quel point le modèle présente d’excellents résultats en termes de capture sémantique des mots dans un texte.
 
 
 Dans la partie \@ref(sec:sentimentalAnalysis) dédiée à l’analyse de sentiment, nous avons pu appliquer sur un cas concret plusieurs méthodes étudiées durant notre deuxième année à l'ENSAE (modèles de prédiction binaire, analyse de séries temporelles, minimisation du risque empirique / validation croisée\dots).
@@ -1039,7 +1039,7 @@ Toutefois, le test de causalité au sens de Granger nous indique que l'indice ob
 La possibilité d’obtenir deux indicateurs très proches était assez utopique en raison de leurs philosophies différentes.
 Au-delà de la positivité ou négativité d’un tweet, il demeure important de déceler les sujets sur lesquels les tweets portent pour créer un indice plus ciblé.
 Par ailleurs, les bases d’entraînement et de test utilisées pour entraîner le modèle comportent de nombreuses limites (*domain-shift*, processus d’annotation, mots inconnus). 
-L'identification de ces limites invite à de nombreuses pistes d'amélioration identifiées dans la partie précédente. 
+L'identification de ces limites invite à de nombreuses pistes d'amélioration précisées dans la partie précédente. 
 
 Les méthodes d’apprentissage étant en perpétuelle évolution, le modèle *word2vec* mis en exergue en 2013, connaît déjà des  « concurrents ». Le plus connu est certainement *GloVe* pour « *Global Vectors* » (\cite{Pennington}). 
 Alors que *word2vec* privilégie l’utilisation de « n-grammes » (avec l’utilisation des mots contextes qui se situent autour d’une fenêtre du mot focus), *GloVe* se base sur l’ensemble les statistiques d'occurrence des mots du corpus (matrice de cooccurrence mot-mot) et prétend permettre alors, par construction, de capturer des statistiques plus générales liées au corpus. 
@@ -1086,7 +1086,7 @@ On note $X = (x_{ij})$ la matrice de taille $(n,p)$ des données brutes, où $x_
 
 - L'*espace des individus*, de dimension $p$, auquel on associe la métrique $M$ utilisée pour le produit scalaire. Dans la suite nous utiliserons $M =I_p$ la matrice identité. La norme et le produit scalaire associés à $M$ sont donc euclidiens.
 
-- L'*espace des variables*, de dimension $n$, auquel associe la métrique $N=diag(p_1,...,p_n)$ avec $\sum_{i=1}^np_i=1$. La matrice $N$ représente le poids donné à chaque individu. Par simplification, nous utiliserons ici des poids uniformes : $N=\frac{1}{n}I_n$. Afin de donner le même poids à toutes les variables, chaque variable est centrée-réduite : cela revient à centrer-réduire les colonnes de notre matrice $X$. Nous notons $Z =\bar X= (z_{ij})$  la matrice des données centrées et réduites^[Nous travaillons ici dans le cadre d'une ACP normée où la matrice $X$ a été centrée puis réduite. La réduction de $X$ a modifié les distances initiales entre individus ($\langle z_i,z_{i'}\rangle_M \neq \langle x_i,x_{i'}\rangle_M$). Cela n'aurait pas été le cas si la matrice $X$ avait été uniquement centrée (ACP non normée).].
+- L'*espace des variables*, de dimension $n$, auquel on associe la métrique $N=diag(p_1,...,p_n)$ avec $\sum_{i=1}^np_i=1$. La matrice $N$ représente le poids donné à chaque individu. Par simplification, nous utiliserons ici des poids uniformes : $N=\frac{1}{n}I_n$. Afin de donner le même poids à toutes les variables, chaque variable est centrée-réduite : cela revient à centrer-réduire les colonnes de notre matrice $X$. Nous notons $Z =\bar X= (z_{ij})$  la matrice des données centrées et réduites^[Nous travaillons ici dans le cadre d'une ACP normée où la matrice $X$ a été centrée puis réduite. La réduction de $X$ a modifié les distances initiales entre individus ($\langle z_i,z_{i'}\rangle_M \neq \langle x_i,x_{i'}\rangle_M$). Cela n'aurait pas été le cas si la matrice $X$ avait été uniquement centrée (ACP non normée).].
 
 Pour toute métrique $D$ ($D=N$ ou $D=M$), on associe le produit scalaire  $\langle x,y\rangle_{D} = {}^t\!xD y$. 
 La construction des axes de l'ACP est faite par projection orthogonale. 

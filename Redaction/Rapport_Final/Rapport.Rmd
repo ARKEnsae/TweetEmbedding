@@ -310,8 +310,8 @@ Il est bien sûr possible que, parmi les mots tirés au hasard, il y ait des mot
 Cependant, puisque la taille du vocabulaire est très grande, on considère que cette erreur est négligeable.
 ]. 
 
-L'approche *softmax* peut être vue comme un problème de classification multiclasse : étant donné un mot `focus`, on estime la probabilité que les autres mots soient parmi ses voisins (chaque classe étant un mot du vocabulaire).
-L'idée du *negative sampling* est de transformer ce problème de classification multiclasse en un problème de classification binaire d'une variable $D$ : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors $D=1$ (`mot2` est positif et est le `contexte`), sinon $D=0$ (`mot2` est négatif, il appartient à $(w_{neg,\,i})_{i=1..K}$). 
+L'approche *softmax* peut être vue comme un problème de classification multiclasses : étant donné un mot `focus`, on estime la probabilité que les autres mots soient parmi ses voisins (chaque classe étant un mot du vocabulaire).
+L'idée du *negative sampling* est de transformer ce problème de classification multiclasses en un problème de classification binaire d'une variable $D$ : pour chaque couple `[focus, mot2]`, on cherche à déterminer si `mot2` est dans le contexte de `focus`. Si c'est le cas, alors $D=1$ (`mot2` est positif et est le `contexte`), sinon $D=0$ (`mot2` est négatif, il appartient à $(w_{neg,\,i})_{i=1..K}$). 
 
 <!-- Predicting the next word is like predicting the class. That is, such a network is just a "standard" multinomial (multi-class) classifier. And this network must have as many output neurons as classes there are. When classes are actual words, the number of neurons is, well, huge. -->
 

@@ -540,10 +540,10 @@ de \texttt{focus}\footnote{Il est bien sûr possible que, parmi les mots
   on considère que cette erreur est négligeable.}.
 
 L'approche \emph{softmax} peut être vue comme un problème de
-classification multiclasse : étant donné un mot \texttt{focus}, on
+classification multiclasses : étant donné un mot \texttt{focus}, on
 estime la probabilité que les autres mots soient parmi ses voisins
 (chaque classe étant un mot du vocabulaire). L'idée du \emph{negative
-sampling} est de transformer ce problème de classification multiclasse
+sampling} est de transformer ce problème de classification multiclasses
 en un problème de classification binaire d'une variable \(D\) : pour
 chaque couple \texttt{{[}focus,\ mot2{]}}, on cherche à déterminer si
 \texttt{mot2} est dans le contexte de \texttt{focus}. Si c'est le cas,

@@ -447,7 +447,7 @@ pour la modélisation sémantique non supervisée (\cite{Rehurek}).
 
 Nous avons choisi de mobiliser `Gensim` dans la suite de ce rapport, en parallèle du modèle que nous avons implémenté, en raison de son temps d'exécution bien plus rapide^[À titre d'exemple, alors qu'une epoch sur l'ensemble des tweets met une vingtaine d'heures à tourner pour \og notre \fg{} modèle, elle met 1 minute via `Gensim`.]. Cette rapidité d'exécution nous a permis de réaliser des tests d'hyperparamètres plus nombreux. 
 
-Pour réaliser ces tests, nous avons fait tourner le modèle *word2vec* plusieurs fois en modifiant un à un les paramètres. Nous avons ensuite évalué ces différents modèles par la méthode du \og jugement humain \fg{} (partie \@ref(sec:jugementHumain)) en comparant la mesure de la similarité cosinus^[Nous avons également évalué les modèles en utilisant (l'inverse de) la distance euclidienne à la place de la similarité cosinus.
+Pour réaliser ces tests, nous avons lancé le modèle *word2vec* plusieurs fois en modifiant un à un les paramètres. Nous avons ensuite évalué ces différents modèles par la méthode du \og jugement humain \fg{} (partie \@ref(sec:jugementHumain)) en comparant la mesure de la similarité cosinus^[Nous avons également évalué les modèles en utilisant (l'inverse de) la distance euclidienne à la place de la similarité cosinus.
 L'effet des paramètres devient alors bien moins clair et la performance du modèle est inférieure, ce va dans le sens de l'utilisation plus fréquente de la méthode de la similarité cosinus dans la littérature.] 
 entre deux mots obtenue à partir de notre modèle à l'évaluation subjective de cette proximité par des individus. 
 En outre, un même modèle est lancé six fois (six \og seeds \fg{} différentes) afin de construire des intervalles de confiance de la matière décrite en partie \@ref(sec:jugementHumain), en empilant les six échantillons de mesure de proximités correspondant aux six implémentations d'un même modèle^[Pour chaque modèle, nous calculons les statistiques de rang des 65 paires de mots de la base de jugement humain ainsi que le rang des similarités cosinus des mots obtenus en sortie du modèle. 
@@ -536,7 +536,7 @@ Bien que l'efficacité du modèle semble meilleure en dimension 300, la dimensio
 
 ### Avec \og notre \fg modèle
 
-Nous avons ensuite fait tourner le modèle que nous avons implémenté en utilisant les paramètres retenus précédemment (w = 4, lr = 0,02 et dim = 100) mais uniquement sur 100 000 tweets et 80 epochs pour des questions de temps de calcul^[Pour ces paramètres, le temps de calcul était d'environ 18 heures.].
+Nous avons ensuite lancé le modèle que nous avons implémenté en utilisant les paramètres retenus précédemment (w = 4, lr = 0,02 et dim = 100) mais uniquement sur 100 000 tweets et 80 epochs pour des questions de temps de calcul^[Pour ces paramètres, le temps de calcul était d'environ 18 heures.].
 Les résultats obtenus semblent relativement satisfaisants. La recherche des plus proches voisins par similarité cosinus (dont quelques exemples sont illustrés en tableau \ref{table:knn_ark}) donne des résultats proches de l'intuition. 
 
 \begin{table}[!h]
@@ -571,7 +571,7 @@ La similarité cosinus de chaque paire de mots est renseignée entre parenthèse
 
 Par ailleurs, le coefficient de Spearman entre la similarité cosinus des mots obtenus et le jugement humain est de 0,571 (p-valeur : 4,1 %). Toutefois, ce bon résultat est à considérer avec précaution puisque seuls 13 des couples de mots de la base RG-65 ont été reconnus dans le corpus de 100 000 tweets que nous utilisons ici. 
 
-Enfin, les représentations graphiques des positions des mots via des ACP et les sommes vectorielles sur les mots^[Comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov}] donnent des résultats bien moins concluants que le modèle `Gensim` entraîné sur l'ensemble des tweets (partie \@ref(sec:gensimresultats)). 
+Enfin, les représentations graphiques des positions des mots via des ACP et les sommes vectorielles sur les mots^[Comme l'exemple de $\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}$ dans \cite{Mikolov}.] donnent des résultats bien moins concluants que le modèle `Gensim` entraîné sur l'ensemble des tweets (partie \@ref(sec:gensimresultats)). 
 
 ### Avec le modèle `Gensim` {#sec:gensimresultats}
 

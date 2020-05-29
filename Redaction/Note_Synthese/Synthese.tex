@@ -64,8 +64,7 @@
 
 
   \title{~\textsc{note de synthèse}\\
-\hspace*{0.333em}\emph{Word-Embedding} et sentiments des ménages avec
-Twitter}
+\hspace*{0.333em}\emph{Word-Embedding} et sentiments des ménages avec Twitter}
     \author{Kim Antunez, Romain Lesauvage, Alain Quartier-la-Tente\\
 sous l'encadrement de Benjamin Muller (Inria)}
     \date{}
@@ -112,86 +111,45 @@ logo=\bcloupe,barre=none,couleurBord=blue!60!green,nobreak = #1]{ {\sc \textbf{E
 \end{center}
 \end{textblock*}
 
-Grâce à l'évolution des méthodes d'apprentissage profond (\emph{Deep
-Learning}), l'appréhension du langage naturel est aujourd'hui devenue
-une discipline à part entière (\emph{Natural Language Processing}). Ce
-succès s'explique en partie grâce à l'émergence de techniques non
-supervisées d'apprentissage de représentation de structures
-linguistiques. Les méthodes de \emph{word-embedding} («~plongement
-lexical~» en français) permettent de représenter chaque mot d'un
-dictionnaire par un vecteur de nombres réels afin que les mots qui
-apparaissent dans des contextes similaires possèdent des vecteurs
-correspondants qui sont relativement proches (au sens d'une distance
-définie). Les variantes du modèle \emph{word2vec}, développé par une
-équipe de recherche chez Google, sont parmi les plus célèbres.
+Grâce à l'évolution des méthodes d'apprentissage profond (\emph{Deep Learning}), l'appréhension du langage naturel est aujourd'hui devenue une discipline à part entière (\emph{Natural Language Processing}).
+Ce succès s'explique en partie grâce à l'émergence de techniques non supervisées d'apprentissage de représentation de structures linguistiques.
+Les méthodes de \emph{word-embedding} («~plongement lexical~» en français) permettent de représenter chaque mot d'un dictionnaire par un vecteur de nombres réels afin que les mots qui apparaissent dans des contextes similaires possèdent des vecteurs correspondants qui sont relativement proches (au sens d'une distance définie).
+Les variantes du modèle \emph{word2vec}, développé par une équipe de recherche chez Google, sont parmi les plus célèbres.
 
-En partie \ref{sec:word2vec}, nous décrivons le modèle \emph{word2vec}
-que nous avons implémenté grâce à la librairie \texttt{Pytorch} de
-Python. Au-delà de la compréhension du modèle, nous nous sommes
-également initiés aux tests d'hyperparamètres et à son évaluation sur un
-corpus fictif (partie \ref{sec:evaluation}) grâce à plusieurs méthodes
-(calculs de similarités cosinus, opérations vectorielles sur les mots,
-méthodes de réduction de dimension ACP et t-SNE et jugement humain). Il
-a été fascinant d'observer à quel point le modèle présente d'excellents
-résultats en termes de capture sémantique des mots dans un texte.
+En partie \ref{sec:word2vec}, nous décrivons le modèle \emph{word2vec} que nous avons implémenté grâce à la librairie \texttt{Pytorch} de Python.
+Au-delà de la compréhension du modèle, nous nous sommes également initiés aux tests d'hyperparamètres et à son évaluation sur un corpus fictif (partie \ref{sec:evaluation}) grâce à plusieurs méthodes (calculs de similarités cosinus, opérations vectorielles sur les mots, méthodes de réduction de dimension ACP et t-SNE et jugement humain).
+Il a été fascinant d'observer à quel point le modèle présente d'excellents résultats en termes de capture sémantique des mots dans un texte.
 
-Dans la partie \ref{sec:sentimentalAnalysis}, nous avons cherché à
-construire un indice mensuel de sentiment des tweets et à le comparer
-aux indicateurs produits dans la statistique publique. L'entraînement et
-le test d'un modèle logit dont les prédicteurs correspondent aux
-dimensions des \emph{word-embeddings} nous a permis de remarquer qu'en
-plus de représenter la proximité entre mots, le modèle \emph{word2vec}
-permet de capter dans une certaine mesure le sentiment de phrases.
+Dans la partie \ref{sec:sentimentalAnalysis}, nous avons cherché à construire un indice mensuel de sentiment des tweets et à le comparer aux indicateurs produits dans la statistique publique.
+L'entraînement et le test d'un modèle logit dont les prédicteurs correspondent aux dimensions des \emph{word-embeddings} nous a permis de remarquer qu'en plus de représenter la proximité entre mots, le modèle \emph{word2vec} permet de capter dans une certaine mesure le sentiment de phrases.
 
 \begin{figure}[htb]
 \input{img/schema_recap.tex}
 \end{figure}
 
-Bien que l'indice obtenu s'avère utile pour prédire l'indicateur
-synthétique de confiance des ménages (Camme, Insee), les différences
-observées entre les deux séries demeurent importantes en raison de leurs
-philosophies différentes et des limites de la base d'entraînement de
-tweets annotés (\emph{domain-shift}, processus d'annotation, mots
-inconnus) qui invitent à des pistes d'amélioration (prétraitement plus
-approfondi des tweets, modèles d'analyse de sentiment plus
-élaborés\dots).
+Bien que l'indice obtenu s'avère utile pour prédire l'indicateur synthétique de confiance des ménages (Camme, Insee), les différences observées entre les deux séries demeurent importantes en raison de leurs philosophies différentes et des limites de la base d'entraînement de tweets annotés (\emph{domain-shift}, processus d'annotation, mots inconnus) qui invitent à des pistes d'amélioration (prétraitement plus approfondi des tweets, modèles d'analyse de sentiment plus élaborés\dots).
 
 \newpage
 
-\section{\texorpdfstring{Implémentation du modèle
-\emph{word2vec}}{Implémentation du modèle word2vec}}\label{sec:word2vec}
+\hypertarget{sec:word2vec}{%
+\section{\texorpdfstring{Implémentation du modèle \emph{word2vec}}{Implémentation du modèle word2vec}}\label{sec:word2vec}}
 
-Les modèles \emph{word2vec}, développés par une équipe de recherche chez
-Google, sont parmi les plus célèbres modèles de \emph{Natural Language
-Processing} qui utilisent le \emph{word-embedding} --- plongement
-lexical en français. Il s'agit de représenter chaque mot par un vecteur
-dont la dimension est fixée par la valeur d'un hyperparamètre.
+Les modèles \emph{word2vec}, développés par une équipe de recherche chez Google, sont parmi les plus célèbres modèles de \emph{Natural Language Processing} qui utilisent le \emph{word-embedding} --- plongement lexical en français.
+Il s'agit de représenter chaque mot par un vecteur dont la dimension est fixée par la valeur d'un hyperparamètre.
 
 \begin{wrapfigure}[15]{r}[0pt]{0cm}
 \includegraphics[width=5cm]{img/skip_gram.png}
 \captionsetup{margin=0cm,format=hang,justification=justified}
-\caption{Architecture\newline du modèle Skip-gram.}\label{fig:skipgram}
+\caption{Architecture\newline du modèle \emph{Skip-gram}.}\label{fig:skipgram}
 \end{wrapfigure}
 
-L'approche \emph{Skip-gram} a pour objectif d'estimer, pour chaque mot
-du vocabulaire qualifié de \textbf{«~contexte~»}, la probabilité d'être
-proche d'un mot qualifié de \textbf{«~focus~»} (figure
-\ref{fig:skipgram}). Ainsi, les mots qui apparaissent dans des contextes
-similaires («~bonjour~» et «~salut~» par exemple) seront représentés par
-des vecteurs relativement proches dans l'espace vectoriel de définition
-de ces vecteurs.
+L'approche \emph{Skip-gram} a pour objectif d'estimer, pour chaque mot du vocabulaire qualifié de \textbf{«~contexte~»}, la probabilité d'être proche d'un mot qualifié de \textbf{«~focus~»} (figure \ref{fig:skipgram}).
+Ainsi, les mots qui apparaissent dans des contextes similaires («~bonjour~» et «~salut~» par exemple) seront représentés par des vecteurs relativement proches dans l'espace vectoriel de définition de ces vecteurs.
 
-Pour transformer chaque mot en un vecteur, nous entraînons un réseau de
-neurones sur une tâche annexe : on construit un classifieur dont la
-tâche de prédiction est binaire pour chacun des mots du vocabulaire et
-répond à la question «~Est-ce que ce mot contexte est susceptible d'être
-voisin du mot focus ?~». Ce n'est pas la prédiction en elle-même qui
-nous intéresse, mais plutôt le poids du classifieur en sortie du modèle
-qui correspondra aux \emph{word-embeddings} de dimension \(dim\).
+Pour transformer chaque mot en un vecteur, nous entraînons un réseau de neurones sur une tâche annexe : on construit un classifieur dont la tâche de prédiction est binaire pour chacun des mots du vocabulaire et répond à la question «~Est-ce que ce mot contexte est susceptible d'être voisin du mot focus ?~».
+Ce n'est pas la prédiction en elle-même qui nous intéresse, mais plutôt le poids du classifieur en sortie du modèle qui correspondra aux \emph{word-embeddings} de dimension \(dim\).
 
-\emph{Skip-gram} est un réseau de neurones à deux couches avec deux
-matrices initialisées en générant des lois normales \(\mathcal N(0,1)\)
-:
+\emph{Skip-gram} est un réseau de neurones à deux couches avec deux matrices initialisées en générant des lois normales \(\mathcal N(0,1)\) :
 
 \begin{itemize}
 \item
@@ -200,66 +158,39 @@ matrices initialisées en générant des lois normales \(\mathcal N(0,1)\)
   En sortie une matrice \(W_s\) de taille \(n\times dim\).
 \end{itemize}
 
-Nous entraînons le réseau de neurones en le nourrissant de paires
-\texttt{{[}focus,\ contexte{]}} contenues dans les \(n\) mots du
-vocabulaire des tweets. Pour cela, on tire au hasard\footnote{Pour
-  éviter que les mots trop fréquents, souvent peu informatifs, soient
-  sur-entraînés, on effectue tout d'abord un sous-échantillonnage
-  (\emph{subsampling}).} un mot focus pour lequel on tire un mot
-\emph{contexte} au hasard dans une fenêtre \(w\). Ce mécanisme va être
-répété sur toutes les phrases du corpus et l'ensemble du corpus va être
-parcouru plusieurs fois. Le nombre de fois que l'ensemble du corpus est
-parcouru est appelé \emph{epochs}.
+Nous entraînons le réseau de neurones en le nourrissant de paires \texttt{{[}focus,\ contexte{]}} contenues dans les \(n\) mots du vocabulaire des tweets.
+Pour cela, on tire au hasard\footnote{Pour éviter que les mots trop fréquents, souvent peu informatifs, soient sur-entraînés, on effectue tout d'abord un sous-échantillonnage (\emph{subsampling}).} un mot focus pour lequel on tire un mot \emph{contexte} au hasard dans une fenêtre \(w\).
+Ce mécanisme va être répété sur toutes les phrases du corpus et l'ensemble du corpus va être parcouru plusieurs fois.
+Le nombre de fois que l'ensemble du corpus est parcouru est appelé \emph{epochs}.
 
-À chaque étape, les matrices sont mises à jour par descente de gradient
-:
+À chaque étape, les matrices sont mises à jour par descente de gradient :
 
 \[\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta Loss(\theta^{(t)})\]
 
-avec \(\eta\) le taux d'apprentissage et \(Loss(\theta)\) la fonction de
-perte.
+avec \(\eta\) le taux d'apprentissage et \(Loss(\theta)\) la fonction de perte.
 
-Le modèle \emph{word2vec} a initialement été construit en utilisant une
-fonction de perte dérivée de la fonction \emph{softmax}. L'inconvénient
-de cette méthode est qu'elle est très gourmande en temps de calcul
-(\(\mathcal O(n)\) par phrase). L'algorithme a donc ensuite été amélioré
-en utilisant le \emph{negative sampling}. Dans cette approche, on
-utilise une fonction de perte sigmoïde. De plus, plutôt que de mettre à
-jour l'ensemble des représentations vectorielles des mots pour chaque
-couple \texttt{{[}focus,\ contexte{]}}, on tire \(K\) mots au hasard du
-vocabulaire \((w_{neg,\,i})_{i=1..K}\) en considérant que ces mots ne
-seront pas des mots voisins de \texttt{focus}. La complexité est ici
-bien plus faible que pour la fonction \emph{softmax} (\(\mathcal O(K)\)
-par phrase), ce qui correspond à un gain considérable en termes de temps
-de calcul.
+Le modèle \emph{word2vec} a initialement été construit en utilisant une fonction de perte dérivée de la fonction \emph{softmax}.
+L'inconvénient de cette méthode est qu'elle est très gourmande en temps de calcul (\(\mathcal O(n)\) par phrase).
+L'algorithme a donc ensuite été amélioré en utilisant le \emph{negative sampling}.
+Dans cette approche, on utilise une fonction de perte sigmoïde. De plus, plutôt que de mettre à jour l'ensemble des représentations vectorielles des mots pour chaque couple \texttt{{[}focus,\ contexte{]}}, on tire \(K\) mots au hasard du vocabulaire \((w_{neg,\,i})_{i=1..K}\) en considérant que ces mots ne seront pas des mots voisins de \texttt{focus}.
+La complexité est ici bien plus faible que pour la fonction \emph{softmax} (\(\mathcal O(K)\) par phrase), ce qui correspond à un gain considérable en termes de temps de calcul.
 
-À la fin de l'algorithme, ce sont ces matrices qui donneront la
-représentation vectorielle des mots du vocabulaire. Ainsi, la ligne
-\(i\) de la matrice \(W=\frac{W_e+W_s}{2}\) donnera la représentation du
-\(i\)\textsuperscript{ème} mot du vocabulaire en dimension \(dim\).
+À la fin de l'algorithme, ce sont ces matrices qui donneront la représentation vectorielle des mots du vocabulaire.
+Ainsi, la ligne \(i\) de la matrice \(W=\frac{W_e+W_s}{2}\) donnera la représentation du \(i\)\textsuperscript{ème} mot du vocabulaire en dimension \(dim\).
 
 \newpage
 
-\section{Évaluation du modèle implémenté}\label{sec:evaluation}
+\hypertarget{sec:evaluation}{%
+\section{Évaluation du modèle implémenté}\label{sec:evaluation}}
 
-Malgré l'utilisation généralisée des \emph{word embeddings}, très peu de
-travaux théoriques expliquent ce qui est réellement capturé par ces
-représentations de mots. C'est pourquoi nous avons évalué la qualité des
-vecteurs-mots obtenus en sortie de notre modèle \emph{word2vec} à l'aide
-de méthodes empiriques : la similarité cosinus entre deux mots, la
-réduction de dimension de l'espace des vecteurs-mots (ACP, t-SNE) et
-l'évaluation par jugement humain.
+Malgré l'utilisation généralisée des \emph{word embeddings}, très peu de travaux théoriques expliquent ce qui est réellement capturé par ces représentations de mots.
+C'est pourquoi nous avons évalué la qualité des vecteurs-mots obtenus en sortie de notre modèle \emph{word2vec} à l'aide de méthodes empiriques : la similarité cosinus entre deux mots, la réduction de dimension de l'espace des vecteurs-mots (ACP, t-SNE) et l'évaluation par jugement humain.
 
-Grâce à l'évaluation de plusieurs modèles, nous avons pu déterminer les
-hyperparamètres les plus pertinents \footnote{
+Grâce à l'évaluation de plusieurs modèles, nous avons pu déterminer les hyperparamètres les plus pertinents
+\footnote{
 $ep = 100$ pour le nombre d'\og \emph{epochs} \fg / $lr = 0,02$ pour le \og \emph{learning rate} \fg, ou taux d'apprentissage/ $w = 4$ pour la taille de la fenêtre (\emph{window}) de sélection des mots contextes / $dim = 100$ pour la dimension des vecteurs-mots (ou \emph{word-embeddings}).
-} au regard des données dont nous disposons (encadré
-\ref{enc:encadre1}). Selon nos critères d'évaluation, les résultats
-obtenus en sortie du modèle \emph{word2vec} nous confirment la qualité
-de l'entraînement du corpus de 1,3 million de tweets\footnote{Avant de
-  nous attaquer au jeu de données complet, nous avons également évalué
-  notre modèle sur un corpus fictif afin de nous assurer de sa
-  robustesse et de sa validité.} :
+} au regard des données dont nous disposons (encadré \ref{enc:encadre1}).
+Selon nos critères d'évaluation, les résultats obtenus en sortie du modèle \emph{word2vec} nous confirment la qualité de l'entraînement du corpus de 1,3 million de tweets\footnote{Avant de nous attaquer au jeu de données complet, nous avons également évalué notre modèle sur un corpus fictif afin de nous assurer de sa robustesse et de sa validité.} :
 
 \begin{itemize}
 \item Le coefficient de corrélation de Spearman avec le jugement humain est significatif (p-valeur proche de 0 \%) et assez élevé (0,495).
@@ -306,20 +237,12 @@ C'est l'indicateur que nous cherchons à prévoir à partir de notre indice mens
 
 \newpage
 
-\section{Construction d'un indice mensuel de sentiment moyen des
-tweets}\label{sec:sentimentalAnalysis}
+\hypertarget{sec:sentimentalAnalysis}{%
+\section{Construction d'un indice mensuel de sentiment moyen des tweets}\label{sec:sentimentalAnalysis}}
 
-Nous utilisons ici les vecteurs-mots en sortie du modèle
-\emph{word2vec}, couplés avec une base de tweets qui concernent les
-transports urbains qualifiés de positifs ou négatifs, afin de créer un
-indice mensuel de sentiment moyen des tweets.
+Nous utilisons ici les vecteurs-mots en sortie du modèle \emph{word2vec}, couplés avec une base de tweets qui concernent les transports urbains qualifiés de positifs ou négatifs, afin de créer un indice mensuel de sentiment moyen des tweets.
 
-Nous cherchons tout d'abord à construire un modèle permettant de prédire
-le sentiment (\(0\) si négatif ou \(1\) si positif) associé à un tweet à
-partir des mots qui le composent. Nous comparons les deux modélisations
-suivantes en évaluant leur efficacité. Pour cela, la base de tweets
-annotés sur les transports a été séparée en une base d'entraînement
-(environ 16 000 tweets) et une base de test (environ 7 000 tweets).
+Nous cherchons tout d'abord à construire un modèle permettant de prédire le sentiment (\(0\) si négatif ou \(1\) si positif) associé à un tweet à partir des mots qui le composent. Nous comparons les deux modélisations suivantes en évaluant leur efficacité. Pour cela, la base de tweets annotés sur les transports a été séparée en une base d'entraînement (environ 16 000 tweets) et une base de test (environ 7 000 tweets).
 
 \begin{multicols}{2}
 
@@ -358,17 +281,10 @@ $$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 
 
  \end{multicols}
 
-À partir de ces modèles, nous avons construit deux indicateurs de
-sentiment des tweets en calculant la moyenne mensuelle des prévisions
-des sentiments des \emph{sentence-embeddings} des tweets (graphique
-\ref{fig:bslogcam}), puis avons comparé ces indicateurs avec
-l'indicateur synthétique de confiance des ménages (Camme, Insee).
+À partir de ces modèles, nous avons construit deux indicateurs de sentiment des tweets en calculant la moyenne mensuelle des prévisions des sentiments des \emph{sentence-embeddings} des tweets (graphique \ref{fig:bslogcam}), puis avons comparé ces indicateurs avec l'indicateur synthétique de confiance des ménages (Camme, Insee).
 
-Les tendances des deux indicateurs de sentiment diffèrent de celle de
-l'indicateur Camme. Toutefois, contrairement à l'indice issu du modèle
-lexical, l'indice issu du modèle logit apporte une information
-significative pour prévoir l'évolution de l'indicateur Camme\footnote{Il
-  le cause au sens de Granger (p-valeur de 0,05).}.
+Les tendances des deux indicateurs de sentiment diffèrent de celle de l'indicateur Camme.
+Toutefois, contrairement à l'indice issu du modèle lexical, l'indice issu du modèle logit apporte une information significative pour prévoir l'évolution de l'indicateur Camme\footnote{Il le cause au sens de Granger (p-valeur de 0,05).}.
 
 \begin{figure}[!htp]
 \begin{center}

@@ -1,0 +1,4 @@
+\babel@toc {french}{}
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{\emph {word2vec}}{4}{0}{2}
+\beamer@sectionintoc {3}{Évaluation du modèle}{5}{0}{3}

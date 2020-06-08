@@ -1,0 +1,170 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[10pt,xcolor=table,color={dvipsnames,usenames},ignorenonframetext,usepdftitle=false,french]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{caption}
+\captionsetup{skip=0pt,belowskip=0pt}
+%\setlength\abovecaptionskip{-15pt}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath,mathtools,multirow}
+\usepackage{float,hhline}
+\usepackage{tikz}
+\usepackage[tikz]{bclogo}
+\usepackage{mathtools}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+\usetheme[coding=utf8,language=french,
+,titlepagelogo=img/LOGO-ENSAE.png
+]{TorinoTh}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Word-Embedding et sentiments des ménages avec Twitter},
+            pdfauthor={Kim Antunez, Romain Lesauvage et Alain Quartier-la-Tente},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \begin{frame}{Sommaire}
+    \tableofcontents[currentsection, hideothersubsections]
+    \end{frame}
+  \fi
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  %\setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+  }
+\setcounter{secnumdepth}{0}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{wrapfig}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{animate}
+\usepackage{fontawesome5}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{decorations}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{decorations.shapes}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.fractals}
+\usetikzlibrary{decorations.footprints}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{babel}
+\usepackage{cancel}
+
+\title{\emph{Word-Embedding} et sentiments des ménages avec Twitter}
+\ateneo{Projet de statistique appliquée, Ensae}
+\author{Kim Antunez, Romain Lesauvage et Alain Quartier-la-Tente}
+\date{}
+
+
+\setrellabel{}
+
+\setcandidatelabel{}
+
+\rel{}
+\division{11/06/2020}
+
+\departement{Ensae — 2019-2020}
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\V}[1]{\mathbb{V}\left[ #1 \right]}
+\newcommand{\cov}[2]{\Cov\left( #1\,,\,#2 \right)}
+
+\begin{document}
+\begin{frame}[plain,noframenumbering]
+\titlepage
+\end{frame}
+
+\begin{frame}
+
+\end{frame}
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+\begin{frame}{Introduction}
+\protect\hypertarget{introduction-1}{}
+
+\pause
+
+\end{frame}
+
+\begin{frame}{Merci pour votre attention}
+\protect\hypertarget{merci-pour-votre-attention}{}
+
+\href{https://github.com/ARKEnsae/TweetEmbedding}{\faGithub{} ARKEnsae/TweetEmbedding}
+
+\href{https://arkensae.github.io//TweetEmbedding/Redaction/Rapport_Final/Rapport.pdf}{\faEdit{} Rapport du projet}
+
+\begin{center}
+\includegraphics[width = 2.5cm]{img/LOGO-ENSAE.png}
+\end{center}
+
+\end{frame}
+
+\end{document}

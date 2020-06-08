@@ -1,0 +1,100 @@
+---
+title: "*Word-Embedding* et sentiments des ménages avec Twitter"
+subtitle: "Projet de statistique appliquée, Ensae"
+author: "Kim Antunez, Romain Lesauvage et Alain Quartier-la-Tente"
+division: "11/06/2020 "
+departement: "Ensae --- 2019-2020"
+logo: "img/LOGO-ENSAE.png"
+automaticcontents: true
+output:
+    beamer_presentation:
+        template: template.tex
+        keep_tex: yes
+        theme: TorinoTh
+        slide_level: 3
+header-includes:
+- \usepackage{wrapfig}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage[table]{xcolor}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{animate}
+- \usepackage{fontawesome5}
+- \usepackage{caption}
+- \usepackage{graphicx}
+- \usepackage{tikz}
+- \usetikzlibrary{decorations}
+- \usetikzlibrary{decorations.pathmorphing}
+- \usetikzlibrary{decorations.pathreplacing}
+- \usetikzlibrary{decorations.shapes}
+- \usetikzlibrary{decorations.text}
+- \usetikzlibrary{decorations.markings}
+- \usetikzlibrary{decorations.fractals}
+- \usetikzlibrary{decorations.footprints}
+- \usepackage{hyperref}
+- \usepackage[T1]{fontenc}
+- \usepackage[utf8]{inputenc}
+- \usepackage{lmodern}
+- \usepackage{babel}
+- \usepackage{cancel}
+
+themeoptions: "coding=utf8,language=french"
+classoption: 'usepdftitle=false,french'
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = FALSE)
+library(knitr)
+library(kableExtra)
+library(clue)
+library(mvtnorm)
+library(plot3D)
+library(portes)
+library(shiny)
+library(shinyjs)
+library(shinyWidgets)
+```
+
+<!-- - **code** : $n$ boules de couleur parmi $m$ couleurs possibles   -->
+<!-- (classiquement $n = 4$ et $m = 6$)   -->
+<!-- - **boules noires** : boules bien placées -->
+<!-- - **boules blanches** : boules de la bonne couleur, mais mal placées  -->
+
+<!-- \includegraphics[width=0.7\textwidth]{img/mastermind.png} -->
+<!-- \captionsetup{margin=0cm,format=hang,justification=justified} -->
+<!-- \end{figure} -->
+
+<!-- \pause  -->
+
+<!-- $\longrightarrow$ Résolution par *Cross-Entropy* -->
+
+
+# Introduction
+
+### Introduction
+
+
+### Merci pour votre attention
+
+\href{https://github.com/ARKEnsae/TweetEmbedding}{\faGithub{} ARKEnsae/TweetEmbedding}  
+
+\href{https://arkensae.github.io//TweetEmbedding/Redaction/Rapport_Final/Rapport.pdf}{\faEdit{} Rapport du projet}  
+
+\begin{center}
+\includegraphics[width = 2.5cm]{img/LOGO-ENSAE.png}
+\end{center}
+
+
+

@@ -1,0 +1,91 @@
+\tikzstyle{myboxnorm} = [very thick,
+    rectangle, rounded corners, inner sep=2pt, inner ysep=3pt, right,
+    align=center]
+\tikzstyle{myboxw2v} = [draw=red!50, fill=orange!10, myboxnorm]
+\tikzstyle{myboxmod} = [draw=blue!60!green, fill=blue!5, myboxnorm]
+\tikzstyle{myboxcomp} = [draw=green!50!black, fill=green!5, myboxnorm]
+
+\tikzstyle{titlenorm} = [fill=white, very thick,
+    rectangle, inner sep=2pt, inner ysep=2pt,font=\bfseries,
+    text width=4.2cm, above=-0.3cm, align=center,
+    minimum height=1.15cm]
+\tikzstyle{titlew2v} = [draw=red!50, text = red!50,titlenorm]
+\tikzstyle{titlemod} = [draw=blue!60!green,text=blue!60!green,titlenorm]
+\tikzstyle{titlecomp} = [draw=green!50!black,text=green!50!black, titlenorm]    
+
+\tikzstyle{fleche} = [->,rounded corners,line width=1pt]
+
+\begin{tikzpicture}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows.meta}
+%Il faut d'abord faire les boites
+% w2vec
+\node[fit={(2.5,1.5) (-3.,-3.5)}, myboxw2v,semitransparent] (w2vrect) {};
+\node[fit={(2.7,1.5) (8.2,-5.5)}, myboxmod,semitransparent] (rectmod) {};
+\node[fit={(13.9,1.5) (8.4,-5.5) }, myboxcomp,semitransparent] (rectcomp) {};
+
+\node at (0,0) [myboxw2v] (tweets) {Tweets};
+\node at (2.4,0) [myboxw2v] (we) {\textit{word-embedding}};
+% sentiment
+\node at (0,-4.5) [myboxnorm,text width=2.5cm, draw = black] (bddsent) {Échantillon de tweets annotés
+};
+
+% analyse de sentimentsentiment
+\node at (7,0) [myboxmod] (logit) {Modèle logit};
+\node at (6.8,-4.5) [myboxmod,text width=2.5cm] (baseline) {Modèle lexical};
+
+% analyse de sentimentsentiment
+\node at (12,0) [myboxcomp,text width=3.8cm] (indsent) {Indices mensuels de \\sentiment des tweets};
+
+\node at (12,-4.5) [myboxcomp,text width=3.8cm] (camme) {Indicateur synthétique \\de confiance des
+
+ménages (Insee)};
+
+%Fleches
+\draw[fleche] (tweets.east) --(we.west) node[below = 0.2cm,pos=1]{
+\begin{minipage}{5cm} \footnotesize
+  \begin{itemize}[label=\scalebox{.6}{\ding{110}}] 
+  \item tokénisation
+  \item choix hyperparamètres
+  \item évaluation : 
+  \begin{itemize}[label=\scalebox{.6}{\ding{117}}]
+    \item similarité cosinus
+    \item réduction de dimension (ACP/TSNE)
+    \item jugement humain
+  \end{itemize}
+  \end{itemize} 
+\end{minipage} 
+};
+\draw[fleche] (bddsent.east)--(baseline.west) 
+  node[pos=0.36,text width=3cm]{
+    \footnotesize bases  
+    
+    test/entraînement}
+  node[pos=0.99, below = 0.05cm,text width=2.5cm]{
+    \footnotesize sentiment 
+    
+    moyen d'un mot};
+\draw[fleche] (bddsent.east)--++(2,0)--++(0,0.8)-|(logit.south);
+\draw[fleche] (we.east)--(logit.west)node[pos=0.89,text width=2.5cm]{\footnotesize \emph{sentence}
+  
+  \emph{embedding}};
+\draw[fleche] (logit.east)--
+  (indsent.west)node[pos=0.57,text width=2.5cm]{\footnotesize moyennes
+  
+  mensuelles};
+\draw[fleche] (baseline.east)-|(9.57,0)--(indsent.west);
+\draw[fleche,<->] (indsent.south)--(camme.north) 
+  node[pos=.5,text width=2.5cm, right=0.2cm]{\footnotesize distance entre
+  
+  indicateurs}
+  node[pos=.5,text width=1.7cm, left]{\footnotesize prévision /
+  
+  causalité};
+
+\node[titlew2v] at (w2vrect.north) { word2vec \\
+(skip-gram)};
+\node[titlemod] at (rectmod.north) { Analyse de \\
+sentiment d'un tweet};
+\node[titlecomp] at (rectcomp.north) { Comparaison \\
+d'indices mensuels};
+\end{tikzpicture}

@@ -158,27 +158,19 @@ fictif}\label{uxe9valuation-sur-un-corpus-fictif}}
 \begin{frame}{Comment évaluer le modèle ?}
 \protect\hypertarget{comment-uxe9valuer-le-moduxe8le}{}
 
-\textbf{Problème} : utilisation généralisée des \emph{word-embeddings}
-mais peu de travaux théoriques expliquent ce qui est capturé, comment
-évaluer le modèle ?
-
-\faArrowCircleRight{} Utiliser un corpus fictif.
-
 Les vecteurs-mots sont de grande dimension : comment juger de leur
-proximité ?
+qualité et de leurs proximités ?
 
 \begin{itemize}
 \item
-  Distance entre mots mesurée par distance euclidienne ou
-  \textbf{similarité cosinus}.
+  \textbf{Similarité cosinus} : distance entre vecteurs-mots.
 \item
-  \textbf{ACP} : réduire la dimension et analyser les proximités.
+  \textbf{ACP et t-SNE} : réduire la dimension et analyser les
+  proximités.
 \item
-  \textbf{t-SNE} : algorithme stochastique qui favorise l'apparition de
-  clusters.
-\item
-  \textbf{Jugement humain} : corrélations entre mots faites par l'homme,
-  utilisées comme références.
+  \textbf{Jugement humain} : corrélations entre les proximités de nos
+  vecteurs-mots et une base de proximités de mots construites par le
+  jugement d'individus
 \end{itemize}
 
 \end{frame}
@@ -187,7 +179,7 @@ proximité ?
 \protect\hypertarget{uxe9valuation-sur-un-corpus-fictif-1}{}
 
 \textbf{Idée} : construire un corpus fictif pour lesquels on connaît le
-résultat attendu en contrôlant les contextes.
+résultat attendu.
 
 \textbf{En pratique} :
 
@@ -240,46 +232,65 @@ résultat attendu en contrôlant les contextes.
  \end{tabular}
 \end{center}
 \footnotesize
-\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
+\emph{Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{table}
 
-On obtient de très bon résultats conformes à ce qui était attendu :
-l'implémentation du modèle semble validée.
+\faArrowCircleRight{} implémentation semble validée (résultats conformes
+aux attendus)
 
 \end{frame}
 
-\hypertarget{choix-des-meilleurs-hyperparamuxe8tres-pour-le-moduxe8le}{%
-\subsection{Choix des meilleurs hyperparamètres pour le
-modèle}\label{choix-des-meilleurs-hyperparamuxe8tres-pour-le-moduxe8le}}
+\hypertarget{choix-des-meilleurs-hyperparamuxe8tres}{%
+\subsection{Choix des meilleurs
+hyperparamètres}\label{choix-des-meilleurs-hyperparamuxe8tres}}
 
-\begin{frame}{Choix des meilleurs hyperparamètres pour le modèle}
-\protect\hypertarget{choix-des-meilleurs-hyperparamuxe8tres-pour-le-moduxe8le-1}{}
+\begin{frame}{Déterminer les hyperparamètres}
+\protect\hypertarget{duxe9terminer-les-hyperparamuxe8tres}{}
 
 \begin{itemize}
+\tightlist
 \item
-  \textit{word2vec} se base sur différents choix d'hyperparamètres :
-  taille de la fenêtre (\textit{w}), nombre d'epochs (\textit{ep}), taux
-  d'apprentissage (\textit{lr}), dimension des \textit{word-embeddings}
-  (\textit{dim}).
-\item
-  Meilleurs valeurs des hyperparamètres déterminées de manière
-  empirique.
-\item
-  Mesure des résultats : utilisation d'un corpus de jugement humain et
-  étude des corrélations de Spearman entre ce corpus et notre modèle.
-\item
-  Problème de temps de compilation de notre algorithme : il faut
-  relancer le modèle à chaque fois.
-\item
-  Utilisation complémentaire de \textbf{Gensim} puis résultats validés
-  avec notre implémentation.
+  \emph{Word2vec} se base sur différents choix d'hyperparamètres :
+
+  \begin{itemize}
+  \tightlist
+  \item
+    taille de la fenêtre (\emph{w})
+  \item
+    nombre d'epochs (\emph{ep})
+  \item
+    taux d'apprentissage (\emph{lr})
+  \item
+    dimension des \emph{word-embeddings} (\emph{dim})
+  \end{itemize}
 \end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Détermination empirique des hyperparamètres :
+
+  \begin{itemize}
+  \tightlist
+  \item
+    corrélation de Spearman entre nos vecteurs-mots et une base de
+    jugement humain
+  \item
+    chronophage (il faut relancer le modèle à chaque fois).
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\faArrowCircleRight{} Utilisation complémentaire de \texttt{Gensim} puis
+validation avec notre implémentation.
 
 \end{frame}
 
-\begin{frame}{Nombre d'epochs, taille de fenêtre et taux
-d'apprentissage}
-\protect\hypertarget{nombre-depochs-taille-de-fenuxeatre-et-taux-dapprentissage}{}
+\begin{frame}{Epochs, fenêtre et taux d'apprentissage}
+\protect\hypertarget{epochs-fenuxeatre-et-taux-dapprentissage}{}
 
 \begin{figure}[htp]
 \begin{center}
@@ -287,7 +298,7 @@ d'apprentissage}
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
-\emph{Note : Paramètre utilisé : dim = 50}
+\emph{Paramètre utilisé : dim = 50}
 \end{figure}
 
 \end{frame}
@@ -297,23 +308,23 @@ d'apprentissage}
 
 \begin{itemize}
 
-\item \textbf{Nombre d'epochs} : augmentation du nombre d'epochs améliore les résultats
+\item \textbf{Nombre d'epochs} : qualité des résultats croît avec le nombre d'epochs
 
 \faArrowCircleRight{} \textbf{ep = 100}.
 
-\item \textbf{Taille de fenêtre} : capture différentes informations selon valeur
+\item \textbf{Taille de fenêtre} : capte des informations sémantiques différentes selon sa valeur
 
 \faArrowCircleRight{} \textbf{w = 4}.
 
 \item \textbf{Taux d'apprentissage} : 0,02 donne de meilleurs résultats
 
 \faArrowCircleRight{} \textbf{lr = 0,02}.
-\end{itemize}
 
-Pour la dimension des vecteurs-mots, on observe une amélioration des
-résultats en augmentant la dimension jusqu'à atteindre 300. En réalité,
-peu de différences ici entre 100 et 300 \faArrowCircleRight{}
-\textbf{dim = 100} par soucis de temps de compilation.
+\item \textbf{Dimension} : qualité des résultats croît avec la dimension jusqu'à 300 puis décroît. Peu de différences entre 100 et 300.
+
+\faArrowCircleRight{} \textbf{dim = 100}.
+
+\end{itemize}
 
 \end{frame}
 
@@ -472,18 +483,52 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
 \begin{frame}{Prédire le sentiment d'un tweet}
 \protect\hypertarget{pruxe9dire-le-sentiment-dun-tweet-1}{}
 
-\textbf{Idée} : associer à chaque tweet un sentiment qui vaut 1 s'il est
-positif et 0 s'il est négatif.
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Idée} : associer à chaque tweet un sentiment :
 
-Pour cela, nous avons à notre disposition une base de tweets annotés sur
-les transports urbains, contenant 23 000 tweets, séparée en une base de
-\emph{train} (16 000 tweets) et de \emph{test} (7 000 tweets).
+  \begin{itemize}
+  \tightlist
+  \item
+    1 s'il est positif
+  \item
+    0 s'il est négatif.
+  \end{itemize}
+\end{itemize}
 
-2 approches ici :
+\medskip
 
 \begin{itemize}
-\item Modèle lexical : utiliser l'information des tweets labelisés pour construire un sentiment moyen par mot.
-\item Modèle \textit{logit} : utiliser nos \textit{word-embeddings} comme prédicteurs d'une régression logistique.
+\tightlist
+\item
+  base de 23 000 tweets annotés sur les transports urbains
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{base d'entraînement} : 16 000 tweets
+  \item
+    \textbf{base de test} : 7 000 tweets
+  \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  2 approches :
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Modèle lexical} : utiliser l'information des tweets
+    labelisés pour construire un sentiment moyen par mot.
+  \item
+    \textbf{Modèle logit} : utiliser les \emph{word-embeddings} comme
+    prédicteurs d'une régression logistique.
+  \end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -499,9 +544,9 @@ Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
 \item $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît. 
 \end{itemize}
 
-On détermine le \(\gamma\) optimal en regardant l'\emph{accuracy} sur la
-base de train : on trouve \(\gamma^*\) = -0.14 pour une \emph{accuracy}
-(sur la base de test) de \textbf{89.1\%}.
+\faArrowCircleRight{}
+\emph{Accuracy}\footnote{Taux de tweets dont le sentiment est bien prédit.}
+= 89,1 \% (\(\gamma^* = -0,14\)).
 
 \end{frame}
 
@@ -509,12 +554,12 @@ base de train : on trouve \(\gamma^*\) = -0.14 pour une \emph{accuracy}
 \emph{word-embeddings}}
 \protect\hypertarget{moduxe8le-logit-pruxe9diction-gruxe2ce-aux-word-embeddings}{}
 
-\[
-Y_i = 1\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} 
-\] \[
-\mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)
-\]
+Le sentiment prédit d'un tweet \(t\) sera :
+\[S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \quad \in \{ 0,1 \}\]
+Avec :
+\[Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)\]
 
+\normalsize
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
 \item $X_{i,1}, \dots, X_{i,n}$ les coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
@@ -526,42 +571,38 @@ Y_i = 1\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\}
 \begin{frame}{Spécifications du modèle logit}
 \protect\hypertarget{spuxe9cifications-du-moduxe8le-logit}{}
 
-Plusieurs problèmes à traiter :
+Plusieurs points à traiter :
 
 \begin{itemize}
 \item
-  Doit-on inclure les \emph{stop-words} ? \faArrowCircleRight{} On
-  décide de les garder.
+  Doit-on inclure les \emph{stop-words} ? \textsc{oui}
 \item
-  Comment traiter les mots inconnus ? \faArrowCircleRight{} On décide de
-  leur affecter le vecteur du mot \emph{lowfrequency}.
+  Comment traiter les mots inconnus ?
+  \textsc{affecter le vecteur-mot lowfrequency}
 \item
-  Modèle probit ou logit ? \faArrowCircleRight{} On retient le modèle
-  logit.
+  Modèle probit ou logit ? \textsc{logit}
 \end{itemize}
 
-Le sentiment du tweet \(t\) est :
+\bigskip
 
-\[S_{2,\gamma}(t) = 1\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in \{0,1\}\]
+\bigskip
 
-On détermine le \(\gamma\) optimal en regardant l'\emph{accuracy} sur la
-base de train : on trouve \(\gamma^*\) = 0.5 pour une \emph{accuracy}
-(sur la base de test) de \textbf{69.8\%}.
+\faArrowCircleRight{} \emph{Accuracy} = 69,8 \%
+(\(\gamma^* \simeq 0,5\)).
 
 \end{frame}
 
 \begin{frame}{Limites des modèles utilisés}
 \protect\hypertarget{limites-des-moduxe8les-utilisuxe9s}{}
 
-La bonne performance du modèle lexical par rapport au modèle logit peut
-s'expliquer par plusieurs facteurs.
+\textbf{Modèle lexical \underline{ici} meilleur que le modèle logit} car
+\dots
 
 \begin{enumerate}
 \tightlist
 \item
-  Les mots inconnus diffèrent selon les modèles. Modèle lexical : 1,4 \%
-  des mots sont inconnus (13,2 \% du vocabulaire) Modèle logit : 4,6 \%
-  des mots sont inconnus (36,2 \% du vocabulaire)
+  Davantage de mots inconnus dans le modèle logit (36,2 \% du
+  vocabulaire contre 13,2 \% dans le modèle lexical)
 \end{enumerate}
 
 \pause
@@ -571,7 +612,7 @@ s'expliquer par plusieurs facteurs.
 \tightlist
 \item
   Le processus d'annotation utilisé pour les tweets sur les transports
-  urbains.
+  urbains reproduit en partie par le modèle lexical ( ? )
 \end{enumerate}
 
 \pause
@@ -580,10 +621,18 @@ s'expliquer par plusieurs facteurs.
 \setcounter{enumi}{2}
 \tightlist
 \item
-  Le \emph{domain shift} \pause Utilisation d'une nouvelle base de test
-  indépendante pour essayer de neutraliser ces effets : \textbf{modèle
-  logit meilleur que le modèle lexical} (61,9~\% contre 55,9~\%).
+  Le \emph{domain shift}
 \end{enumerate}
+
+\pause
+
+\bigskip
+
+\faArrowCircleRight{} Utilisation d'une nouvelle base de test pour
+neutraliser certains de ces effets
+
+\textbf{Modèle logit \underline{alors} meilleur que le modèle
+lexical}\newline(\emph{Accuracy} de 61,9~\% contre 55,9~\%).
 
 \end{frame}
 

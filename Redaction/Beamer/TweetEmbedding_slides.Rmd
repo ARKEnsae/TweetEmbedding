@@ -56,7 +56,7 @@ library(kableExtra)
 library(clue)
 library(mvtnorm)
 library(plot3D)
-library(portes)
+#library(portes)
 library(shiny)
 library(shinyjs)
 library(shinyWidgets)
@@ -78,23 +78,21 @@ library(shinyWidgets)
 
 ### Comment évaluer le modèle ?
 
-\textbf{Problème} : utilisation généralisée des *word-embeddings* mais peu de travaux théoriques expliquent ce qui est capturé, comment évaluer le modèle ?
+<!-- \textbf{Problème} : utilisation généralisée des *word-embeddings* mais peu de travaux théoriques expliquent ce qui est capturé, comment évaluer le modèle ? -->
 
-\faArrowCircleRight{} Utiliser un corpus fictif.
+<!-- \faArrowCircleRight{} Utiliser un corpus fictif. -->
+<!-- Pas que non ? On utilise aussi le corpus entier par la suite -->
 
-Les vecteurs-mots sont de grande dimension : comment juger de leur proximité ?
+Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et de leurs proximités ?
 
-- Distance entre mots mesurée par distance euclidienne ou \textbf{similarité cosinus}.
+- \textbf{Similarité cosinus} : distance entre vecteurs-mots.
 
-- \textbf{ACP} : réduire la dimension et analyser les proximités.
+- \textbf{ACP et t-SNE} :  réduire la dimension et analyser les proximités.
 
-- \textbf{t-SNE} : algorithme stochastique qui favorise l'apparition de clusters.
-
-- \textbf{Jugement humain} : corrélations entre mots faites par l'homme, utilisées comme références.
-
+- \textbf{Jugement humain} : corrélations entre les proximités de nos vecteurs-mots et une base de proximités de mots construites par le jugement d'individus
 
 ### Évaluation sur un corpus fictif
-\textbf{Idée} : construire un corpus fictif pour lesquels on connaît le résultat attendu en contrôlant les contextes.
+\textbf{Idée} : construire un corpus fictif pour lesquels on connaît le résultat attendu.
 
 \textbf{En pratique} :
 \begin{itemize}
@@ -143,27 +141,36 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur proximité ?
  \end{tabular}
 \end{center}
 \footnotesize
-\emph{Note : Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
+\emph{Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 \end{table}
 
-On obtient de très bon résultats conformes à ce qui était attendu : l'implémentation du modèle semble validée.
+\faArrowCircleRight{} implémentation semble validée (résultats conformes aux attendus) 
 
-## Choix des meilleurs hyperparamètres pour le modèle
+<!-- Kim : mettre le graphique du tableau de droite ?  -->
 
-### Choix des meilleurs hyperparamètres pour le modèle
+## Choix des meilleurs hyperparamètres
 
-- \textit{word2vec} se base sur différents choix d'hyperparamètres : taille de la fenêtre (\textit{w}), nombre d'epochs (\textit{ep}), taux d'apprentissage (\textit{lr}), dimension des \textit{word-embeddings} (\textit{dim}).
+### Déterminer les hyperparamètres
 
-- Meilleurs valeurs des hyperparamètres déterminées de manière empirique.
+- \emph{Word2vec} se base sur différents choix d'hyperparamètres :
+  * taille de la fenêtre (\emph{w})
+  * nombre d'epochs (\emph{ep})
+  * taux d'apprentissage (\emph{lr})
+  * dimension des \emph{word-embeddings} (\emph{dim})
 
-- Mesure des résultats : utilisation d'un corpus de jugement humain et étude des corrélations de Spearman entre ce corpus et notre modèle.
+\medskip
 
-- Problème de temps de compilation de notre algorithme : il faut relancer le modèle à chaque fois.
+- Détermination empirique des hyperparamètres :
+  * corrélation de Spearman entre nos vecteurs-mots et une base de jugement humain
+  * chronophage (il faut relancer le modèle à chaque fois). 
+  
+\medskip
+  
+  \faArrowCircleRight{} Utilisation complémentaire de \texttt{Gensim} puis validation avec notre implémentation.
 
-- Utilisation complémentaire de  \textbf{Gensim} puis résultats validés avec notre implémentation.
 
 
-### Nombre d'epochs, taille de fenêtre et taux d'apprentissage
+### Epochs, fenêtre et taux d'apprentissage
 
 \begin{figure}[htp]
 \begin{center}
@@ -171,27 +178,30 @@ On obtient de très bon résultats conformes à ce qui était attendu : l'implé
 \end{center}
 \vspace{-0.3cm}
 \footnotesize
-\emph{Note : Paramètre utilisé : dim = 50}
+\emph{Paramètre utilisé : dim = 50}
 \end{figure}
 
 ### Valeurs des hyperparamètres retenus
 
 \begin{itemize}
 
-\item \textbf{Nombre d'epochs} : augmentation du nombre d'epochs améliore les résultats
+\item \textbf{Nombre d'epochs} : qualité des résultats croît avec le nombre d'epochs
 
 \faArrowCircleRight{} \textbf{ep = 100}.
 
-\item \textbf{Taille de fenêtre} : capture différentes informations selon valeur
+\item \textbf{Taille de fenêtre} : capte des informations sémantiques différentes selon sa valeur
 
 \faArrowCircleRight{} \textbf{w = 4}.
 
 \item \textbf{Taux d'apprentissage} : 0,02 donne de meilleurs résultats
 
 \faArrowCircleRight{} \textbf{lr = 0,02}.
-\end{itemize}
 
-Pour la dimension des vecteurs-mots, on observe une amélioration des résultats en augmentant la dimension jusqu'à atteindre 300. En réalité, peu de différences ici entre 100 et 300 \faArrowCircleRight{} \textbf{dim = 100} par soucis de temps de compilation.
+\item \textbf{Dimension} : qualité des résultats croît avec la dimension jusqu'à 300 puis décroît. Peu de différences entre 100 et 300.
+
+\faArrowCircleRight{} \textbf{dim = 100}.
+
+\end{itemize}
 
 ## Évaluation sur le corpus de tweets
 
@@ -337,15 +347,21 @@ hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
 
 ### Prédire le sentiment d'un tweet
 
-\textbf{Idée} : associer à chaque tweet un sentiment qui vaut 1 s'il est positif et 0 s'il est négatif.
+- \textbf{Idée} : associer à chaque tweet un sentiment :
+  * 1 s'il est positif
+  * 0 s'il est négatif.
 
-Pour cela, nous avons à notre disposition une base de tweets annotés sur les transports urbains, contenant 23 000 tweets, séparée en une base de *train* (16 000 tweets) et de *test* (7 000 tweets).
+\medskip
+- base de 23 000 tweets annotés sur les transports urbains 
+  * **base d'entraînement** : 16 000 tweets
+  * **base de test** : 7 000 tweets
 
-2 approches ici :
-\begin{itemize}
-\item Modèle lexical : utiliser l'information des tweets labelisés pour construire un sentiment moyen par mot.
-\item Modèle \textit{logit} : utiliser nos \textit{word-embeddings} comme prédicteurs d'une régression logistique.
-\end{itemize}
+\medskip
+
+- 2 approches :
+  * **Modèle lexical** : utiliser l'information des tweets labelisés pour construire un sentiment moyen par mot.
+  * **Modèle logit** : utiliser les *word-embeddings* comme prédicteurs d'une régression logistique.
+
 
 
 ### Modèle lexical : sentiment moyen des mots
@@ -358,18 +374,25 @@ $$S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i 
 \item $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît. 
 \end{itemize}
 
-On détermine le $\gamma$ optimal en regardant l'*accuracy* sur la base de train : on trouve $\gamma^*$ = -0.14 pour une *accuracy* (sur la base de test) de **89.1%**.
-
+\faArrowCircleRight{} \emph{Accuracy}\footnote{Taux de tweets dont le sentiment est bien prédit.} =  89,1 \% ($\gamma^* = -0,14$).
 
 ### Modèle logit : prédiction grâce aux *word-embeddings*
-<!-- bug indicatrice -->
-$$
-Y_i = 1\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} 
-$$
-$$
-\mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)
-$$
 
+Le sentiment prédit d'un tweet $t$ sera :
+ $$S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \quad \in \{ 0,1 \}$$
+Avec : 
+$$Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)$$
+
+
+
+<!-- $$ -->
+<!-- Y_i = 1\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\}  -->
+<!-- $$ -->
+<!-- $$ -->
+<!-- \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right) -->
+<!-- $$ -->
+
+\normalsize
 \begin{itemize}
 \item $Y_i$ le sentiment du tweet $i$ ;
 \item $X_{i,1}, \dots, X_{i,n}$ les coordonnées de la \emph{sentence-embedding} du tweet $i$ ;
@@ -378,36 +401,43 @@ $$
 
 ### Spécifications du modèle logit
 
-Plusieurs problèmes à traiter :
+Plusieurs points à traiter :
 
-- Doit-on inclure les *stop-words* ? \faArrowCircleRight{} On décide de les garder.
+- Doit-on inclure les *stop-words* ? \textsc{oui}
 
-- Comment traiter les mots inconnus ? \faArrowCircleRight{} On décide de leur affecter le vecteur du mot *lowfrequency*.
+- Comment traiter les mots inconnus ? \textsc{affecter le vecteur-mot lowfrequency}
 
-- Modèle probit ou logit ? \faArrowCircleRight{} On retient le modèle logit.
+- Modèle probit ou logit ? \textsc{logit}
 
-Le sentiment du tweet $t$ est :
+\bigskip
 
-<!-- bug indicatrice -->
- $$S_{2,\gamma}(t) = 1\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \in \{0,1\}$$
+\bigskip
 
-On détermine le $\gamma$ optimal en regardant l'*accuracy* sur la base de train : on trouve $\gamma^*$ = 0.5 pour une *accuracy* (sur la base de test) de **69.8%**.
+
+\faArrowCircleRight{} \emph{Accuracy} =  69,8 \% ($\gamma^* \simeq 0,5$).
 
 ### Limites des modèles utilisés
 
-La bonne performance du modèle lexical par rapport au modèle logit peut s’expliquer par plusieurs facteurs.
+**Modèle lexical \underline{ici} meilleur que le modèle logit** car \dots
 
-
-1. Les mots inconnus diffèrent selon les modèles.
-Modèle lexical : 1,4 \% des mots sont inconnus (13,2 \% du vocabulaire)
-Modèle logit : 4,6 \% des mots sont inconnus (36,2 \% du vocabulaire)
+1. Davantage de mots inconnus dans le modèle logit (36,2 \% du vocabulaire contre 13,2 \% dans le modèle lexical)
 
 \pause
-2. Le processus d’annotation utilisé pour les tweets sur les transports urbains.
+
+2. Le processus d’annotation utilisé pour les tweets sur les transports urbains reproduit en partie par le modèle lexical ( ? )
 
 \pause
-3. Le *domain shift*  \pause
-Utilisation d'une nouvelle base de test indépendante pour essayer de neutraliser ces effets : **modèle logit meilleur que le modèle lexical** (61,9 % contre 55,9 %).
+
+3. Le *domain shift*  
+
+\pause
+
+\bigskip
+
+\faArrowCircleRight{} Utilisation d'une nouvelle base de test pour neutraliser certains de ces effets 
+
+**Modèle logit \underline{alors} meilleur que le modèle lexical**\newline(*Accuracy* de 61,9 \% contre 55,9 \%).
+
 
 
 ### Merci pour votre attention

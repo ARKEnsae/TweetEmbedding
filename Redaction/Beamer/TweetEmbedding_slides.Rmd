@@ -35,6 +35,9 @@ header-includes:
 - \usetikzlibrary{fit,arrows.meta}
 - \usepackage{pifont}
 - \usepackage{enumitem}
+- \setlist[itemize,1]{label = --}
+- \setlist[itemize,2]{label = $\circ$}
+- \setlist[enumerate,1]{label={\arabic*}}
 - \usepackage{lmodern}
 - \usepackage{cancel}
 - \usepackage{array}
@@ -393,19 +396,16 @@ On détermine le $\gamma$ optimal en regardant l'*accuracy* sur la base de train
 
 La bonne performance du modèle lexical par rapport au modèle logit peut s’expliquer par plusieurs facteurs.
 
+
 1. Les mots inconnus diffèrent selon les modèles.
-
-Modèle lexical : 1,4 \% des mots sont inconnus (13,2 \% du vocabulaire)  
-
+Modèle lexical : 1,4 \% des mots sont inconnus (13,2 \% du vocabulaire)
 Modèle logit : 4,6 \% des mots sont inconnus (36,2 \% du vocabulaire)
 
 \pause
 2. Le processus d’annotation utilisé pour les tweets sur les transports urbains.
 
 \pause
-3. Le *domain shift*
-
-\pause 
+3. Le *domain shift*  \pause
 Utilisation d'une nouvelle base de test indépendante pour essayer de neutraliser ces effets : **modèle logit meilleur que le modèle lexical** (61,9 % contre 55,9 %).
 
 

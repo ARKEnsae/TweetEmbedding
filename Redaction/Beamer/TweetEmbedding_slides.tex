@@ -326,7 +326,7 @@ Pour chaque couple \texttt{{[}focus,\ contexte{]}} :
   \begin{cases}
   \mathbb P(D=1\vert w_{focus},w_{contexte})&=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}})  \\
   \mathbb P(D=0\vert w_{focus},w_{neg,\,i})&=\sigma(-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}}) 
-  \\\sigma(x)=\frac{1}{1+\exp(x)}
+  \\\sigma(x)=\frac{1}{1+\exp(-x)}
   \end{cases}
   \] \bcsmbh Complexité : \(\mathcal O (K)\)
 \end{enumerate}

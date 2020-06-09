@@ -65,14 +65,15 @@ library(shinyWidgets)
 
 ###  Introduction (1/2)
 
-- modèle de NLP développé par Google (Mikolov et al (2013)) 
+- Modèle de NLP développé par Google (Mikolov et al (2013)). 
 
-- **objectif** = *word-embedding* : donner une représentation vectorielle aux mots
+- **Objectif** = *word-embedding* : donner une représentation vectorielle aux mots.
 
 \pause
-- \bcloupe réseau de neurones à deux couches permettant de traiter des grandes bases de données \pause
 
-- les mots avec le même contexte ont des représentations vectorielles proches :
+- \bcloupe Réseau de neurones à deux couches permettant de traiter des grandes bases de données. \pause
+
+- Les mots avec le même contexte ont des représentations vectorielles proches :
 $$
 \overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}
 $$
@@ -81,7 +82,7 @@ $$
 
 \resizebox{\textwidth}{!}{\input{img/schema_recap.tex}}
 
-# *word2vec*
+# Le modèle *word2vec*
 
 ### Sommaire
 \tableofcontents[currentsection, hideothersubsections]
@@ -228,7 +229,7 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 
 - \textbf{ACP et t-SNE} :  réduire la dimension et analyser les proximités.
 
-- \textbf{Jugement humain} : corrélations entre les proximités de nos vecteurs-mots et une base de proximités de mots construites par le jugement d'individus
+- \textbf{Jugement humain} : corrélations entre les proximités de nos vecteurs-mots et une base de proximités de mots construites par le jugement d'individus.
 
 ### Évaluation sur un corpus fictif (1/2)
 \textbf{Idée} : construire un corpus fictif pour lesquels on connaît le résultat attendu.
@@ -274,16 +275,16 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
     allates & $-0,810$ \tabularnewline
     \hline
  \end{tabular}
- 
- \raggedright  
-\emph{Paramètres utilisés : ep = 50 / lr = 0,01 /}
- 
- \emph{w = 5 / dim = 10.}
+
 \end{column}
 \begin{column}{0.5\textwidth}
-Ajouter graphique
+\begin{center}
+\includegraphics[width=1\textwidth]{img/tsne}
+\end{center}
 \end{column}
 \end{columns}
+ 
+\emph{Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 
 
 \faArrowCircleRight{} implémentation semble validée (résultats conformes aux attendus) 
@@ -295,16 +296,16 @@ Ajouter graphique
 ### Déterminer les hyperparamètres
 
 - \emph{Word2vec} se base sur différents choix d'hyperparamètres :
-  * taille de la fenêtre (\emph{w})
-  * nombre d'epochs (\emph{ep})
-  * taux d'apprentissage (\emph{lr})
-  * dimension des \emph{word-embeddings} (\emph{dim})
+    * taille de la fenêtre (\emph{w})
+    * nombre d'epochs (\emph{ep})
+    * taux d'apprentissage (\emph{lr})
+    * dimension des \emph{word-embeddings} (\emph{dim})
 
 \medskip
 
 - Détermination empirique des hyperparamètres :
-  * corrélation de Spearman entre nos vecteurs-mots et une base de jugement humain
-  * chronophage (il faut relancer le modèle à chaque fois). 
+    * corrélation de Spearman entre nos vecteurs-mots et une base de jugement humain
+    * chronophage (il faut relancer le modèle à chaque fois). 
   
 \medskip
   
@@ -491,20 +492,21 @@ hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
 
 ### Prédire le sentiment d'un tweet
 
-- \textbf{Idée} : associer à chaque tweet un sentiment :
-  * 1 s'il est positif
-  * 0 s'il est négatif.
+- \textbf{Idée} : associer à chaque tweet un sentiment
+    * 1 s'il est positif
+    * 0 s'il est négatif
 
 \medskip
-- base de 23 000 tweets annotés sur les transports urbains 
-  * **base d'entraînement** : 16 000 tweets
-  * **base de test** : 7 000 tweets
+
+- Base de 23 000 tweets annotés sur les transports urbains :
+    * **base d'entraînement** : 16 000 tweets
+    * **base de test** : 7 000 tweets
 
 \medskip
 
 - 2 approches :
-  * **Modèle lexical** : utiliser l'information des tweets labelisés pour construire un sentiment moyen par mot.
-  * **Modèle logit** : utiliser les *word-embeddings* comme prédicteurs d'une régression logistique.
+    * **Modèle lexical** : utiliser l'information des tweets annotés pour construire un sentiment moyen par mot.
+    * **Modèle logit** : utiliser les *word-embeddings* comme prédicteurs d'une régression logistique.
 
 
 
@@ -564,21 +566,21 @@ Plusieurs points à traiter :
 
 **Modèle lexical \underline{ici} meilleur que le modèle logit** car \dots
 
-1. Davantage de mots inconnus dans le modèle logit (36,2 \% du vocabulaire contre 13,2 \% dans le modèle lexical)
+1. Davantage de mots inconnus dans le modèle logit (4,6 \% des mots contre 1,4 \% dans le modèle lexical).
 
 \pause
 
-2. Le processus d’annotation utilisé pour les tweets sur les transports urbains reproduit en partie par le modèle lexical ( ? )
+2. Le processus d’annotation utilisé pour les tweets sur les transports urbains reproduit en partie par le modèle lexical.
 
 \pause
 
-3. Le *domain shift*  
+3. Le *domain shift*.  
 
 \pause
 
 \bigskip
 
-\faArrowCircleRight{} Utilisation d'une nouvelle base de test pour neutraliser certains de ces effets 
+\faArrowCircleRight{} Utilisation d'une nouvelle base de test pour neutraliser certains de ces effets. 
 
 **Modèle logit \underline{alors} meilleur que le modèle lexical**\newline(*Accuracy* de 61,9 \% contre 55,9 \%).
 
@@ -614,6 +616,7 @@ Plusieurs points à traiter :
 ### Conclusion (1/2) 
 
 - *Word2vec* \dots
+
 	* capture **très bien** la \underline{sémantique des mots} dans un texte
 	* prédit **assez bien** le \underline{sentiment d’une phrase}
 	* est **potentiellement utile** pour \underline{prédire l’indicateur synthétique de}  \underline{confiance des ménages de l’Insee} \dots
@@ -624,8 +627,8 @@ Plusieurs points à traiter :
 \pause
 
 - Pourquoi très différent ?
-  * Principalement en raison de leurs **différentes philosophies** \footnotesize (sujets spécifiques de Camme VS positivité ou non des tweets pour notre indice) \normalsize \dots
-  * \dots{} mais aussi à cause des **limites de la base d’entraînement** de tweets annotés \footnotesize (domain-shift, processus d’annotation, mots inconnus) \normalsize
+    * Principalement en raison de leurs **différentes philosophies** \footnotesize (sujets spécifiques de Camme VS positivité ou non des tweets pour notre indice) \normalsize \dots
+    * \dots{} mais aussi à cause des **limites de la base d’entraînement** de tweets annotés \footnotesize (domain-shift, processus d’annotation, mots inconnus) \normalsize
 
 ### Conclusion (2/2) 
 

@@ -17,14 +17,49 @@
 \headcommand {\sectionentry {3}{Évaluation du modèle}{5}{Évaluation du modèle}{0}}
 \headcommand {\slideentry {3}{0}{1}{5/5}{}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\slideentry {3}{0}{2}{6/7}{}{0}}
-\headcommand {\beamer@framepages {6}{7}}
-\headcommand {\slideentry {3}{0}{3}{8/8}{}{0}}
+\headcommand {\beamer@subsectionpages {5}{5}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{6}{Évaluation sur un corpus fictif}}
+\headcommand {\slideentry {3}{1}{1}{6/6}{Évaluation sur un corpus fictif}{0}}
+\headcommand {\beamer@framepages {6}{6}}
+\headcommand {\slideentry {3}{1}{2}{7/7}{Évaluation sur un corpus fictif}{0}}
+\headcommand {\beamer@framepages {7}{7}}
+\headcommand {\slideentry {3}{1}{3}{8/8}{Évaluation sur un corpus fictif}{0}}
 \headcommand {\beamer@framepages {8}{8}}
-\headcommand {\slideentry {3}{0}{4}{9/9}{}{0}}
+\headcommand {\beamer@subsectionpages {6}{8}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{9}{Choix des meilleurs hyperparamètres pour le modèle}}
+\headcommand {\slideentry {3}{2}{1}{9/9}{Choix des meilleurs hyperparamètres pour le modèle}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\beamer@partpages {1}{9}}
-\headcommand {\beamer@subsectionpages {5}{9}}
-\headcommand {\beamer@sectionpages {5}{9}}
-\headcommand {\beamer@documentpages {9}}
-\headcommand {\gdef \inserttotalframenumber {7}}
+\headcommand {\slideentry {3}{2}{2}{10/10}{Choix des meilleurs hyperparamètres pour le modèle}{0}}
+\headcommand {\beamer@framepages {10}{10}}
+\headcommand {\slideentry {3}{2}{3}{11/11}{Choix des meilleurs hyperparamètres pour le modèle}{0}}
+\headcommand {\beamer@framepages {11}{11}}
+\headcommand {\beamer@subsectionpages {9}{11}}
+\headcommand {\beamer@subsectionentry {0}{3}{3}{12}{Évaluation sur le corpus de tweets}}
+\headcommand {\slideentry {3}{3}{1}{12/13}{Évaluation sur le corpus de tweets}{0}}
+\headcommand {\beamer@framepages {12}{13}}
+\headcommand {\slideentry {3}{3}{2}{14/14}{Évaluation sur le corpus de tweets}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\beamer@sectionpages {5}{14}}
+\headcommand {\beamer@subsectionpages {12}{14}}
+\headcommand {\sectionentry {4}{Indice de sentiments}{15}{Indice de sentiments}{0}}
+\headcommand {\slideentry {4}{0}{1}{15/15}{}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\beamer@subsectionpages {15}{15}}
+\headcommand {\beamer@subsectionentry {0}{4}{1}{16}{Prédire le sentiment d'un tweet}}
+\headcommand {\slideentry {4}{1}{1}{16/16}{Prédire le sentiment d'un tweet}{0}}
+\headcommand {\beamer@framepages {16}{16}}
+\headcommand {\slideentry {4}{1}{2}{17/17}{Prédire le sentiment d'un tweet}{0}}
+\headcommand {\beamer@framepages {17}{17}}
+\headcommand {\slideentry {4}{1}{3}{18/18}{Prédire le sentiment d'un tweet}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\slideentry {4}{1}{4}{19/19}{Prédire le sentiment d'un tweet}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\slideentry {4}{1}{5}{20/23}{Prédire le sentiment d'un tweet}{0}}
+\headcommand {\beamer@framepages {20}{23}}
+\headcommand {\slideentry {4}{1}{6}{24/24}{Prédire le sentiment d'un tweet}{0}}
+\headcommand {\beamer@framepages {24}{24}}
+\headcommand {\beamer@partpages {1}{24}}
+\headcommand {\beamer@subsectionpages {16}{24}}
+\headcommand {\beamer@sectionpages {15}{24}}
+\headcommand {\beamer@documentpages {24}}
+\headcommand {\gdef \inserttotalframenumber {19}}

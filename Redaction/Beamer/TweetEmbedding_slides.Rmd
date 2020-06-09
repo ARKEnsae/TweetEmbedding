@@ -35,6 +35,7 @@ header-includes:
 - \usetikzlibrary{fit,arrows.meta}
 - \usepackage{pifont}
 - \usepackage{enumitem}
+- \usepackage{dsfont}
 - \setlist[itemize,1]{label = --}
 - \setlist[itemize,2]{label = $\circ$}
 - \setlist[enumerate,1]{label={\arabic*}}
@@ -351,7 +352,7 @@ Pour cela, nous avons à notre disposition une base de tweets annotés sur les t
 
 Le sentiment prédit d'un tweet $t$ composé de $n$ mots sera : 
 <!-- problème indicatrice -->
-$$S_{1,\gamma}(t) = 1\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}$$
+$$S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}$$
 \begin{itemize}
 \item $\gamma \in [-1,1]$ un seuil fixé ;
 \item $\alpha_i = \frac{nb_+(i) - nb_-(i)}{nb_+(i) + nb_-(i)} \in [-1,1]$  sentiment moyen du mot $i$ calculé à partir du nombre de tweets positifs ($nb_+(i)$) et négatifs ($nb_-(i)$) dans lesquels il apparaît. 

@@ -99,6 +99,7 @@
 \usetikzlibrary{fit,arrows.meta}
 \usepackage{pifont}
 \usepackage{enumitem}
+\usepackage{dsfont}
 \setlist[itemize,1]{label = --}
 \setlist[itemize,2]{label = $\circ$}
 \setlist[enumerate,1]{label={\arabic*}}
@@ -491,7 +492,7 @@ les transports urbains, contenant 23 000 tweets, séparée en une base de
 \protect\hypertarget{moduxe8le-lexical-sentiment-moyen-des-mots}{}
 
 Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
-\[S_{1,\gamma}(t) = 1\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}\]
+\[S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}\]
 
 \begin{itemize}
 \item $\gamma \in [-1,1]$ un seuil fixé ;

@@ -145,6 +145,194 @@
 \hypertarget{word2vec}{%
 \section{\texorpdfstring{\emph{word2vec}}{word2vec}}\label{word2vec}}
 
+\hypertarget{le-moduxe8le-word2vec-un-moduxe8le-de-word-embedding}{%
+\subsection{\texorpdfstring{Le modèle \emph{word2vec}, un modèle de
+\emph{word-embedding}}{Le modèle word2vec, un modèle de word-embedding}}\label{le-moduxe8le-word2vec-un-moduxe8le-de-word-embedding}}
+
+\begin{frame}{\emph{word2vec} et \emph{word-embedding} \bcquestion}
+\protect\hypertarget{word2vec-et-word-embedding}{}
+
+\begin{itemize}
+\item
+  modèle de NLP développé par Google (Mikolov et al (2013))
+\item
+  \textbf{objectif} = \emph{word-embedding} : donner une représentation
+  vectorielle aux mots
+\end{itemize}
+
+\pause
+
+\begin{itemize}
+\item
+  \bcloupe réseau de neurones à deux couches permettant de traiter des
+  grandes bases de données \pause
+\item
+  les mots avec le même contexte ont des représentations vectorielles
+  proches : \[
+  \overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}
+  \]
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{L'approche Skip-gram}
+\protect\hypertarget{lapproche-skip-gram}{}
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+Approche retenue : Skip-gram
+\begin{itemize}
+\item étant donné un mot \emph{focus} quelles pourraient être ses voisins (\emph{contextes}) ?
+\item les \emph{contextes} dépendent d'un paramètre : la \highlight{fenêtre} $w$
+\end{itemize}
+\medskip
+
+\medskip \onslide<2->{
+Exemple $w=2$:
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien} \LARGE \textbf{''}\normalsize
+\end{quote}
+Voisins(\texttt{passe}) =  \texttt{{[}Teams,\ se,\ bien{]}} 
+}
+\end{column}
+\begin{column}{0.4\textwidth} 
+\includegraphics[width=\textwidth]{img/skip_gram.png}
+
+\end{column}
+\end{columns}
+
+\onslide<3->{
+Approche CBOW (non retenue) : objectif inverse}
+
+\end{frame}
+
+\hypertarget{lalgorithme-skip-gram}{%
+\subsection{L'algorithme Skip-gram}\label{lalgorithme-skip-gram}}
+
+\begin{frame}[fragile]{Construction de la base d'entraînement (1/2)}
+\protect\hypertarget{construction-de-la-base-dentrauxeenement-12}{}
+
+\bcoutil À partir de couples \texttt{{[}focus,\ contexte{]}}, on met
+itérativement à jour deux matrices \(W_e\) et \(W_s\). Représentation
+vectorielle finale : \[
+\text{vocabulaire}
+\begin{cases}\\\\\\
+\end{cases}\frac{W_e+W_s}{2}=\underbrace{
+\begin{pmatrix}
+\text{représentation mot 1} \\
+\\
+\text{représentation mot }n 
+\end{pmatrix}}_{\text{dimension }dim}
+\] \pause Pour chaque phrase on :
+
+\begin{itemize}
+\item
+  supprime la ponctuation, met tout en minuscule
+\item
+  effectue un sous-échantillonnage des mots (\highlight{subsampling})
+\item
+  on tire au hasard un mot \emph{focus} et un mot \emph{contexte}
+  associé
+\end{itemize}
+
+\faArrowCircleRight{} on parcourt la base \highlight{epochs} fois
+
+\end{frame}
+
+\begin{frame}[fragile]{Construction de la base d'entraînement (2/2)}
+\protect\hypertarget{construction-de-la-base-dentrauxeenement-22}{}
+
+Exemple avec \(w=2\):
+
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien!!!} \LARGE \textbf{''}\normalsize
+\end{quote}
+
+\begin{itemize}
+\item
+  supprime la ponctuation, met tout en minuscule\\
+  \faArrowCircleRight{}
+  \texttt{{[}espérons,\ que,\ la,\ présentation,\ sous,\ teams,\ se,\ passe,\ bien{]}}
+  \pause
+\item
+  effectue un sous-échantillonnage des mots (\highlight{subsampling})\\
+  \faArrowCircleRight{}
+  \texttt{{[}espérons,\ X,\ X,\ présentation,\ X,\ teams,\ se,\ passe,\ X{]}}
+  \pause
+\item
+  on tire au hasard un mot \emph{focus} et un mot \emph{contexte}
+  associé\\
+  \faArrowCircleRight{} On tire un mot au hasard parmi
+  \texttt{{[}présentation,\ teams{]}},
+  \texttt{{[}teams,\ présentation{]}}, \texttt{{[}teams,\ se{]}},
+  \texttt{{[}teams,\ passe{]}}, \texttt{{[}se,\ teams{]}}, \dots
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Actualisation de \(W_e\) et \(W_s\)}
+\protect\hypertarget{actualisation-de-w_e-et-w_s}{}
+
+Pour chaque couple \texttt{{[}focus,\ contexte{]}} : actualisation de
+\(W_e\) et \(W_s\) par descente de gradient : \[
+\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta Loss(\theta^{(t)})
+\] \(\eta\) \highlight{taux d'apprentissage} et \(Loss(\theta)\)
+fonction de perte
+
+\pause
+
+Deux approches :
+
+\begin{enumerate}
+\tightlist
+\item
+  \emph{softmax} : pour un mot \texttt{focus} on estime la probabilité
+  que les autres mots soient voisins (classification multiclasse) \[
+  \mathbb P(w_{contexte}\vert w_{focus}) = ?
+  \] \pause
+\item
+  \emph{negative sampling} : pour chaque couple
+  \texttt{{[}contexte,\ mot2{]}} on estime la probabilité que
+  \texttt{mot2} soit voisin de \texttt{contexte} (classification
+  binaire) \[
+  \mathbb P(D=1\vert w_{focus},w_{mot2}) = ?
+  \]
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]{\emph{softmax} et \emph{negative sampling}}
+\protect\hypertarget{softmax-et-negative-sampling}{}
+
+Pour chaque couple \texttt{{[}focus,\ contexte{]}} :
+
+\begin{enumerate}
+\item
+  \emph{softmax} : on maximise \[
+  \mathbb P(w_{contexte}\vert w_{focus}) = 
+  \frac{
+  \exp(W_{e,w_{focus}}\times {}^tW_{s,w_{contexte}})
+  }{
+  \sum_{i=1}^n\exp(W_{e,w_{focus}}\times {}^tW_{s,w_{i}})
+  }
+  \] \bcsmmh Complexité : \(\mathcal O (n)\) et \(n\simeq\) 70 000
+  \pause
+\item
+  \emph{negative sampling} : on tire \(K=5\) mots ``négatifs''
+  \((w_{neg,\,i})_{i=1..K}\) a priori non liés à
+  \texttt{{[}focus,\ contexte{]}}\\
+  On maximise \(\mathbb P(D=1\vert w_{focus},w_{contexte})\) et
+  \(\mathbb P(D=0\vert w_{focus},w_{neg,\,i})\) \[
+  \begin{cases}
+  \mathbb P(D=1\vert w_{focus},w_{contexte})&=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}})  \\
+  \mathbb P(D=0\vert w_{focus},w_{neg,\,i})&=\sigma(-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}}) 
+  \\\sigma(x)=\frac{1}{1+\exp(x)}
+  \end{cases}
+  \] \bcsmbh Complexité : \(\mathcal O (K)\)
+\end{enumerate}
+
+\end{frame}
+
 \hypertarget{uxe9valuation-du-moduxe8le}{%
 \section{Évaluation du modèle}\label{uxe9valuation-du-moduxe8le}}
 
@@ -630,6 +818,35 @@ neutraliser certains de ces effets
 
 \textbf{Modèle logit \underline{alors} meilleur que le modèle
 lexical}\newline(\emph{Accuracy} de 61,9~\% contre 55,9~\%).
+
+\end{frame}
+
+\hypertarget{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}{%
+\subsection{Sentiments des tweets et enquête de conjoncture auprès des
+ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des-muxe9nages}}
+
+\begin{frame}{Sentiments des tweets et enquête Camme}
+\protect\hypertarget{sentiments-des-tweets-et-enquuxeate-camme}{}
+
+\centering\includegraphics[width =\textwidth]{img/rmd-graphSentiments-1}
+
+\raggedright  \pause
+\begin{columns}
+\begin{column}{0.5\textwidth} \bcsmmh
+\begin{itemize}
+\item Indicateurs relativement éloignés de l'enquête Camme
+\item Similarité avec indicateur Camme plus proche avec modèle lexical que modèle word-embedding (DTW)
+\end{itemize}
+
+\end{column}\pause
+\begin{column}{0.5\textwidth} \bcsmbh
+\begin{itemize}
+\item Modèle word-embedding utile pour prévoir indicateur Camme (Granger causalité) $\ne$ modèle lexical
+\item Modèle indicateur \textbf{avancé} des sentiments des ménages
+\end{itemize}
+
+\end{column}
+\end{columns}
 
 \end{frame}
 

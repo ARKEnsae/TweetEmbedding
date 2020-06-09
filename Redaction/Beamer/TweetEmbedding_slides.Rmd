@@ -69,6 +69,144 @@ library(shinyWidgets)
 
 # *word2vec*
 
+## Le modèle *word2vec*, un modèle de *word-embedding*
+
+###  *word2vec* et *word-embedding* \bcquestion
+
+- modèle de NLP développé par Google (Mikolov et al (2013)) 
+
+- **objectif** = *word-embedding* : donner une représentation vectorielle aux mots
+
+\pause
+- \bcloupe réseau de neurones à deux couches permettant de traiter des grandes bases de données \pause
+
+- les mots avec le même contexte ont des représentations vectorielles proches :
+$$
+\overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}
+$$
+
+### L'approche Skip-gram
+
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+Approche retenue : Skip-gram
+\begin{itemize}
+\item étant donné un mot \emph{focus} quelles pourraient être ses voisins (\emph{contextes}) ?
+\item les \emph{contextes} dépendent d'un paramètre : la \highlight{fenêtre} $w$
+\end{itemize}
+\medskip
+
+\medskip \onslide<2->{
+Exemple $w=2$:
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien} \LARGE \textbf{''}\normalsize
+\end{quote}
+Voisins(\texttt{passe}) =  \texttt{{[}Teams,\ se,\ bien{]}} 
+}
+\end{column}
+\begin{column}{0.4\textwidth} 
+\includegraphics[width=\textwidth]{img/skip_gram.png}
+
+\end{column}
+\end{columns}
+
+\onslide<3->{
+Approche CBOW (non retenue) : objectif inverse}
+
+
+## L’algorithme Skip-gram
+
+### Construction de la base d'entraînement (1/2)
+
+\bcoutil À partir de couples `[focus, contexte]`, on met itérativement à jour deux matrices $W_e$ et $W_s$. Représentation vectorielle finale :
+$$
+\text{vocabulaire}
+\begin{cases}\\\\\\
+\end{cases}\frac{W_e+W_s}{2}=\underbrace{
+\begin{pmatrix}
+\text{représentation mot 1} \\
+\\
+\text{représentation mot }n 
+\end{pmatrix}}_{\text{dimension }dim}
+$$
+\pause
+Pour chaque phrase on :
+
+- supprime la ponctuation, met tout en minuscule
+
+- effectue un sous-échantillonnage des mots (\highlight{subsampling})
+
+- on tire au hasard un mot *focus* et un mot *contexte* associé
+
+\faArrowCircleRight{} on parcourt la base \highlight{epochs} fois
+
+### Construction de la base d'entraînement (2/2)
+
+Exemple avec $w=2$: 
+
+\begin{quote}
+\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien!!!} \LARGE \textbf{''}\normalsize
+\end{quote}
+
+- supprime la ponctuation, met tout en minuscule  
+\faArrowCircleRight{} `[espérons, que, la, présentation, sous, teams, se, passe, bien]` \pause
+
+- effectue un sous-échantillonnage des mots (\highlight{subsampling})  
+\faArrowCircleRight{} `[espérons, X, X, présentation, X, teams, se, passe, X]`
+\pause
+- on tire au hasard un mot *focus* et un mot *contexte* associé  
+\faArrowCircleRight{} On tire un mot au hasard parmi `[présentation, teams]`, `[teams, présentation]`,  `[teams, se]`,  `[teams, passe]`,  `[se, teams]`, \dots
+
+### Actualisation de $W_e$ et $W_s$
+
+Pour chaque couple `[focus, contexte]` : actualisation de $W_e$ et $W_s$ par descente de gradient :
+$$
+\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta Loss(\theta^{(t)})
+$$
+$\eta$ \highlight{taux d'apprentissage} et $Loss(\theta)$ fonction de perte
+
+\pause
+Deux approches :
+
+1.  *softmax* : pour un mot `focus` on estime la probabilité que les autres mots soient voisins (classification multiclasse) 
+$$
+\mathbb P(w_{contexte}\vert w_{focus}) = ?
+$$
+ \pause
+2. *negative sampling* : pour chaque couple `[contexte, mot2]` on estime la probabilité que `mot2` soit voisin de `contexte` (classification binaire)
+$$
+\mathbb P(D=1\vert w_{focus},w_{mot2}) = ?
+$$
+
+### *softmax* et *negative sampling*
+
+Pour chaque couple `[focus, contexte]` :
+
+
+1.  *softmax* : on maximise
+$$
+\mathbb P(w_{contexte}\vert w_{focus}) = 
+\frac{
+\exp(W_{e,w_{focus}}\times {}^tW_{s,w_{contexte}})
+}{
+\sum_{i=1}^n\exp(W_{e,w_{focus}}\times {}^tW_{s,w_{i}})
+}
+$$
+\bcsmmh Complexité : $\mathcal O (n)$ et $n\simeq$ 70 000 \pause
+
+2. *negative sampling* : on tire $K=5$ mots "négatifs" $(w_{neg,\,i})_{i=1..K}$ a priori non liés à `[focus, contexte]`  
+On maximise $\mathbb P(D=1\vert w_{focus},w_{contexte})$ et $\mathbb P(D=0\vert w_{focus},w_{neg,\,i})$
+$$
+\begin{cases}
+\mathbb P(D=1\vert w_{focus},w_{contexte})&=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}})  \\
+\mathbb P(D=0\vert w_{focus},w_{neg,\,i})&=\sigma(-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}}) 
+\\\sigma(x)=\frac{1}{1+\exp(x)}
+\end{cases}
+$$
+\bcsmbh Complexité : $\mathcal O (K)$ 
+
+
 # Évaluation du modèle
 
 ## Évaluation sur un corpus fictif
@@ -434,6 +572,33 @@ Plusieurs points à traiter :
 \faArrowCircleRight{} Utilisation d'une nouvelle base de test pour neutraliser certains de ces effets 
 
 **Modèle logit \underline{alors} meilleur que le modèle lexical**\newline(*Accuracy* de 61,9 \% contre 55,9 \%).
+
+
+
+## Sentiments des tweets et enquête de conjoncture auprès des ménages
+
+### Sentiments des tweets et enquête Camme
+
+\centering\includegraphics[width =\textwidth]{img/rmd-graphSentiments-1}
+
+\raggedright  \pause
+\begin{columns}
+\begin{column}{0.5\textwidth} \bcsmmh
+\begin{itemize}
+\item Indicateurs relativement éloignés de l'enquête Camme
+\item Similarité avec indicateur Camme plus proche avec modèle lexical que modèle word-embedding (DTW)
+\end{itemize}
+
+\end{column}\pause
+\begin{column}{0.5\textwidth} \bcsmbh
+\begin{itemize}
+\item Modèle word-embedding utile pour prévoir indicateur Camme (Granger causalité) $\ne$ modèle lexical
+\item Modèle indicateur \textbf{avancé} des sentiments des ménages
+\end{itemize}
+
+\end{column}
+\end{columns}
+
 
 # Conclusion {.unnumbered}
 

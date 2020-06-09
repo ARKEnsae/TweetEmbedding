@@ -8,4 +8,6 @@ Rapport : https://arkensae.github.io/TweetEmbedding/Redaction/Rapport_Final/Rapp
 
 Synthèse : https://arkensae.github.io/TweetEmbedding/Redaction/Note_Synthese/Synthese.pdf
 
+Slides : https://arkensae.github.io/TweetEmbedding/Redaction/Beamer/TweetEmbedding_slides.pdf
+
 

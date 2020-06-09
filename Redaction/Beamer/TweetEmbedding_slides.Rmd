@@ -62,9 +62,6 @@ library(shinyjs)
 library(shinyWidgets)
 ```
 
-
-# Introduction
-
 ### Introduction
 
 \resizebox{\textwidth}{!}{\input{img/schema_recap.tex}}
@@ -91,7 +88,7 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 
 - \textbf{Jugement humain} : corrélations entre les proximités de nos vecteurs-mots et une base de proximités de mots construites par le jugement d'individus
 
-### Évaluation sur un corpus fictif
+### Évaluation sur un corpus fictif (1/2)
 \textbf{Idée} : construire un corpus fictif pour lesquels on connaît le résultat attendu.
 
 \textbf{En pratique} :
@@ -107,7 +104,7 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 \item On mélange les 9 mots de chaque phrase.
 \end{itemize}
 
-### Résultats de l'évaluation
+### Évaluation sur un corpus fictif (2/2)
 
 \begin{table}[!h]
 \begin{center}
@@ -170,7 +167,7 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 
 
 
-### Epochs, fenêtre et taux d'apprentissage
+### Exemple : epochs, fenêtre et taux d'apprentissage
 
 \begin{figure}[htp]
 \begin{center}
@@ -181,7 +178,7 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 \emph{Paramètre utilisé : dim = 50}
 \end{figure}
 
-### Valeurs des hyperparamètres retenus
+### Valeurs retenues pour les hyperparamètres
 
 \begin{itemize}
 
@@ -437,6 +434,39 @@ Plusieurs points à traiter :
 \faArrowCircleRight{} Utilisation d'une nouvelle base de test pour neutraliser certains de ces effets 
 
 **Modèle logit \underline{alors} meilleur que le modèle lexical**\newline(*Accuracy* de 61,9 \% contre 55,9 \%).
+
+# Conclusion {.unnumbered}
+
+### Conclusion (1/2) 
+
+- *Word2vec* \dots
+	* capture **très bien** la \underline{sémantique des mots} dans un texte
+	* prédit **assez bien** le \underline{sentiment d’une phrase}
+	* est **potentiellement utile** pour \underline{prédire l’indicateur synthétique de}  \underline{confiance des ménages de l’Insee} \dots
+	* \dots mais demeure **très différent** de cet indicateur (en évolution)
+
+\bigskip
+
+\pause
+
+- Pourquoi très différent ?
+  * Principalement en raison de leurs **différentes philosophies** \footnotesize (sujets spécifiques de Camme VS positivité ou non des tweets pour notre indice) \normalsize \dots
+  * \dots{} mais aussi à cause des **limites de la base d’entraînement** de tweets annotés \footnotesize (domain-shift, processus d’annotation, mots inconnus) \normalsize
+
+### Conclusion (2/2) 
+
+Pistes d'amélioration ?
+
+-  disposer d’une **base de tweets traitant de sujets divers, et bien annotés** \footnotesize (gradation de sentiments, modèles de type BERT, analyse approfondie du contenu et des auteurs des tweets \dots) \normalsize
+
+
+-  améliorer le **prétraitement des tweets** \footnotesize (orthographe des mots, modèle à séquences d’unités de sous-mots type *fasttext* \dots)\normalsize
+
+
+-  utiliser des **modèles d’analyse de sentiment plus élaborés** \footnotesize  (type réseaux de
+neurones récurrents)\normalsize
+
+
 
 
 

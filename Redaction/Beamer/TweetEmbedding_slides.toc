@@ -1,9 +1,8 @@
 \babel@toc {french}{}
-\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
-\beamer@sectionintoc {2}{\emph {word2vec}}{4}{0}{2}
-\beamer@sectionintoc {3}{\IeC {\'E}valuation du mod\IeC {\`e}le}{5}{0}{3}
-\beamer@subsectionintoc {3}{1}{\IeC {\'E}valuation sur un corpus fictif}{6}{0}{3}
-\beamer@subsectionintoc {3}{2}{Choix des meilleurs hyperparam\IeC {\`e}tres}{9}{0}{3}
-\beamer@subsectionintoc {3}{3}{\IeC {\'E}valuation sur le corpus de tweets}{12}{0}{3}
-\beamer@sectionintoc {4}{Indice de sentiments}{15}{0}{4}
-\beamer@subsectionintoc {4}{1}{Pr\IeC {\'e}dire le sentiment d'un tweet}{16}{0}{4}
+\beamer@sectionintoc {1}{\emph {word2vec}}{3}{0}{1}
+\beamer@sectionintoc {2}{\IeC {\'E}valuation du mod\IeC {\`e}le}{4}{0}{2}
+\beamer@subsectionintoc {2}{1}{\IeC {\'E}valuation sur un corpus fictif}{5}{0}{2}
+\beamer@subsectionintoc {2}{2}{Choix des meilleurs hyperparam\IeC {\`e}tres}{8}{0}{2}
+\beamer@subsectionintoc {2}{3}{\IeC {\'E}valuation sur le corpus de tweets}{11}{0}{2}
+\beamer@sectionintoc {3}{Indice de sentiments}{14}{0}{3}
+\beamer@subsectionintoc {3}{1}{Pr\IeC {\'e}dire le sentiment d'un tweet}{15}{0}{3}

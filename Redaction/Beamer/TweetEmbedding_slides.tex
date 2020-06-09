@@ -135,11 +135,8 @@
 \titlepage
 \end{frame}
 
-\hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
-
 \begin{frame}{Introduction}
-\protect\hypertarget{introduction-1}{}
+\protect\hypertarget{introduction}{}
 
 \resizebox{\textwidth}{!}{\input{img/schema_recap.tex}}
 
@@ -175,8 +172,8 @@ qualité et de leurs proximités ?
 
 \end{frame}
 
-\begin{frame}{Évaluation sur un corpus fictif}
-\protect\hypertarget{uxe9valuation-sur-un-corpus-fictif-1}{}
+\begin{frame}{Évaluation sur un corpus fictif (1/2)}
+\protect\hypertarget{uxe9valuation-sur-un-corpus-fictif-12}{}
 
 \textbf{Idée} : construire un corpus fictif pour lesquels on connaît le
 résultat attendu.
@@ -197,8 +194,8 @@ résultat attendu.
 
 \end{frame}
 
-\begin{frame}{Résultats de l'évaluation}
-\protect\hypertarget{ruxe9sultats-de-luxe9valuation}{}
+\begin{frame}{Évaluation sur un corpus fictif (2/2)}
+\protect\hypertarget{uxe9valuation-sur-un-corpus-fictif-22}{}
 
 \begin{table}[!h]
 \begin{center}
@@ -289,8 +286,8 @@ validation avec notre implémentation.
 
 \end{frame}
 
-\begin{frame}{Epochs, fenêtre et taux d'apprentissage}
-\protect\hypertarget{epochs-fenuxeatre-et-taux-dapprentissage}{}
+\begin{frame}{Exemple : epochs, fenêtre et taux d'apprentissage}
+\protect\hypertarget{exemple-epochs-fenuxeatre-et-taux-dapprentissage}{}
 
 \begin{figure}[htp]
 \begin{center}
@@ -303,8 +300,8 @@ validation avec notre implémentation.
 
 \end{frame}
 
-\begin{frame}{Valeurs des hyperparamètres retenus}
-\protect\hypertarget{valeurs-des-hyperparamuxe8tres-retenus}{}
+\begin{frame}{Valeurs retenues pour les hyperparamètres}
+\protect\hypertarget{valeurs-retenues-pour-les-hyperparamuxe8tres}{}
 
 \begin{itemize}
 
@@ -633,6 +630,81 @@ neutraliser certains de ces effets
 
 \textbf{Modèle logit \underline{alors} meilleur que le modèle
 lexical}\newline(\emph{Accuracy} de 61,9~\% contre 55,9~\%).
+
+\end{frame}
+
+\hypertarget{conclusion}{%
+\section*{Conclusion}\label{conclusion}}
+\addcontentsline{toc}{section}{Conclusion}
+
+\begin{frame}{Conclusion (1/2)}
+\protect\hypertarget{conclusion-12}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{Word2vec}~\dots
+
+  \begin{itemize}
+  \tightlist
+  \item
+    capture \textbf{très bien} la \underline{sémantique des mots} dans
+    un texte
+  \item
+    prédit \textbf{assez bien} le \underline{sentiment d’une phrase}
+  \item
+    est \textbf{potentiellement utile} pour
+    \underline{prédire l’indicateur synthétique de}
+    \underline{confiance des ménages de l’Insee} \dots
+  \item
+    \dots mais demeure \textbf{très différent} de cet indicateur (en
+    évolution)
+  \end{itemize}
+\end{itemize}
+
+\bigskip
+
+\pause
+
+\begin{itemize}
+\tightlist
+\item
+  Pourquoi très différent~?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Principalement en raison de leurs \textbf{différentes philosophies}
+    \footnotesize (sujets spécifiques de Camme VS positivité ou non des
+    tweets pour notre indice) \normalsize \dots
+  \item
+    \dots{} mais aussi à cause des \textbf{limites de la base
+    d'entraînement} de tweets annotés \footnotesize (domain-shift,
+    processus d'annotation, mots inconnus) \normalsize
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conclusion (2/2)}
+\protect\hypertarget{conclusion-22}{}
+
+Pistes d'amélioration~?
+
+\begin{itemize}
+\item
+  disposer d'une \textbf{base de tweets traitant de sujets divers, et
+  bien annotés} \footnotesize (gradation de sentiments, modèles de type
+  BERT, analyse approfondie du contenu et des auteurs des tweets \dots)
+  \normalsize
+\item
+  améliorer le \textbf{prétraitement des tweets}
+  \footnotesize (orthographe des mots, modèle à séquences d'unités de
+  sous-mots type \emph{fasttext} \dots)\normalsize
+\item
+  utiliser des \textbf{modèles d'analyse de sentiment plus élaborés}
+  \footnotesize  (type réseaux de neurones récurrents)\normalsize
+\end{itemize}
 
 \end{frame}
 

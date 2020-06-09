@@ -34,7 +34,7 @@ header-includes:
 - \usepackage{tikz}
 - \usetikzlibrary{fit,arrows.meta}
 - \usepackage{pifont}
-- \usepackage{enumitem}
+- \usepackage[shortlabels]{enumitem}
 - \usepackage{dsfont}
 - \setlist[itemize,1]{label = --}
 - \setlist[itemize,2]{label = $\circ$}
@@ -62,16 +62,7 @@ library(shinyjs)
 library(shinyWidgets)
 ```
 
-### Introduction
-
-\resizebox{\textwidth}{!}{\input{img/schema_recap.tex}}
-
-
-# *word2vec*
-
-## Le modèle *word2vec*, un modèle de *word-embedding*
-
-###  *word2vec* et *word-embedding* \bcquestion
+###  Introduction (1/2)
 
 - modèle de NLP développé par Google (Mikolov et al (2013)) 
 
@@ -85,6 +76,15 @@ $$
 \overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}
 $$
 
+### Introduction (2/2)
+
+\resizebox{\textwidth}{!}{\input{img/schema_recap.tex}}
+
+
+# *word2vec*
+
+## L'approche Skip-gram
+
 ### L'approche Skip-gram
 
 
@@ -92,7 +92,7 @@ $$
 \begin{column}{0.6\textwidth}
 Approche retenue : Skip-gram
 \begin{itemize}
-\item étant donné un mot \emph{focus} quelles pourraient être ses voisins (\emph{contextes}) ?
+\item étant donné un mot \emph{focus} quels pourraient être ses voisins (\emph{contextes}) ?
 \item les \emph{contextes} dépendent d'un paramètre : la \highlight{fenêtre} $w$
 \end{itemize}
 \medskip
@@ -115,7 +115,7 @@ Voisins(\texttt{passe}) =  \texttt{[Teams,\ se,\ bien]}
 Approche CBOW (non retenue) : objectif inverse}
 
 
-## L’algorithme Skip-gram
+## Construction de la base d'entraînement
 
 ### Construction de la base d'entraînement (1/2)
 
@@ -137,7 +137,7 @@ Pour chaque phrase on :
 
 - effectue un sous-échantillonnage des mots (\highlight{subsampling})
 
-- on tire au hasard un mot *focus* et un mot *contexte* associé
+- tire au hasard un mot *focus* et un mot *contexte* associé
 
 \faArrowCircleRight{} on parcourt la base \highlight{epochs} fois
 
@@ -149,14 +149,16 @@ Exemple avec $w=2$:
 \LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien!!!} \LARGE \textbf{''}\normalsize
 \end{quote}
 
-- supprime la ponctuation, met tout en minuscule  
+- on supprime la ponctuation, met tout en minuscule  
 \faArrowCircleRight{} `[espérons, que, la, présentation, sous, teams, se, passe, bien]` \pause
 
-- effectue un sous-échantillonnage des mots (\highlight{subsampling})  
+- on effectue un sous-échantillonnage des mots (\highlight{subsampling})  
 \faArrowCircleRight{} `[espérons, X, X, présentation, X, teams, se, passe, X]`
 \pause
 - on tire au hasard un mot *focus* et un mot *contexte* associé  
 \faArrowCircleRight{} On tire un mot au hasard parmi `[présentation, teams]`, `[teams, présentation]`,  `[teams, se]`,  `[teams, passe]`,  `[se, teams]`, \dots
+
+## *softmax* et *negative sampling*
 
 ### Actualisation de $W_e$ et $W_s$
 
@@ -586,13 +588,13 @@ Plusieurs points à traiter :
 \begin{column}{0.5\textwidth} \bcsmmh
 \begin{itemize}
 \item Indicateurs relativement éloignés de l'enquête Camme
-\item Similarité avec indicateur Camme plus proche avec modèle lexical que modèle word-embedding (DTW)
+\item Similarité (DTW) avec indicateur Camme plus proche avec modèle lexical que modèle word-embedding 
 \end{itemize}
 
 \end{column}\pause
 \begin{column}{0.5\textwidth} \bcsmbh
 \begin{itemize}
-\item Modèle word-embedding utile pour prévoir indicateur Camme (Granger causalité) $\ne$ modèle lexical
+\item Modèle word-embedding utile pour prévoir indicateur Camme (causalité de Granger) $\ne$ modèle lexical
 \item Modèle indicateur \textbf{avancé} des sentiments des ménages
 \end{itemize}
 

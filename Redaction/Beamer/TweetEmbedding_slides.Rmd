@@ -5,7 +5,7 @@ author: "Kim Antunez, Romain Lesauvage et Alain Quartier-la-Tente"
 division: "11/06/2020 "
 departement: "Ensae --- 2019-2020"
 logo: "img/LOGO-ENSAE.png"
-automaticcontents: true
+automaticcontents: false
 output:
     beamer_presentation:
         template: template.tex
@@ -42,6 +42,7 @@ header-includes:
 - \usepackage{lmodern}
 - \usepackage{cancel}
 - \usepackage{array}
+- \usepackage{xspace}
 
 themeoptions: "coding=utf8,language=french"
 classoption: 'usepdftitle=false,french'
@@ -80,8 +81,10 @@ $$
 
 \resizebox{\textwidth}{!}{\input{img/schema_recap.tex}}
 
-
 # *word2vec*
+
+### Sommaire
+\tableofcontents[currentsection, hideothersubsections]
 
 ## L'approche Skip-gram
 
@@ -111,8 +114,6 @@ Voisins(\texttt{passe}) =  \texttt{[Teams,\ se,\ bien]}
 \end{column}
 \end{columns}
 
-\onslide<3->{
-Approche CBOW (non retenue) : objectif inverse}
 
 
 ## Construction de la base d'entraînement
@@ -121,14 +122,12 @@ Approche CBOW (non retenue) : objectif inverse}
 
 \bcoutil À partir de couples `[focus, contexte]`, on met itérativement à jour deux matrices $W_e$ et $W_s$. Représentation vectorielle finale :
 $$
-\text{vocabulaire}
-\begin{cases}\\\\\\
-\end{cases}\frac{W_e+W_s}{2}=\underbrace{
+\frac{W_e+W_s}{2}=\underbrace{
 \begin{pmatrix}
 \text{représentation mot 1} \\
 \\
 \text{représentation mot }n 
-\end{pmatrix}}_{\text{dimension }dim}
+\end{pmatrix}}_{\text{dimension : }n\times dim}
 $$
 \pause
 Pour chaque phrase on :
@@ -203,13 +202,16 @@ $$
 \begin{cases}
 \mathbb P(D=1\vert w_{focus},w_{contexte})&=\sigma(W_{e,w_{focus}}{}^tW_{s,w_{contexte}})  \\
 \mathbb P(D=0\vert w_{focus},w_{neg,\,i})&=\sigma(-W_{e,w_{focus}}{}^tW_{s,w_{neg,\,i}}) 
-\\\sigma(x)=\frac{1}{1+\exp()}
+\\\sigma(x)=\frac{1}{1+\exp(-x)}
 \end{cases}
 $$
 \bcsmbh Complexité : $\mathcal O (K)$ 
 
 
 # Évaluation du modèle
+
+### Sommaire
+\tableofcontents[currentsection, hideothersubsections]
 
 ## Évaluation sur un corpus fictif
 
@@ -246,9 +248,10 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 
 ### Évaluation sur un corpus fictif (2/2)
 
-\begin{table}[!h]
-\begin{center}
-\begin{tabular}{|c|>{\centering\arraybackslash}p{3cm}|}
+\begin{columns}
+\begin{column}{0.5\textwidth} \footnotesize
+\centering
+\begin{tabular}{|c|>{\centering\arraybackslash}p{2.5cm}|}
     \hline
     mot & similarité cosinus avec \og grand \fg{} \tabularnewline
     \hline
@@ -256,13 +259,11 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
     petit & 0,981   \tabularnewline
     s & 0,979   \tabularnewline
     $\vdots$ & $\vdots$    \tabularnewline
-    susiens & $- 0,735$ \tabularnewline
     allates & $-0,784$ \tabularnewline
-    %produit & 0,100   \tabularnewline
-    %voiture & 0,097   \tabularnewline
     \hline
  \end{tabular}
-\begin{tabular}{|c|>{\centering\arraybackslash}p{3cm}|}
+
+ \begin{tabular}{|c|>{\centering\arraybackslash}p{2.5cm}|}
     \hline
     mot & similarité cosinus avec \og petit \fg{} \tabularnewline
     \hline
@@ -270,16 +271,20 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
     longueur & 0,983   \tabularnewline
     grand & 0,981   \tabularnewline
     $\vdots$ & $\vdots$    \tabularnewline
-    alesiez & $- 0,745$ \tabularnewline
     allates & $-0,810$ \tabularnewline
-    %citrine & 0,129   \tabularnewline
-    %voiture & 0,121   \tabularnewline
     \hline
  \end{tabular}
-\end{center}
-\footnotesize
-\emph{Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
-\end{table}
+ 
+ \raggedright  
+\emph{Paramètres utilisés : ep = 50 / lr = 0,01 /}
+ 
+ \emph{w = 5 / dim = 10.}
+\end{column}
+\begin{column}{0.5\textwidth}
+Ajouter graphique
+\end{column}
+\end{columns}
+
 
 \faArrowCircleRight{} implémentation semble validée (résultats conformes aux attendus) 
 
@@ -479,6 +484,8 @@ hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
 
 # Indice de sentiments
 
+### Sommaire
+\tableofcontents[currentsection, hideothersubsections]
 
 ## Prédire le sentiment d'un tweet
 

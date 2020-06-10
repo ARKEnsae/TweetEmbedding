@@ -197,7 +197,7 @@
 \protect\hypertarget{lapproche-skip-gram-1}{}
 
 \begin{columns}
-\begin{column}{0.6\textwidth}
+\begin{column}{0.65\textwidth}
 Approche retenue : Skip-gram
 \begin{itemize}
 \item étant donné un mot \emph{focus} quels pourraient être ses voisins (\emph{contextes}) ?
@@ -206,11 +206,12 @@ Approche retenue : Skip-gram
 \medskip
 
 \medskip \onslide<2->{
-Exemple $w=2$:
+Exemple:
 \begin{quote}
 \LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien} \LARGE \textbf{''}\normalsize
 \end{quote}
-Voisins(\texttt{passe}) =  \texttt{[Teams,\ se,\ bien]} 
+Voisins(\texttt{passe}, $w=1$) =  \texttt{[se,\ bien]} 
+Voisins(\texttt{passe}, $w=2$) =  \texttt{[Teams,\ se,\ bien]} 
 }
 \end{column}
 \begin{column}{0.4\textwidth} 

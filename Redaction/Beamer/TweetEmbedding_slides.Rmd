@@ -67,7 +67,7 @@ library(shinyWidgets)
 
 ###  Introduction (1/2)
 
-- *word2vec* = modèle de NLP développé par Google (Mikolov et al (2013)). 
+- *Word2vec* = modèle de NLP développé par Google (Mikolov et al (2013)). 
 
 - **Objectif** = *word-embedding* : donner une représentation vectorielle aux mots.
     * \faMinusSquare{} vecteurs difficilement interprétables
@@ -110,7 +110,7 @@ Approche retenue : Skip-gram
 \medskip \onslide<2->{
 Exemple:
 \begin{quote}
-\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien} \LARGE \textbf{''}\normalsize
+\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien!!!} \LARGE \textbf{''}\normalsize
 \end{quote}
 Voisins(\texttt{passe}, $w=1$) =  \texttt{[se,\ bien]} 
 Voisins(\texttt{passe}, $w=2$) =  \texttt{[Teams,\ se,\ bien]} 
@@ -142,7 +142,7 @@ Pour chaque phrase on :
 
 - supprime la ponctuation, met tout en minuscule
 
-- affecte la valeur « lowfrequency »  aux mots rares.
+- renomme les mots rares en « lowfrequency » .
 
 - effectue un sous-échantillonnage des mots (\highlight{subsampling})
 
@@ -158,7 +158,7 @@ Exemple avec $w=2$:
 \LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien!!!} \LARGE \textbf{''}\normalsize
 \end{quote}
 
-- on supprime la ponctuation, met tout en minuscule  
+- on supprime la ponctuation, met tout en minuscule, renomme les mots rares 
 \faArrowCircleRight{} `[espérons, que, la, présentation, sous, teams, se, passe, bien]` \pause
 
 - on effectue un sous-échantillonnage des mots (\highlight{subsampling})  

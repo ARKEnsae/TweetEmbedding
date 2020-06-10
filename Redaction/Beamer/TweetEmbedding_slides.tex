@@ -114,7 +114,7 @@
 \division{encadrement : \textsc{Benjamin Muller} (Inria)\\
 11/06/2020}
 
-\departement{Ensae — 2019-2020}
+\departement{Ensae --- 2019-2020}
 \makeatletter
 \let\@@magyar@captionfix\relax
 \makeatother
@@ -134,7 +134,7 @@
 
 \begin{itemize}
 \item
-  \emph{word2vec} = modèle de NLP développé par Google (Mikolov et al
+  \emph{Word2vec} = modèle de NLP développé par Google (Mikolov et al
   (2013)).
 \item
   \textbf{Objectif} = \emph{word-embedding} : donner une représentation
@@ -145,7 +145,7 @@
   \item
     \faMinusSquare{} vecteurs difficilement interprétables
   \item
-    \faPlusSquare{} tâches d’apprentissage facilitées
+    \faPlusSquare{} tâches d'apprentissage facilitées
   \end{itemize}
 \end{itemize}
 
@@ -192,9 +192,9 @@
 \end{frame}
 
 \hypertarget{lapproche-skip-gram}{%
-\subsection{L’approche Skip-gram}\label{lapproche-skip-gram}}
+\subsection{L'approche Skip-gram}\label{lapproche-skip-gram}}
 
-\begin{frame}{L’approche Skip-gram}
+\begin{frame}{L'approche Skip-gram}
 \protect\hypertarget{lapproche-skip-gram-1}{}
 
 \begin{columns}
@@ -209,7 +209,7 @@ Approche retenue : Skip-gram
 \medskip \onslide<2->{
 Exemple:
 \begin{quote}
-\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien} \LARGE \textbf{''}\normalsize
+\LARGE \textbf{``}\normalsize \emph{Espérons que la présentation sous Teams se passe bien!!!} \LARGE \textbf{''}\normalsize
 \end{quote}
 Voisins(\texttt{passe}, $w=1$) =  \texttt{[se,\ bien]} 
 Voisins(\texttt{passe}, $w=2$) =  \texttt{[Teams,\ se,\ bien]} 
@@ -225,9 +225,9 @@ Voisins(\texttt{passe}, $w=2$) =  \texttt{[Teams,\ se,\ bien]}
 
 \hypertarget{construction-de-la-base-dentrauxeenement}{%
 \subsection{Construction de la base
-d’entraînement}\label{construction-de-la-base-dentrauxeenement}}
+d'entraînement}\label{construction-de-la-base-dentrauxeenement}}
 
-\begin{frame}[fragile]{Construction de la base d’entraînement (1/2)}
+\begin{frame}[fragile]{Construction de la base d'entraînement (1/2)}
 \protect\hypertarget{construction-de-la-base-dentrauxeenement-12}{}
 
 \bcoutil À partir de couples \texttt{{[}focus,\ contexte{]}}, on met
@@ -245,7 +245,7 @@ vectorielle finale : \[
 \item
   supprime la ponctuation, met tout en minuscule
 \item
-  affecte la valeur « lowfrequency » aux mots rares.
+  renomme les mots rares en « lowfrequency » .
 \item
   effectue un sous-échantillonnage des mots (\highlight{subsampling})
 \item
@@ -256,7 +256,7 @@ vectorielle finale : \[
 
 \end{frame}
 
-\begin{frame}[fragile]{Construction de la base d’entraînement (2/2)}
+\begin{frame}[fragile]{Construction de la base d'entraînement (2/2)}
 \protect\hypertarget{construction-de-la-base-dentrauxeenement-22}{}
 
 Exemple avec \(w=2\):
@@ -267,8 +267,8 @@ Exemple avec \(w=2\):
 
 \begin{itemize}
 \item
-  on supprime la ponctuation, met tout en minuscule\\
-  \faArrowCircleRight{}
+  on supprime la ponctuation, met tout en minuscule, renomme les mots
+  rares \faArrowCircleRight{}
   \texttt{{[}espérons,\ que,\ la,\ présentation,\ sous,\ teams,\ se,\ passe,\ bien{]}}
   \pause
 \item
@@ -306,7 +306,6 @@ fonction de perte
 Deux approches :
 
 \begin{enumerate}
-[1.]
 \tightlist
 \item
   \emph{softmax} : pour un mot \texttt{focus} on estime la probabilité
@@ -329,7 +328,6 @@ Deux approches :
 Pour chaque couple \texttt{{[}focus,\ contexte{]}} :
 
 \begin{enumerate}
-[1.]
 \item
   \emph{softmax} : on maximise \[
   \mathbb P(w_{contexte}\vert w_{focus}) = 
@@ -341,7 +339,7 @@ Pour chaque couple \texttt{{[}focus,\ contexte{]}} :
   \] \bcsmmh Complexité : \(\mathcal O (n)\) et \(n\simeq\) 70 000
   \pause
 \item
-  \emph{negative sampling} : on tire \(K=5\) mots “négatifs”
+  \emph{negative sampling} : on tire \(K=5\) mots ``négatifs''
   \((w_{neg,\,i})_{i=1..K}\) a priori non liés à
   \texttt{{[}focus,\ contexte{]}}\\
   On maximise \(\mathbb P(D=1\vert w_{focus},w_{contexte})\) et
@@ -385,12 +383,12 @@ qualité et de leurs proximités ?
 \item
   \textbf{Jugement humain} : corrélations entre les proximités de nos
   vecteurs-mots et une base de proximités de mots construites par le
-  jugement d’individus.
+  jugement d'individus.
 \end{itemize}
 
 \bigskip
 
-\faArrowCircleRight{} Évaluer sur un corpus fictif puis sur l’ensemble
+\faArrowCircleRight{} Évaluer sur un corpus fictif puis sur l'ensemble
 des tweets
 
 \end{frame}
@@ -477,16 +475,16 @@ hyperparamètres}\label{choix-des-meilleurs-hyperparamuxe8tres}}
 \begin{itemize}
 \tightlist
 \item
-  \emph{Word2vec} se base sur différents choix d’hyperparamètres :
+  \emph{Word2vec} se base sur différents choix d'hyperparamètres :
 
   \begin{itemize}
   \tightlist
   \item
     taille de la fenêtre (\emph{w})
   \item
-    nombre d’epochs (\emph{ep})
+    nombre d'epochs (\emph{ep})
   \item
-    taux d’apprentissage (\emph{lr})
+    taux d'apprentissage (\emph{lr})
   \item
     dimension des \emph{word-embeddings} (\emph{dim})
   \end{itemize}
@@ -518,7 +516,7 @@ validation avec notre implémentation.
 
 \end{frame}
 
-\begin{frame}{Exemple : epochs, fenêtre et taux d’apprentissage}
+\begin{frame}{Exemple : epochs, fenêtre et taux d'apprentissage}
 \protect\hypertarget{exemple-epochs-fenuxeatre-et-taux-dapprentissage}{}
 
 \begin{figure}[htp]
@@ -708,10 +706,10 @@ coucou (0,55) & nana (0,66) & 7 (0,60) \tabularnewline
 \end{frame}
 
 \hypertarget{pruxe9dire-le-sentiment-dun-tweet}{%
-\subsection{Prédire le sentiment d’un
+\subsection{Prédire le sentiment d'un
 tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
 
-\begin{frame}{Prédire le sentiment d’un tweet}
+\begin{frame}{Prédire le sentiment d'un tweet}
 \protect\hypertarget{pruxe9dire-le-sentiment-dun-tweet-1}{}
 
 \begin{itemize}
@@ -722,9 +720,9 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
   \begin{itemize}
   \tightlist
   \item
-    1 s’il est positif
+    1 s'il est positif
   \item
-    0 s’il est négatif
+    0 s'il est négatif
   \end{itemize}
 \end{itemize}
 
@@ -738,7 +736,7 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
   \begin{itemize}
   \tightlist
   \item
-    \textbf{base d’entraînement} : 16 000 tweets
+    \textbf{base d'entraînement} : 16 000 tweets
   \item
     \textbf{base de test} : 7 000 tweets
   \end{itemize}
@@ -754,11 +752,11 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
   \begin{itemize}
   \tightlist
   \item
-    \textbf{Modèle lexical} : utiliser l’information des tweets annotés
+    \textbf{Modèle lexical} : utiliser l'information des tweets annotés
     pour construire un sentiment moyen par mot.
   \item
     \textbf{Modèle logit} : utiliser les \emph{word-embeddings} comme
-    prédicteurs d’une régression logistique.
+    prédicteurs d'une régression logistique.
   \end{itemize}
 \end{itemize}
 
@@ -767,7 +765,7 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
 \begin{frame}{Modèle lexical : sentiment moyen des mots}
 \protect\hypertarget{moduxe8le-lexical-sentiment-moyen-des-mots}{}
 
-Le sentiment prédit d’un tweet \(t\) composé de \(n\) mots sera :
+Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
 \[S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}\]
 
 \begin{itemize}
@@ -785,7 +783,7 @@ Le sentiment prédit d’un tweet \(t\) composé de \(n\) mots sera :
 \emph{word-embeddings}}
 \protect\hypertarget{moduxe8le-logit-pruxe9diction-gruxe2ce-aux-word-embeddings}{}
 
-Le sentiment prédit d’un tweet \(t\) sera :
+Le sentiment prédit d'un tweet \(t\) sera :
 \[S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \quad \in \{ 0,1 \}\]
 Avec :
 \[Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)\]
@@ -830,7 +828,6 @@ Plusieurs points à traiter :
 \dots
 
 \begin{enumerate}
-[1.]
 \tightlist
 \item
   Davantage de mots inconnus dans le modèle logit (4,6 \% des mots
@@ -840,18 +837,16 @@ Plusieurs points à traiter :
 \pause
 
 \begin{enumerate}
-[1.]
 \setcounter{enumi}{1}
 \tightlist
 \item
-  Le processus d’annotation utilisé pour les tweets sur les transports
+  Le processus d'annotation utilisé pour les tweets sur les transports
   urbains reproduit en partie par le modèle lexical ?
 \end{enumerate}
 
 \pause
 
 \begin{enumerate}
-[1.]
 \setcounter{enumi}{2}
 \tightlist
 \item
@@ -862,7 +857,7 @@ Plusieurs points à traiter :
 
 \bigskip
 
-\faArrowCircleRight{} Utilisation d’une nouvelle base de test pour
+\faArrowCircleRight{} Utilisation d'une nouvelle base de test pour
 neutraliser certains de ces effets.
 
 \textbf{Modèle logit \underline{alors} meilleur que le modèle
@@ -943,9 +938,9 @@ ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des
     \footnotesize (sujets spécifiques de Camme VS positivité ou non des
     tweets pour notre indice) \normalsize \dots
   \item
-    \dots\{\} mais aussi à cause des \textbf{limites de la base
-    d’entraînement} de tweets annotés \footnotesize (domain-shift,
-    processus d’annotation, mots inconnus) \normalsize
+    \dots{} mais aussi à cause des \textbf{limites de la base
+    d'entraînement} de tweets annotés \footnotesize (domain-shift,
+    processus d'annotation, mots inconnus) \normalsize
   \end{itemize}
 \end{itemize}
 
@@ -954,20 +949,20 @@ ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des
 \begin{frame}{Conclusion (2/2)}
 \protect\hypertarget{conclusion-22}{}
 
-Pistes d’amélioration~?
+Pistes d'amélioration~?
 
 \begin{itemize}
 \item
-  disposer d’une \textbf{base de tweets traitant de sujets divers, et
+  disposer d'une \textbf{base de tweets traitant de sujets divers, et
   bien annotés} \footnotesize (gradation de sentiments, modèles de type
   BERT, analyse approfondie du contenu et des auteurs des tweets \dots)
   \normalsize
 \item
   améliorer le \textbf{prétraitement des tweets}
-  \footnotesize (orthographe des mots, modèle à séquences d’unités de
+  \footnotesize (orthographe des mots, modèle à séquences d'unités de
   sous-mots type \emph{fasttext} \dots)\normalsize
 \item
-  utiliser des \textbf{modèles d’analyse de sentiment plus élaborés}
+  utiliser des \textbf{modèles d'analyse de sentiment plus élaborés}
   \footnotesize  (type réseaux de neurones récurrents)\normalsize
 \end{itemize}
 

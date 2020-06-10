@@ -65,15 +65,19 @@ library(shinyWidgets)
 
 ###  Introduction (1/2)
 
-- Modèle de NLP développé par Google (Mikolov et al (2013)). 
+- *word2vec* = modèle de NLP développé par Google (Mikolov et al (2013)). 
 
 - **Objectif** = *word-embedding* : donner une représentation vectorielle aux mots.
+    * \faMinusSquare{} vecteurs difficilement interprétables
+    * \faPlusSquare{} tâches d'apprentissage facilitées
 
 \pause
 
-- \bcloupe Réseau de neurones à deux couches permettant de traiter des grandes bases de données. \pause
+\bigskip
 
-- Les mots avec le même contexte ont des représentations vectorielles proches :
+-  \faArrowCircleRight{} Réseau de neurones à 2 couches permettant de traiter des grandes bases de données. 
+    * mots apparaissant dans un même contexte = représentations vectorielles proches
+    *
 $$
 \overrightarrow{Paris} - \overrightarrow{France} + \overrightarrow{Italie} = \overrightarrow{Rome}
 $$
@@ -220,9 +224,6 @@ $$
 
 <!-- \textbf{Problème} : utilisation généralisée des *word-embeddings* mais peu de travaux théoriques expliquent ce qui est capturé, comment évaluer le modèle ? -->
 
-<!-- \faArrowCircleRight{} Utiliser un corpus fictif. -->
-<!-- Pas que non ? On utilise aussi le corpus entier par la suite -->
-
 Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et de leurs proximités ?
 
 - \textbf{Similarité cosinus} : distance entre vecteurs-mots.
@@ -231,8 +232,14 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 
 - \textbf{Jugement humain} : corrélations entre les proximités de nos vecteurs-mots et une base de proximités de mots construites par le jugement d'individus.
 
+\bigskip
+
+\faArrowCircleRight{} Évaluer sur un corpus fictif puis sur l'ensemble des tweets
+
+
+
 ### Évaluation sur un corpus fictif (1/2)
-\textbf{Idée} : construire un corpus fictif pour lesquels on connaît le résultat attendu.
+\textbf{Idée} : construire un corpus fictif pour lequel on connaît le résultat attendu.
 
 \textbf{En pratique} :
 \begin{itemize}
@@ -283,9 +290,12 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
 \end{center}
 \end{column}
 \end{columns}
- 
-\emph{Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
 
+\footnotesize 
+\emph{Paramètres utilisés : ep = 50 / lr = 0,01 / w = 5 / dim = 10.}
+\normalsize
+
+\medskip
 
 \faArrowCircleRight{} implémentation semble validée (résultats conformes aux attendus) 
 
@@ -302,6 +312,8 @@ Les vecteurs-mots sont de grande dimension : comment juger de leur qualité et d
     * dimension des \emph{word-embeddings} (\emph{dim})
 
 \medskip
+
+\pause
 
 - Détermination empirique des hyperparamètres :
     * corrélation de Spearman entre nos vecteurs-mots et une base de jugement humain
@@ -467,6 +479,7 @@ hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
 \end{center}
 \emph{ACP sur un corpus réduit de mots.}
 
+\pause
 
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
@@ -570,7 +583,7 @@ Plusieurs points à traiter :
 
 \pause
 
-2. Le processus d’annotation utilisé pour les tweets sur les transports urbains reproduit en partie par le modèle lexical.
+2. Le processus d’annotation utilisé pour les tweets sur les transports urbains reproduit en partie par le modèle lexical ?
 
 \pause
 

@@ -161,7 +161,7 @@ Exemple avec $w=2$:
 \faArrowCircleRight{} `[espérons, X, X, présentation, X, teams, se, passe, X]`
 \pause
 - on tire au hasard un mot *focus* et un mot *contexte* associé  
-\faArrowCircleRight{} On tire un mot au hasard parmi `[présentation, teams]`, `[teams, présentation]`,  `[teams, se]`,  `[teams, passe]`,  `[se, teams]`, \dots
+\faArrowCircleRight{} On tire un couple au hasard parmi `[présentation, teams]`, `[teams, présentation]`,  `[teams, se]`,  `[teams, passe]`,  `[se, teams]`, \dots
 
 ## *softmax* et *negative sampling*
 
@@ -181,7 +181,7 @@ $$
 \mathbb P(w_{contexte}\vert w_{focus}) = ?
 $$
  \pause
-2. *negative sampling* : pour chaque couple `[contexte, mot2]` on estime la probabilité que `mot2` soit voisin de `contexte` (classification binaire)
+2. *negative sampling* : pour chaque couple `[focus, mot2]` on estime la probabilité que `mot2` soit voisin de `focus` (classification binaire)
 $$
 \mathbb P(D=1\vert w_{focus},w_{mot2}) = ?
 $$

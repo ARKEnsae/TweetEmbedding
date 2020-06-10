@@ -277,7 +277,7 @@ Exemple avec \(w=2\):
 \item
   on tire au hasard un mot \emph{focus} et un mot \emph{contexte}
   associé\\
-  \faArrowCircleRight{} On tire un mot au hasard parmi
+  \faArrowCircleRight{} On tire un couple au hasard parmi
   \texttt{{[}présentation,\ teams{]}},
   \texttt{{[}teams,\ présentation{]}}, \texttt{{[}teams,\ se{]}},
   \texttt{{[}teams,\ passe{]}}, \texttt{{[}se,\ teams{]}}, \dots
@@ -311,9 +311,8 @@ Deux approches :
   \] \pause
 \item
   \emph{negative sampling} : pour chaque couple
-  \texttt{{[}contexte,\ mot2{]}} on estime la probabilité que
-  \texttt{mot2} soit voisin de \texttt{contexte} (classification
-  binaire) \[
+  \texttt{{[}focus,\ mot2{]}} on estime la probabilité que \texttt{mot2}
+  soit voisin de \texttt{focus} (classification binaire) \[
   \mathbb P(D=1\vert w_{focus},w_{mot2}) = ?
   \]
 \end{enumerate}

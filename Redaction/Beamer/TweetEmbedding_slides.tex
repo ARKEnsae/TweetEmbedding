@@ -111,9 +111,10 @@
 \setcandidatelabel{}
 
 \rel{}
-\division{11/06/2020}
+\division{encadrement : \textsc{Benjamin Muller} (Inria)\\
+11/06/2020}
 
-\departement{Ensae --- 2019-2020}
+\departement{Ensae — 2019-2020}
 \makeatletter
 \let\@@magyar@captionfix\relax
 \makeatother
@@ -144,7 +145,7 @@
   \item
     \faMinusSquare{} vecteurs difficilement interprétables
   \item
-    \faPlusSquare{} tâches d'apprentissage facilitées
+    \faPlusSquare{} tâches d’apprentissage facilitées
   \end{itemize}
 \end{itemize}
 
@@ -191,9 +192,9 @@
 \end{frame}
 
 \hypertarget{lapproche-skip-gram}{%
-\subsection{L'approche Skip-gram}\label{lapproche-skip-gram}}
+\subsection{L’approche Skip-gram}\label{lapproche-skip-gram}}
 
-\begin{frame}{L'approche Skip-gram}
+\begin{frame}{L’approche Skip-gram}
 \protect\hypertarget{lapproche-skip-gram-1}{}
 
 \begin{columns}
@@ -224,9 +225,9 @@ Voisins(\texttt{passe}, $w=2$) =  \texttt{[Teams,\ se,\ bien]}
 
 \hypertarget{construction-de-la-base-dentrauxeenement}{%
 \subsection{Construction de la base
-d'entraînement}\label{construction-de-la-base-dentrauxeenement}}
+d’entraînement}\label{construction-de-la-base-dentrauxeenement}}
 
-\begin{frame}[fragile]{Construction de la base d'entraînement (1/2)}
+\begin{frame}[fragile]{Construction de la base d’entraînement (1/2)}
 \protect\hypertarget{construction-de-la-base-dentrauxeenement-12}{}
 
 \bcoutil À partir de couples \texttt{{[}focus,\ contexte{]}}, on met
@@ -244,6 +245,8 @@ vectorielle finale : \[
 \item
   supprime la ponctuation, met tout en minuscule
 \item
+  affecte la valeur « lowfrequency » aux mots rares.
+\item
   effectue un sous-échantillonnage des mots (\highlight{subsampling})
 \item
   tire au hasard un mot \emph{focus} et un mot \emph{contexte} associé
@@ -253,7 +256,7 @@ vectorielle finale : \[
 
 \end{frame}
 
-\begin{frame}[fragile]{Construction de la base d'entraînement (2/2)}
+\begin{frame}[fragile]{Construction de la base d’entraînement (2/2)}
 \protect\hypertarget{construction-de-la-base-dentrauxeenement-22}{}
 
 Exemple avec \(w=2\):
@@ -303,6 +306,7 @@ fonction de perte
 Deux approches :
 
 \begin{enumerate}
+[1.]
 \tightlist
 \item
   \emph{softmax} : pour un mot \texttt{focus} on estime la probabilité
@@ -325,6 +329,7 @@ Deux approches :
 Pour chaque couple \texttt{{[}focus,\ contexte{]}} :
 
 \begin{enumerate}
+[1.]
 \item
   \emph{softmax} : on maximise \[
   \mathbb P(w_{contexte}\vert w_{focus}) = 
@@ -336,7 +341,7 @@ Pour chaque couple \texttt{{[}focus,\ contexte{]}} :
   \] \bcsmmh Complexité : \(\mathcal O (n)\) et \(n\simeq\) 70 000
   \pause
 \item
-  \emph{negative sampling} : on tire \(K=5\) mots ``négatifs''
+  \emph{negative sampling} : on tire \(K=5\) mots “négatifs”
   \((w_{neg,\,i})_{i=1..K}\) a priori non liés à
   \texttt{{[}focus,\ contexte{]}}\\
   On maximise \(\mathbb P(D=1\vert w_{focus},w_{contexte})\) et
@@ -373,19 +378,19 @@ qualité et de leurs proximités ?
 
 \begin{itemize}
 \item
-  \textbf{Similarité cosinus} : distance entre vecteurs-mots.
-\item
   \textbf{ACP et t-SNE} : réduire la dimension et analyser les
   proximités.
 \item
+  \textbf{Similarité cosinus} : distance entre vecteurs-mots.
+\item
   \textbf{Jugement humain} : corrélations entre les proximités de nos
   vecteurs-mots et une base de proximités de mots construites par le
-  jugement d'individus.
+  jugement d’individus.
 \end{itemize}
 
 \bigskip
 
-\faArrowCircleRight{} Évaluer sur un corpus fictif puis sur l'ensemble
+\faArrowCircleRight{} Évaluer sur un corpus fictif puis sur l’ensemble
 des tweets
 
 \end{frame}
@@ -472,16 +477,16 @@ hyperparamètres}\label{choix-des-meilleurs-hyperparamuxe8tres}}
 \begin{itemize}
 \tightlist
 \item
-  \emph{Word2vec} se base sur différents choix d'hyperparamètres :
+  \emph{Word2vec} se base sur différents choix d’hyperparamètres :
 
   \begin{itemize}
   \tightlist
   \item
     taille de la fenêtre (\emph{w})
   \item
-    nombre d'epochs (\emph{ep})
+    nombre d’epochs (\emph{ep})
   \item
-    taux d'apprentissage (\emph{lr})
+    taux d’apprentissage (\emph{lr})
   \item
     dimension des \emph{word-embeddings} (\emph{dim})
   \end{itemize}
@@ -513,7 +518,7 @@ validation avec notre implémentation.
 
 \end{frame}
 
-\begin{frame}{Exemple : epochs, fenêtre et taux d'apprentissage}
+\begin{frame}{Exemple : epochs, fenêtre et taux d’apprentissage}
 \protect\hypertarget{exemple-epochs-fenuxeatre-et-taux-dapprentissage}{}
 
 \begin{figure}[htp]
@@ -578,30 +583,26 @@ tweets}\label{uxe9valuation-sur-le-corpus-de-tweets}}
 
 \end{minipage}%
 \begin{minipage}{.6\textwidth}
-\tiny
+\footnotesize
 
 \begin{table}[!h]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
     \hline
-\textbf{bonjour} & \textbf{femme} & \textbf{1} & \textbf{samedi} \tabularnewline
-\emph{(669)} & \emph{(264)} & \emph{(765)} & \emph{(203)} \tabularnewline
+\textbf{bonjour} & \textbf{femme} & \textbf{1} \tabularnewline
+\emph{(669)} & \emph{(264)} & \emph{(765)} \tabularnewline
        \hline
-\includegraphics[height=2mm]{img/emojis/1.png} (0,59) & quelle (0,49) & 5 (0,55) & soir (0,57) \tabularnewline
-\includegraphics[height=2mm]{img/emojis/2.png} (0,59) & cette (0,46) & mois (0,51) & vivement (0,51) \tabularnewline
-merci (0,54) & une (0,44) & 10 (0,49) & demain (0,50) \tabularnewline
-nuit (0,48) & vie (0,44) & 2 (0,48) & end (0,48) \tabularnewline
-bisous (0,47) & grippe (0,44) & top (0,48) & weekend (0,47) \tabularnewline
-bonne (0,47) & belle (0,43) & depuis (0,47) & matin (0,45) \tabularnewline
-\includegraphics[height=2mm]{img/emojis/3.png} (0,46) & ma (0,43) & saison (0,46) & jeudi (0,45) \tabularnewline
-vous (0,46) & magnifique (0,43) & ans (0,44) & prochain (0,43) \tabularnewline
-plaisir (0,44) & nouvelle (0,43) & jours (0,43) & week (0,43) \tabularnewline
-allez (0,43) & vidéo (0,39) & 3 (0,43) & \includegraphics[height=2mm]{img/emojis/4.png} (0,42) \tabularnewline
+\includegraphics[height=2mm]{img/emojis/1.png} (0,59) & quelle (0,49) & 5 (0,55) \tabularnewline
+\includegraphics[height=2mm]{img/emojis/2.png} (0,59) & cette (0,46) & mois (0,51) \tabularnewline
+merci (0,54) & une (0,44) & 10 (0,49) \tabularnewline
+nuit (0,48) & vie (0,44) & 2 (0,48) \tabularnewline
+bisous (0,47) & grippe (0,44) & top (0,48) \tabularnewline
     \hline
  \end{tabular}
 \captionsetup{margin=0cm,format=hang,justification=justified}
 
 \end{center}
+\tiny
 \emph{ep = 80 / w = 4 / lr = 0,02 / dim = 100 / base : 100 000 tweets}
 
 \end{table}
@@ -612,6 +613,8 @@ allez (0,43) & vidéo (0,39) & 3 (0,43) & \includegraphics[height=2mm]{img/emoji
 \end{figure}
 
 \pause
+
+\bigskip
 
 \begin{figure}
 \begin{minipage}{.4\textwidth}
@@ -630,34 +633,30 @@ Modèle \texttt{Gensim}
 
 \end{minipage}%
 \begin{minipage}{.6\textwidth}
-\tiny
+\footnotesize
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
     \hline
-\textbf{bonjour} & \textbf{femme} & \textbf{1} & \textbf{samedi} \tabularnewline
-\emph{(17 043)} & \emph{(6 177)} & \emph{(21 055)} & \emph{(4 917)} \tabularnewline
+\textbf{bonjour} & \textbf{femme} & \textbf{1} \tabularnewline
+\emph{(17 043)} & \emph{(6 177)} & \emph{(21 055)} \tabularnewline
        \hline
-bonsoir (0,85) & fille (0,86) & 2 (0,65) & vendredi (0,88) \tabularnewline
-bjr (0,75) & copine (0,74) & 3 (0,64) & jeudi (0,86) \tabularnewline
-hello (0,71) & meuf (0,71) & 6 (0,63) & lundi (0,83) \tabularnewline
-salut (0,66) & demoiselle (0,66) & 4 (0,62) & mercredi (0,83) \tabularnewline
-coucou (0,55) & nana (0,66) & 7 (0,60) & dimanche (0,83) \tabularnewline
-transmets (0,49) & nièce (0,66) & 5 (0,58) & mardi (0,76) \tabularnewline
-désagrément (0,48) & sœur (0,65) & 9 (0,58) & demain (0,72) \tabularnewline
-avezvous (0,48) & barbe (0,65) & 8 (0,56) & barathon (0,56) \tabularnewline
-bettembourg (0,48) & maman (0,64) & 1e (0,55) & 22h45 (0,55) \tabularnewline
-hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
+bonsoir (0,85) & fille (0,86) & 2 (0,65)  \tabularnewline
+bjr (0,75) & copine (0,74) & 3 (0,64) \tabularnewline
+hello (0,71) & meuf (0,71) & 6 (0,63) \tabularnewline
+salut (0,66) & demoiselle (0,66) & 4 (0,62) \tabularnewline
+coucou (0,55) & nana (0,66) & 7 (0,60) \tabularnewline
     \hline
  \end{tabular}
 \captionsetup{margin=0cm,format=hang,justification=justified}
 \end{center}
+\tiny
 \emph{ep = 100 / w = 4 / lr = 0,02 / dim = 100 / base : ensemble des tweets}
 
 \medskip
 
-\footnotesize{10 plus proches voisins par similarité cosinus}
+\footnotesize{5 plus proches voisins par similarité cosinus}
 \end{table}
 
 \normalsize
@@ -709,10 +708,10 @@ hey (0,47) & princesse (0,64) & 34 (0,53) & 20h (0,54) \tabularnewline
 \end{frame}
 
 \hypertarget{pruxe9dire-le-sentiment-dun-tweet}{%
-\subsection{Prédire le sentiment d'un
+\subsection{Prédire le sentiment d’un
 tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
 
-\begin{frame}{Prédire le sentiment d'un tweet}
+\begin{frame}{Prédire le sentiment d’un tweet}
 \protect\hypertarget{pruxe9dire-le-sentiment-dun-tweet-1}{}
 
 \begin{itemize}
@@ -723,9 +722,9 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
   \begin{itemize}
   \tightlist
   \item
-    1 s'il est positif
+    1 s’il est positif
   \item
-    0 s'il est négatif
+    0 s’il est négatif
   \end{itemize}
 \end{itemize}
 
@@ -739,7 +738,7 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
   \begin{itemize}
   \tightlist
   \item
-    \textbf{base d'entraînement} : 16 000 tweets
+    \textbf{base d’entraînement} : 16 000 tweets
   \item
     \textbf{base de test} : 7 000 tweets
   \end{itemize}
@@ -755,11 +754,11 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
   \begin{itemize}
   \tightlist
   \item
-    \textbf{Modèle lexical} : utiliser l'information des tweets annotés
+    \textbf{Modèle lexical} : utiliser l’information des tweets annotés
     pour construire un sentiment moyen par mot.
   \item
     \textbf{Modèle logit} : utiliser les \emph{word-embeddings} comme
-    prédicteurs d'une régression logistique.
+    prédicteurs d’une régression logistique.
   \end{itemize}
 \end{itemize}
 
@@ -768,7 +767,7 @@ tweet}\label{pruxe9dire-le-sentiment-dun-tweet}}
 \begin{frame}{Modèle lexical : sentiment moyen des mots}
 \protect\hypertarget{moduxe8le-lexical-sentiment-moyen-des-mots}{}
 
-Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
+Le sentiment prédit d’un tweet \(t\) composé de \(n\) mots sera :
 \[S_{1,\gamma}(t) = \mathds{1}\left\{ \frac{1}{n} \sum \limits_{i=1}^n \alpha_i \geq \gamma\right\}  \qquad \in \{ 0,1 \}\]
 
 \begin{itemize}
@@ -786,7 +785,7 @@ Le sentiment prédit d'un tweet \(t\) composé de \(n\) mots sera :
 \emph{word-embeddings}}
 \protect\hypertarget{moduxe8le-logit-pruxe9diction-gruxe2ce-aux-word-embeddings}{}
 
-Le sentiment prédit d'un tweet \(t\) sera :
+Le sentiment prédit d’un tweet \(t\) sera :
 \[S_{2,\gamma}(t) =\mathds{1}\left\{   \mathbb{P}(Y_i = 1 | X_{i}) \ge \gamma\right\} \qquad \quad \in \{ 0,1 \}\]
 Avec :
 \[Y_i = \mathds{1}\left\{ \sum_{i = 1}^n \beta_i X_{i,j} + \varepsilon_i \geq 0 \right\} \quad  \mathbb{P}(Y_i = 1 | X_{i}) = F_{\varepsilon}\left(\sum_{i = 1}^n \beta_i X_{i,j}\right)\]
@@ -807,7 +806,7 @@ Plusieurs points à traiter :
 
 \begin{itemize}
 \item
-  Doit-on inclure les \emph{stop-words} ? \textsc{oui}
+  Doit-on garder les \emph{stop-words} ? \textsc{oui}
 \item
   Comment traiter les mots inconnus ?
   \textsc{affecter le vecteur-mot lowfrequency}
@@ -831,6 +830,7 @@ Plusieurs points à traiter :
 \dots
 
 \begin{enumerate}
+[1.]
 \tightlist
 \item
   Davantage de mots inconnus dans le modèle logit (4,6 \% des mots
@@ -840,16 +840,18 @@ Plusieurs points à traiter :
 \pause
 
 \begin{enumerate}
+[1.]
 \setcounter{enumi}{1}
 \tightlist
 \item
-  Le processus d'annotation utilisé pour les tweets sur les transports
+  Le processus d’annotation utilisé pour les tweets sur les transports
   urbains reproduit en partie par le modèle lexical ?
 \end{enumerate}
 
 \pause
 
 \begin{enumerate}
+[1.]
 \setcounter{enumi}{2}
 \tightlist
 \item
@@ -860,7 +862,7 @@ Plusieurs points à traiter :
 
 \bigskip
 
-\faArrowCircleRight{} Utilisation d'une nouvelle base de test pour
+\faArrowCircleRight{} Utilisation d’une nouvelle base de test pour
 neutraliser certains de ces effets.
 
 \textbf{Modèle logit \underline{alors} meilleur que le modèle
@@ -941,9 +943,9 @@ ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des
     \footnotesize (sujets spécifiques de Camme VS positivité ou non des
     tweets pour notre indice) \normalsize \dots
   \item
-    \dots{} mais aussi à cause des \textbf{limites de la base
-    d'entraînement} de tweets annotés \footnotesize (domain-shift,
-    processus d'annotation, mots inconnus) \normalsize
+    \dots\{\} mais aussi à cause des \textbf{limites de la base
+    d’entraînement} de tweets annotés \footnotesize (domain-shift,
+    processus d’annotation, mots inconnus) \normalsize
   \end{itemize}
 \end{itemize}
 
@@ -952,20 +954,20 @@ ménages}\label{sentiments-des-tweets-et-enquuxeate-de-conjoncture-aupruxe8s-des
 \begin{frame}{Conclusion (2/2)}
 \protect\hypertarget{conclusion-22}{}
 
-Pistes d'amélioration~?
+Pistes d’amélioration~?
 
 \begin{itemize}
 \item
-  disposer d'une \textbf{base de tweets traitant de sujets divers, et
+  disposer d’une \textbf{base de tweets traitant de sujets divers, et
   bien annotés} \footnotesize (gradation de sentiments, modèles de type
   BERT, analyse approfondie du contenu et des auteurs des tweets \dots)
   \normalsize
 \item
   améliorer le \textbf{prétraitement des tweets}
-  \footnotesize (orthographe des mots, modèle à séquences d'unités de
+  \footnotesize (orthographe des mots, modèle à séquences d’unités de
   sous-mots type \emph{fasttext} \dots)\normalsize
 \item
-  utiliser des \textbf{modèles d'analyse de sentiment plus élaborés}
+  utiliser des \textbf{modèles d’analyse de sentiment plus élaborés}
   \footnotesize  (type réseaux de neurones récurrents)\normalsize
 \end{itemize}
 

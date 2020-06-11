@@ -111,7 +111,7 @@
 \setcandidatelabel{}
 
 \rel{}
-\division{encadrement : \textsc{Benjamin Muller} (Inria)\\
+\division{Encadrant : \textsc{Benjamin Muller} (Inria)\\
 11/06/2020}
 
 \departement{Ensae --- 2019-2020}
@@ -245,7 +245,7 @@ vectorielle finale : \[
 \item
   supprime la ponctuation, met tout en minuscule
 \item
-  renomme les mots rares en « lowfrequency » .
+  renomme les mots rares en « lowfrequency »
 \item
   effectue un sous-échantillonnage des mots (\highlight{subsampling})
 \item
@@ -267,23 +267,28 @@ Exemple avec \(w=2\):
 
 \begin{itemize}
 \item
-  on supprime la ponctuation, met tout en minuscule, renomme les mots
-  rares \faArrowCircleRight{}
+  on supprime la ponctuation, met tout en minuscule\\
+  \faArrowCircleRight{}
   \texttt{{[}espérons,\ que,\ la,\ présentation,\ sous,\ teams,\ se,\ passe,\ bien{]}}
+\item
+  on renomme les mots rares\\
+  \faArrowCircleRight{}
+  \texttt{{[}espérons,\ que,\ la,\ présentation,\ sous,\ lowfrequency,\ se,\ passe,\ bien{]}}
   \pause
 \item
   on effectue un sous-échantillonnage des mots
   (\highlight{subsampling})\\
   \faArrowCircleRight{}
-  \texttt{{[}espérons,\ X,\ X,\ présentation,\ X,\ teams,\ se,\ passe,\ X{]}}
+  \texttt{{[}espérons,\ X,\ X,\ présentation,\ X,\ lowfrequency,\ se,\ passe,\ X{]}}
   \pause
 \item
   on tire au hasard un mot \emph{focus} et un mot \emph{contexte}
   associé\\
   \faArrowCircleRight{} On tire un couple au hasard parmi
-  \texttt{{[}présentation,\ teams{]}},
-  \texttt{{[}teams,\ présentation{]}}, \texttt{{[}teams,\ se{]}},
-  \texttt{{[}teams,\ passe{]}}, \texttt{{[}se,\ teams{]}}, \dots
+  \texttt{{[}présentation,\ lowfrequency{]}},
+  \texttt{{[}lowfrequency,\ présentation{]}},
+  \texttt{{[}lowfrequency,\ se{]}}, \texttt{{[}lowfrequency,\ passe{]}},
+  \texttt{{[}se,\ lowfrequency{]}}, \dots
 \end{itemize}
 
 \end{frame}
